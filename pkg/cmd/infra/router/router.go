@@ -7,18 +7,15 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/validation"
 	"k8s.io/apimachinery/pkg/version"
 	kclientset "k8s.io/client-go/kubernetes"
-
 	routev1 "github.com/openshift/api/route/v1"
 	projectclient "github.com/openshift/client-go/project/clientset/versioned/typed/project/v1"
 	routeclientset "github.com/openshift/client-go/route/clientset/versioned"
@@ -26,50 +23,36 @@ import (
 	controllerfactory "github.com/openshift/router/pkg/router/controller/factory"
 )
 
-// RouterSelection controls what routes and resources on the server are considered
-// part of this router.
 type RouterSelection struct {
-	RouterName              string
-	RouterCanonicalHostname string
-
-	ResyncInterval time.Duration
-
-	UpdateStatus bool
-
-	HostnameTemplate string
-	OverrideHostname bool
-	OverrideDomains  []string
-	RedactedDomains  sets.String
-
-	LabelSelector string
-	FieldSelector string
-
-	Namespace              string
-	NamespaceLabelSelector string
-	NamespaceLabels        labels.Selector
-
-	ProjectLabelSelector string
-	ProjectLabels        labels.Selector
-
-	IncludeUDP bool
-
-	DeniedDomains      []string
-	BlacklistedDomains sets.String
-
-	AllowedDomains     []string
-	WhitelistedDomains sets.String
-
-	AllowWildcardRoutes bool
-
-	DisableNamespaceOwnershipCheck bool
-
-	ExtendedValidation bool
-
-	ListenAddr string
+	RouterName			string
+	RouterCanonicalHostname		string
+	ResyncInterval			time.Duration
+	UpdateStatus			bool
+	HostnameTemplate		string
+	OverrideHostname		bool
+	OverrideDomains			[]string
+	RedactedDomains			sets.String
+	LabelSelector			string
+	FieldSelector			string
+	Namespace			string
+	NamespaceLabelSelector		string
+	NamespaceLabels			labels.Selector
+	ProjectLabelSelector		string
+	ProjectLabels			labels.Selector
+	IncludeUDP			bool
+	DeniedDomains			[]string
+	BlacklistedDomains		sets.String
+	AllowedDomains			[]string
+	WhitelistedDomains		sets.String
+	AllowWildcardRoutes		bool
+	DisableNamespaceOwnershipCheck	bool
+	ExtendedValidation		bool
+	ListenAddr			string
 }
 
-// Bind sets the appropriate labels
 func (o *RouterSelection) Bind(flag *pflag.FlagSet) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	flag.StringVar(&o.RouterName, "name", env("ROUTER_SERVICE_NAME", "public"), "The name the router will identify itself with in the route status")
 	flag.StringVar(&o.RouterCanonicalHostname, "router-canonical-hostname", env("ROUTER_CANONICAL_HOSTNAME", ""), "CanonicalHostname is the external host name for the router that can be used as a CNAME for the host requested for this route. This value is optional and may not be set in all cases.")
 	flag.BoolVar(&o.UpdateStatus, "update-status", isTrue(env("ROUTER_UPDATE_STATUS", "true")), "If true, the router will update admitted route status.")
@@ -91,9 +74,9 @@ func (o *RouterSelection) Bind(flag *pflag.FlagSet) {
 	flag.MarkDeprecated("enable-ingress", "Ingress resources are now synchronized to routes automatically.")
 	flag.StringVar(&o.ListenAddr, "listen-addr", env("ROUTER_LISTEN_ADDR", ""), "The name of an interface to listen on to expose metrics and health checking. If not specified, will not listen. Overrides stats port.")
 }
-
-// RouteUpdate updates the route before it is seen by the cache.
 func (o *RouterSelection) RouteUpdate(route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(o.HostnameTemplate) == 0 {
 		return
 	}
@@ -113,83 +96,70 @@ func (o *RouterSelection) RouteUpdate(route *routev1.Route) {
 	if err != nil {
 		return
 	}
-
 	s = strings.Trim(s, "\"'")
 	glog.V(4).Infof("changing route %s to %s", route.Spec.Host, s)
 	route.Spec.Host = s
 }
-
 func (o *RouterSelection) AdmissionCheck(route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(route.Spec.Host) < 1 {
 		return nil
 	}
-
 	if hostInDomainList(route.Spec.Host, o.BlacklistedDomains) {
 		glog.V(4).Infof("host %s in list of denied domains", route.Spec.Host)
 		return fmt.Errorf("host in list of denied domains")
 	}
-
 	if o.WhitelistedDomains.Len() > 0 {
 		glog.V(4).Infof("Checking if host %s is in the list of allowed domains", route.Spec.Host)
 		if hostInDomainList(route.Spec.Host, o.WhitelistedDomains) {
 			glog.V(4).Infof("host %s admitted - in the list of allowed domains", route.Spec.Host)
 			return nil
 		}
-
 		glog.V(4).Infof("host %s rejected - not in the list of allowed domains", route.Spec.Host)
 		return fmt.Errorf("host not in the allowed list of domains")
 	}
 	return nil
 }
-
-// RouteAdmissionFunc returns a func that checks if a route can be admitted
-// based on blacklist & whitelist checks and wildcard routes policy setting.
-// Note: The blacklist settings trumps the whitelist ones.
 func (o *RouterSelection) RouteAdmissionFunc() controller.RouteAdmissionFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(route *routev1.Route) error {
 		if err := o.AdmissionCheck(route); err != nil {
 			return err
 		}
-
 		switch route.Spec.WildcardPolicy {
 		case routev1.WildcardPolicyNone:
 			return nil
-
 		case routev1.WildcardPolicySubdomain:
 			if o.AllowWildcardRoutes {
 				return nil
 			}
 			return fmt.Errorf("wildcard routes are not allowed")
 		}
-
 		return fmt.Errorf("unknown wildcard policy %v", route.Spec.WildcardPolicy)
 	}
 }
-
-// Complete converts string representations of field and label selectors to their parsed equivalent, or
-// returns an error.
 func (o *RouterSelection) Complete() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(o.HostnameTemplate) == 0 && o.OverrideHostname {
 		return fmt.Errorf("--override-hostname requires that --hostname-template be specified")
 	}
-
 	o.RedactedDomains = sets.NewString(o.OverrideDomains...)
 	if len(o.RedactedDomains) > 0 && len(o.HostnameTemplate) == 0 {
 		return fmt.Errorf("--override-domains requires that --hostname-template be specified")
 	}
-
 	if len(o.LabelSelector) > 0 {
 		if _, err := labels.Parse(o.LabelSelector); err != nil {
 			return fmt.Errorf("label selector is not valid: %v", err)
 		}
 	}
-
 	if len(o.FieldSelector) > 0 {
 		if _, err := fields.ParseSelector(o.FieldSelector); err != nil {
 			return fmt.Errorf("field selector is not valid: %v", err)
 		}
 	}
-
 	if len(o.ProjectLabelSelector) > 0 {
 		if len(o.Namespace) > 0 {
 			return fmt.Errorf("only one of --project-labels and --namespace may be used")
@@ -197,7 +167,6 @@ func (o *RouterSelection) Complete() error {
 		if len(o.NamespaceLabelSelector) > 0 {
 			return fmt.Errorf("only one of --namespace-labels and --project-labels may be used")
 		}
-
 		if o.ProjectLabelSelector == "*" {
 			o.ProjectLabels = labels.Everything()
 		} else {
@@ -208,7 +177,6 @@ func (o *RouterSelection) Complete() error {
 			o.ProjectLabels = s
 		}
 	}
-
 	if len(o.NamespaceLabelSelector) > 0 {
 		if len(o.Namespace) > 0 {
 			return fmt.Errorf("only one of --namespace-labels and --namespace may be used")
@@ -219,10 +187,8 @@ func (o *RouterSelection) Complete() error {
 		}
 		o.NamespaceLabels = s
 	}
-
 	o.BlacklistedDomains = sets.NewString(o.DeniedDomains...)
 	o.WhitelistedDomains = sets.NewString(o.AllowedDomains...)
-
 	if routerCanonicalHostname := o.RouterCanonicalHostname; len(routerCanonicalHostname) > 0 {
 		if errs := validation.IsDNS1123Subdomain(routerCanonicalHostname); len(errs) != 0 {
 			return fmt.Errorf("invalid canonical hostname: %s", routerCanonicalHostname)
@@ -231,12 +197,11 @@ func (o *RouterSelection) Complete() error {
 			return fmt.Errorf("canonical hostname must not be an IP address: %s", routerCanonicalHostname)
 		}
 	}
-
 	return nil
 }
-
-// NewFactory initializes a factory that will watch the requested routes
 func (o *RouterSelection) NewFactory(routeclient routeclientset.Interface, projectclient projectclient.ProjectInterface, kc kclientset.Interface) *controllerfactory.RouterControllerFactory {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	factory := controllerfactory.NewDefaultRouterControllerFactory(routeclient, projectclient, kc)
 	factory.LabelSelector = o.LabelSelector
 	factory.FieldSelector = o.FieldSelector
@@ -256,8 +221,9 @@ func (o *RouterSelection) NewFactory(routeclient routeclientset.Interface, proje
 	}
 	return factory
 }
-
 func envVarAsStrings(name, defaultValue, separator string) []string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	strlist := []string{}
 	if env := env(name, defaultValue); env != "" {
 		values := strings.Split(env, separator)
@@ -269,44 +235,37 @@ func envVarAsStrings(name, defaultValue, separator string) []string {
 	}
 	return strlist
 }
-
 func hostInDomainList(host string, domains sets.String) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if domains.Has(host) {
 		return true
 	}
-
 	if idx := strings.IndexRune(host, '.'); idx > 0 {
 		return hostInDomainList(host[idx+1:], domains)
 	}
-
 	return false
 }
-
-// newCmdVersion provides a shim around version for
-// non-client packages that require version information
 func newCmdVersion(fullName string, versionInfo version.Info, out io.Writer) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "version",
-		Short: "Display version",
-		Long:  "Display version",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Fprintf(out, "%s %v\n", fullName, versionInfo)
-		},
-	}
-
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	cmd := &cobra.Command{Use: "version", Short: "Display version", Long: "Display version", Run: func(cmd *cobra.Command, args []string) {
+		fmt.Fprintf(out, "%s %v\n", fullName, versionInfo)
+	}}
 	return cmd
 }
-
-// env returns an environment variable or a default value if not specified.
 func env(key string, defaultValue string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	val := os.Getenv(key)
 	if len(val) == 0 {
 		return defaultValue
 	}
 	return val
 }
-
 func envInt(key string, defaultValue int32, minValue int32) int32 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	value, err := strconv.ParseInt(env(key, fmt.Sprintf("%d", defaultValue)), 10, 32)
 	if err != nil || int32(value) < minValue {
 		return defaultValue
@@ -314,12 +273,11 @@ func envInt(key string, defaultValue int32, minValue int32) int32 {
 	return int32(value)
 }
 
-// KeyFunc returns the value associated with the provided key or false if no
-// such key exists.
 type KeyFunc func(key string) (string, bool)
 
-// expandStrict expands a string using a series of common format functions
 func expandStrict(s string, fns ...KeyFunc) (string, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	unmatched := []string{}
 	result := os.Expand(s, func(key string) string {
 		for _, fn := range fns {
@@ -332,7 +290,6 @@ func expandStrict(s string, fns ...KeyFunc) (string, error) {
 		unmatched = append(unmatched, key)
 		return ""
 	})
-
 	switch len(unmatched) {
 	case 0:
 		return result, nil

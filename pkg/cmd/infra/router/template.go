@@ -10,12 +10,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 	"github.com/MakeNowJust/heredoc"
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ktypes "k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -27,7 +25,6 @@ import (
 	authenticationclient "k8s.io/client-go/kubernetes/typed/authentication/v1beta1"
 	authorizationclient "k8s.io/client-go/kubernetes/typed/authorization/v1beta1"
 	"k8s.io/client-go/pkg/version"
-
 	routev1 "github.com/openshift/api/route/v1"
 	projectclient "github.com/openshift/client-go/project/clientset/versioned"
 	routeclientset "github.com/openshift/client-go/route/clientset/versioned"
@@ -43,11 +40,7 @@ import (
 	"github.com/openshift/router/pkg/router/writerlease"
 )
 
-// defaultReloadInterval is how often to do reloads in seconds.
 const defaultReloadInterval = 5
-
-// defaultCommitInterval is how often (in seconds) to commit the "in-memory"
-// router changes made using the dynamic configuration manager.
 const defaultCommitInterval = 60 * 60
 
 var routerLong = heredoc.Doc(`
@@ -92,52 +85,47 @@ var routerLong = heredoc.Doc(`
 	serve as custom blueprints.`)
 
 type TemplateRouterOptions struct {
-	Config *Config
-
+	Config	*Config
 	TemplateRouter
 	RouterStats
 	RouterSelection
 }
-
 type TemplateRouter struct {
-	WorkingDir               string
-	TemplateFile             string
-	ReloadScript             string
-	ReloadInterval           time.Duration
-	DefaultCertificate       string
-	DefaultCertificatePath   string
-	DefaultCertificateDir    string
-	DefaultDestinationCAPath string
-	RouterService            *ktypes.NamespacedName
-	BindPortsAfterSync       bool
-	MaxConnections           string
-	Ciphers                  string
-	StrictSNI                bool
-	MetricsType              string
-
+	WorkingDir			string
+	TemplateFile			string
+	ReloadScript			string
+	ReloadInterval			time.Duration
+	DefaultCertificate		string
+	DefaultCertificatePath		string
+	DefaultCertificateDir		string
+	DefaultDestinationCAPath	string
+	RouterService			*ktypes.NamespacedName
+	BindPortsAfterSync		bool
+	MaxConnections			string
+	Ciphers				string
+	StrictSNI			bool
+	MetricsType			string
 	TemplateRouterConfigManager
 }
-
 type TemplateRouterConfigManager struct {
-	UseHAProxyConfigManager     bool
-	CommitInterval              time.Duration
-	BlueprintRouteNamespace     string
-	BlueprintRouteLabelSelector string
-	BlueprintRoutePoolSize      int
-	MaxDynamicServers           int
+	UseHAProxyConfigManager		bool
+	CommitInterval			time.Duration
+	BlueprintRouteNamespace		string
+	BlueprintRouteLabelSelector	string
+	BlueprintRoutePoolSize		int
+	MaxDynamicServers		int
 }
 
-// isTrue here has the same logic as the function within package pkg/router/template
 func isTrue(s string) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	v, _ := strconv.ParseBool(s)
 	return v
 }
-
-// getIntervalFromEnv returns a interval value based on an environment
-// variable or the default.
 func getIntervalFromEnv(name string, defaultValSecs int) time.Duration {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	interval := env(name, fmt.Sprintf("%vs", defaultValSecs))
-
 	value, err := time.ParseDuration(interval)
 	if err != nil {
 		glog.Warningf("Invalid %q %q, using default value %v ...", name, interval, defaultValSecs)
@@ -145,8 +133,9 @@ func getIntervalFromEnv(name string, defaultValSecs int) time.Duration {
 	}
 	return value
 }
-
 func (o *TemplateRouter) Bind(flag *pflag.FlagSet) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	flag.StringVar(&o.WorkingDir, "working-dir", "/var/lib/haproxy/router", "The working directory for the router plugin")
 	flag.StringVar(&o.DefaultCertificate, "default-certificate", env("DEFAULT_CERTIFICATE", ""), "The contents of a default certificate to use for routes that don't expose a TLS server cert; in PEM format")
 	flag.StringVar(&o.DefaultCertificatePath, "default-certificate-path", env("DEFAULT_CERTIFICATE_PATH", ""), "A path to default certificate to use for routes that don't expose a TLS server cert; in PEM format")
@@ -169,72 +158,57 @@ func (o *TemplateRouter) Bind(flag *pflag.FlagSet) {
 }
 
 type RouterStats struct {
-	StatsPortString string
-	StatsPassword   string
-	StatsUsername   string
-
-	StatsPort int
+	StatsPortString	string
+	StatsPassword	string
+	StatsUsername	string
+	StatsPort	int
 }
 
 func (o *RouterStats) Bind(flag *pflag.FlagSet) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	flag.StringVar(&o.StatsPortString, "stats-port", env("STATS_PORT", ""), "If the underlying router implementation can provide statistics this is a hint to expose it on this port. Ignored if listen-addr is specified.")
 	flag.StringVar(&o.StatsPassword, "stats-password", env("STATS_PASSWORD", ""), "If the underlying router implementation can provide statistics this is the requested password for auth.")
 	flag.StringVar(&o.StatsUsername, "stats-user", env("STATS_USERNAME", ""), "If the underlying router implementation can provide statistics this is the requested username for auth.")
 }
-
-// NewCommndTemplateRouter provides CLI handler for the template router backend
 func NewCommandTemplateRouter(name string) *cobra.Command {
-	options := &TemplateRouterOptions{
-		Config: NewConfig(),
-	}
-
-	cmd := &cobra.Command{
-		Use:   name,
-		Short: "Start a router",
-		Long:  routerLong,
-		RunE: func(c *cobra.Command, args []string) error {
-			options.RouterSelection.Namespace = c.Flags().Lookup("namespace").Value.String()
-			// if the user did not specify a destination ca path, and the file does not exist, disable the default in order
-			// to preserve backwards compatibility with older clusters
-			if !c.Flags().Lookup("default-destination-ca-path").Changed && env("DEFAULT_DESTINATION_CA_PATH", "") == "" {
-				if _, err := os.Stat(options.TemplateRouter.DefaultDestinationCAPath); err != nil {
-					options.TemplateRouter.DefaultDestinationCAPath = ""
-				}
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	options := &TemplateRouterOptions{Config: NewConfig()}
+	cmd := &cobra.Command{Use: name, Short: "Start a router", Long: routerLong, RunE: func(c *cobra.Command, args []string) error {
+		options.RouterSelection.Namespace = c.Flags().Lookup("namespace").Value.String()
+		if !c.Flags().Lookup("default-destination-ca-path").Changed && env("DEFAULT_DESTINATION_CA_PATH", "") == "" {
+			if _, err := os.Stat(options.TemplateRouter.DefaultDestinationCAPath); err != nil {
+				options.TemplateRouter.DefaultDestinationCAPath = ""
 			}
-			if err := options.Complete(); err != nil {
-				return err
-			}
-			if err := options.Validate(); err != nil {
-				return err
-			}
-			return options.Run()
-		},
-	}
-
+		}
+		if err := options.Complete(); err != nil {
+			return err
+		}
+		if err := options.Validate(); err != nil {
+			return err
+		}
+		return options.Run()
+	}}
 	cmd.AddCommand(newCmdVersion(name, version.Get(), os.Stdout))
-
 	flag := cmd.Flags()
 	options.Config.Bind(flag)
 	options.TemplateRouter.Bind(flag)
 	options.RouterStats.Bind(flag)
 	options.RouterSelection.Bind(flag)
-
 	return cmd
 }
-
 func (o *TemplateRouterOptions) Complete() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routerSvcName := env("ROUTER_SERVICE_NAME", "")
 	routerSvcNamespace := env("ROUTER_SERVICE_NAMESPACE", "")
 	if len(routerSvcName) > 0 {
 		if len(routerSvcNamespace) == 0 {
 			return fmt.Errorf("ROUTER_SERVICE_NAMESPACE is required when ROUTER_SERVICE_NAME is specified")
 		}
-		o.RouterService = &ktypes.NamespacedName{
-			Namespace: routerSvcNamespace,
-			Name:      routerSvcName,
-		}
+		o.RouterService = &ktypes.NamespacedName{Namespace: routerSvcNamespace, Name: routerSvcName}
 	}
-
 	if len(o.StatsPortString) > 0 {
 		statsPort, err := strconv.Atoi(o.StatsPortString)
 		if err != nil {
@@ -247,7 +221,6 @@ func (o *TemplateRouterOptions) Complete() error {
 		if err != nil {
 			return fmt.Errorf("listen-addr is not valid: %v", err)
 		}
-		// stats port on listen-addr overrides stats port argument
 		statsPort, err := strconv.Atoi(port)
 		if err != nil {
 			return fmt.Errorf("listen-addr port is not valid: %v", err)
@@ -258,22 +231,20 @@ func (o *TemplateRouterOptions) Complete() error {
 			o.ListenAddr = fmt.Sprintf("0.0.0.0:%d", o.StatsPort)
 		}
 	}
-
 	if nsecs := int(o.ReloadInterval.Seconds()); nsecs < 1 {
 		return fmt.Errorf("invalid reload interval: %v - must be a positive duration", nsecs)
 	}
-
 	if nsecs := int(o.CommitInterval.Seconds()); nsecs < 1 {
 		return fmt.Errorf("invalid dynamic configuration manager commit interval: %v - must be a positive duration", nsecs)
 	}
-
 	return o.RouterSelection.Complete()
 }
 
-// supportedMetricsTypes is the set of supported metrics arguments
 var supportedMetricsTypes = sets.NewString("haproxy")
 
 func (o *TemplateRouterOptions) Validate() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(o.MetricsType) > 0 && !supportedMetricsTypes.Has(o.MetricsType) {
 		return fmt.Errorf("supported metrics types are: %s", strings.Join(supportedMetricsTypes.List(), ", "))
 	}
@@ -293,18 +264,15 @@ func (o *TemplateRouterOptions) Validate() error {
 	}
 	return nil
 }
-
-// Run launches a template router using the provided options. It never exits.
 func (o *TemplateRouterOptions) Run() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.Infof("Starting template router (%s)", version.Get())
 	var ptrTemplatePlugin *templateplugin.TemplatePlugin
-
 	var reloadCallbacks []func()
-
 	statsPort := o.StatsPort
 	switch {
 	case o.MetricsType == "haproxy" && statsPort != 0:
-		// Exposed to allow tuning in production if this becomes an issue
 		var timeout time.Duration
 		if t := env("ROUTER_METRICS_HAPROXY_TIMEOUT", ""); len(t) > 0 {
 			d, err := time.ParseDuration(t)
@@ -313,7 +281,6 @@ func (o *TemplateRouterOptions) Run() error {
 			}
 			timeout = d
 		}
-		// Exposed to allow tuning in production if this becomes an issue
 		var baseScrapeInterval time.Duration
 		if t := env("ROUTER_METRICS_HAPROXY_BASE_SCRAPE_INTERVAL", ""); len(t) > 0 {
 			d, err := time.ParseDuration(t)
@@ -322,7 +289,6 @@ func (o *TemplateRouterOptions) Run() error {
 			}
 			baseScrapeInterval = d
 		}
-		// Exposed to allow tuning in production if this becomes an issue
 		var serverThreshold int
 		if t := env("ROUTER_METRICS_HAPROXY_SERVER_THRESHOLD", ""); len(t) > 0 {
 			i, err := strconv.Atoi(t)
@@ -331,7 +297,6 @@ func (o *TemplateRouterOptions) Run() error {
 			}
 			serverThreshold = i
 		}
-		// Exposed to allow tuning in production if this becomes an issue
 		var exported []int
 		if t := env("ROUTER_METRICS_HAPROXY_EXPORTED", ""); len(t) > 0 {
 			for _, s := range strings.Split(t, ",") {
@@ -342,23 +307,10 @@ func (o *TemplateRouterOptions) Run() error {
 				exported = append(exported, i)
 			}
 		}
-
-		collector, err := haproxy.NewPrometheusCollector(haproxy.PrometheusOptions{
-			// Only template router customizers who alter the image should need this
-			ScrapeURI: env("ROUTER_METRICS_HAPROXY_SCRAPE_URI", ""),
-			// Only template router customizers who alter the image should need this
-			PidFile:            env("ROUTER_METRICS_HAPROXY_PID_FILE", ""),
-			Timeout:            timeout,
-			ServerThreshold:    serverThreshold,
-			BaseScrapeInterval: baseScrapeInterval,
-			ExportedMetrics:    exported,
-		})
+		collector, err := haproxy.NewPrometheusCollector(haproxy.PrometheusOptions{ScrapeURI: env("ROUTER_METRICS_HAPROXY_SCRAPE_URI", ""), PidFile: env("ROUTER_METRICS_HAPROXY_PID_FILE", ""), Timeout: timeout, ServerThreshold: serverThreshold, BaseScrapeInterval: baseScrapeInterval, ExportedMetrics: exported})
 		if err != nil {
 			return err
 		}
-
-		// Metrics will handle healthz on the stats port, and instruct the template router to disable stats completely.
-		// The underlying router must provide a custom health check if customized which will be called into.
 		statsPort = -1
 		httpURL := env("ROUTER_METRICS_READY_HTTP_URL", fmt.Sprintf("http://%s:%s/_______internal_router_healthz", "localhost", env("ROUTER_SERVICE_HTTP_PORT", "80")))
 		u, err := url.Parse(httpURL)
@@ -378,7 +330,6 @@ func (o *TemplateRouterOptions) Run() error {
 		if !(isTrue(env("ROUTER_BIND_PORTS_BEFORE_SYNC", ""))) {
 			liveChecks = append(liveChecks, checkBackend)
 		}
-
 		kubeconfig, _, err := o.Config.KubeConfig()
 		if err != nil {
 			return err
@@ -387,11 +338,7 @@ func (o *TemplateRouterOptions) Run() error {
 		if err != nil {
 			return err
 		}
-		authz, err := authorizerfactory.DelegatingAuthorizerConfig{
-			SubjectAccessReviewClient: client.SubjectAccessReviews(),
-			AllowCacheTTL:             2 * time.Minute,
-			DenyCacheTTL:              5 * time.Second,
-		}.New()
+		authz, err := authorizerfactory.DelegatingAuthorizerConfig{SubjectAccessReviewClient: client.SubjectAccessReviews(), AllowCacheTTL: 2 * time.Minute, DenyCacheTTL: 5 * time.Second}.New()
 		if err != nil {
 			return err
 		}
@@ -399,46 +346,21 @@ func (o *TemplateRouterOptions) Run() error {
 		if err != nil {
 			return err
 		}
-		authn, _, err := authenticatorfactory.DelegatingAuthenticatorConfig{
-			Anonymous:               true,
-			TokenAccessReviewClient: tokenClient.TokenReviews(),
-			CacheTTL:                10 * time.Second,
-			ClientCAFile:            env("ROUTER_METRICS_AUTHENTICATOR_CA_FILE", ""),
-		}.New()
+		authn, _, err := authenticatorfactory.DelegatingAuthenticatorConfig{Anonymous: true, TokenAccessReviewClient: tokenClient.TokenReviews(), CacheTTL: 10 * time.Second, ClientCAFile: env("ROUTER_METRICS_AUTHENTICATOR_CA_FILE", "")}.New()
 		if err != nil {
 			return err
 		}
-		l := metrics.Listener{
-			Addr:          o.ListenAddr,
-			Username:      o.StatsUsername,
-			Password:      o.StatsPassword,
-			Authenticator: authn,
-			Authorizer:    authz,
-			Record: authorizer.AttributesRecord{
-				ResourceRequest: true,
-				APIGroup:        "route.openshift.io",
-				Resource:        "routers",
-				Name:            o.RouterName,
-			},
-			LiveChecks:  liveChecks,
-			ReadyChecks: []healthz.HealthzChecker{checkBackend, checkSync},
-		}
+		l := metrics.Listener{Addr: o.ListenAddr, Username: o.StatsUsername, Password: o.StatsPassword, Authenticator: authn, Authorizer: authz, Record: authorizer.AttributesRecord{ResourceRequest: true, APIGroup: "route.openshift.io", Resource: "routers", Name: o.RouterName}, LiveChecks: liveChecks, ReadyChecks: []healthz.HealthzChecker{checkBackend, checkSync}}
 		if certFile := env("ROUTER_METRICS_TLS_CERT_FILE", ""); len(certFile) > 0 {
 			certificate, err := tls.LoadX509KeyPair(certFile, env("ROUTER_METRICS_TLS_KEY_FILE", ""))
 			if err != nil {
 				return err
 			}
-			l.TLSConfig = crypto.SecureTLSConfig(&tls.Config{
-				Certificates: []tls.Certificate{certificate},
-				ClientAuth:   tls.RequestClientCert,
-			})
+			l.TLSConfig = crypto.SecureTLSConfig(&tls.Config{Certificates: []tls.Certificate{certificate}, ClientAuth: tls.RequestClientCert})
 		}
 		l.Listen()
-
-		// on reload, invoke the collector to preserve whatever metrics we can
 		reloadCallbacks = append(reloadCallbacks, collector.CollectNow)
 	}
-
 	kc, err := o.Config.Clients()
 	if err != nil {
 		return err
@@ -455,7 +377,6 @@ func (o *TemplateRouterOptions) Run() error {
 	if err != nil {
 		return err
 	}
-
 	var cfgManager templateplugin.ConfigManager
 	var blueprintPlugin router.Plugin
 	if o.UseHAProxyConfigManager {
@@ -463,54 +384,21 @@ func (o *TemplateRouterOptions) Run() error {
 		if err != nil {
 			return err
 		}
-		cmopts := templateplugin.ConfigManagerOptions{
-			ConnectionInfo:         "unix:///var/lib/haproxy/run/haproxy.sock",
-			CommitInterval:         o.CommitInterval,
-			BlueprintRoutes:        blueprintRoutes,
-			BlueprintRoutePoolSize: o.BlueprintRoutePoolSize,
-			MaxDynamicServers:      o.MaxDynamicServers,
-			WildcardRoutesAllowed:  o.AllowWildcardRoutes,
-			ExtendedValidation:     o.ExtendedValidation,
-		}
+		cmopts := templateplugin.ConfigManagerOptions{ConnectionInfo: "unix:///var/lib/haproxy/run/haproxy.sock", CommitInterval: o.CommitInterval, BlueprintRoutes: blueprintRoutes, BlueprintRoutePoolSize: o.BlueprintRoutePoolSize, MaxDynamicServers: o.MaxDynamicServers, WildcardRoutesAllowed: o.AllowWildcardRoutes, ExtendedValidation: o.ExtendedValidation}
 		cfgManager = haproxyconfigmanager.NewHAProxyConfigManager(cmopts)
 		if len(o.BlueprintRouteNamespace) > 0 {
 			blueprintPlugin = haproxyconfigmanager.NewBlueprintPlugin(cfgManager)
 		}
 	}
-
-	pluginCfg := templateplugin.TemplatePluginConfig{
-		WorkingDir:               o.WorkingDir,
-		TemplatePath:             o.TemplateFile,
-		ReloadScriptPath:         o.ReloadScript,
-		ReloadInterval:           o.ReloadInterval,
-		ReloadCallbacks:          reloadCallbacks,
-		DefaultCertificate:       o.DefaultCertificate,
-		DefaultCertificatePath:   o.DefaultCertificatePath,
-		DefaultCertificateDir:    o.DefaultCertificateDir,
-		DefaultDestinationCAPath: o.DefaultDestinationCAPath,
-		StatsPort:                statsPort,
-		StatsUsername:            o.StatsUsername,
-		StatsPassword:            o.StatsPassword,
-		PeerService:              o.RouterService,
-		BindPortsAfterSync:       o.BindPortsAfterSync,
-		IncludeUDP:               o.RouterSelection.IncludeUDP,
-		AllowWildcardRoutes:      o.RouterSelection.AllowWildcardRoutes,
-		MaxConnections:           o.MaxConnections,
-		Ciphers:                  o.Ciphers,
-		StrictSNI:                o.StrictSNI,
-		DynamicConfigManager:     cfgManager,
-	}
-
+	pluginCfg := templateplugin.TemplatePluginConfig{WorkingDir: o.WorkingDir, TemplatePath: o.TemplateFile, ReloadScriptPath: o.ReloadScript, ReloadInterval: o.ReloadInterval, ReloadCallbacks: reloadCallbacks, DefaultCertificate: o.DefaultCertificate, DefaultCertificatePath: o.DefaultCertificatePath, DefaultCertificateDir: o.DefaultCertificateDir, DefaultDestinationCAPath: o.DefaultDestinationCAPath, StatsPort: statsPort, StatsUsername: o.StatsUsername, StatsPassword: o.StatsPassword, PeerService: o.RouterService, BindPortsAfterSync: o.BindPortsAfterSync, IncludeUDP: o.RouterSelection.IncludeUDP, AllowWildcardRoutes: o.RouterSelection.AllowWildcardRoutes, MaxConnections: o.MaxConnections, Ciphers: o.Ciphers, StrictSNI: o.StrictSNI, DynamicConfigManager: cfgManager}
 	svcFetcher := templateplugin.NewListWatchServiceLookup(kc.Core(), o.ResyncInterval, o.Namespace)
 	templatePlugin, err := templateplugin.NewTemplatePlugin(pluginCfg, svcFetcher)
 	if err != nil {
 		return err
 	}
 	ptrTemplatePlugin = templatePlugin
-
 	factory := o.RouterSelection.NewFactory(routeclient, projectclient.Project().Projects(), kc)
 	factory.RouteModifierFn = o.RouteUpdate
-
 	var plugin router.Plugin = templatePlugin
 	var recorder controller.RejectionRecorder = controller.LogRejections
 	if o.UpdateStatus {
@@ -530,13 +418,9 @@ func (o *TemplateRouterOptions) Run() error {
 	}
 	plugin = controller.NewUniqueHost(plugin, o.RouterSelection.DisableNamespaceOwnershipCheck, recorder)
 	plugin = controller.NewHostAdmitter(plugin, o.RouteAdmissionFunc(), o.AllowWildcardRoutes, o.RouterSelection.DisableNamespaceOwnershipCheck, recorder)
-
 	controller := factory.Create(plugin, false)
 	controller.Run()
-
 	if blueprintPlugin != nil {
-		// f is like factory but filters the routes based on the
-		// blueprint route namespace and label selector (if any).
 		f := o.RouterSelection.NewFactory(routeclient, projectclient.Project().Projects(), kc)
 		f.LabelSelector = o.BlueprintRouteLabelSelector
 		f.Namespace = o.BlueprintRouteNamespace
@@ -544,24 +428,20 @@ func (o *TemplateRouterOptions) Run() error {
 		c := f.Create(blueprintPlugin, false)
 		c.Run()
 	}
-
 	proc.StartReaper()
-
 	select {}
 }
-
-// blueprintRoutes returns all the routes in the blueprint namespace.
 func (o *TemplateRouterOptions) blueprintRoutes(routeclient *routeclientset.Clientset) ([]*routev1.Route, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	blueprints := make([]*routev1.Route, 0)
 	if len(o.BlueprintRouteNamespace) == 0 {
 		return blueprints, nil
 	}
-
 	options := metav1.ListOptions{}
 	if len(o.BlueprintRouteLabelSelector) > 0 {
 		options.LabelSelector = o.BlueprintRouteLabelSelector
 	}
-
 	routeList, err := routeclient.Route().Routes(o.BlueprintRouteNamespace).List(options)
 	if err != nil {
 		return blueprints, err
@@ -569,6 +449,5 @@ func (o *TemplateRouterOptions) blueprintRoutes(routeclient *routeclientset.Clie
 	for _, r := range routeList.Items {
 		blueprints = append(blueprints, r.DeepCopy())
 	}
-
 	return blueprints, nil
 }
