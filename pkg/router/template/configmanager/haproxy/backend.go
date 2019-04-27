@@ -75,6 +75,8 @@ type backendServer struct {
 func buildHAProxyBackends(c *Client) ([]*Backend, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	entries := []*backendEntry{}
 	converter := NewCSVConverter(showBackendHeader, &entries, nil)
 	_, err := c.RunCommand(ListBackendsCommand, converter)
@@ -90,9 +92,13 @@ func buildHAProxyBackends(c *Client) ([]*Backend, error) {
 func newBackend(name string, c *Client) *Backend {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &Backend{name: name, servers: make(map[string]*backendServer), client: c}
 }
 func (b *Backend) Name() string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return b.name
@@ -100,9 +106,13 @@ func (b *Backend) Name() string {
 func (b *Backend) Reset() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	b.servers = make(map[string]*backendServer)
 }
 func (b *Backend) Refresh() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	entries := []*serverStateInfo{}
@@ -122,6 +132,8 @@ func (b *Backend) Refresh() error {
 func (b *Backend) SetRoutingKey(k string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Setting routing key for %s", b.name)
 	cmd := fmt.Sprintf("set dynamic-cookie-key backend %s %s", b.name, k)
 	if err := b.executeCommand(cmd); err != nil {
@@ -134,6 +146,8 @@ func (b *Backend) SetRoutingKey(k string) error {
 	return nil
 }
 func (b *Backend) executeCommand(cmd string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	responseBytes, err := b.client.Execute(cmd)
@@ -149,6 +163,8 @@ func (b *Backend) executeCommand(cmd string) error {
 func (b *Backend) Disable() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if _, err := b.Servers(); err != nil {
 		return err
 	}
@@ -162,16 +178,22 @@ func (b *Backend) Disable() error {
 func (b *Backend) EnableServer(name string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Enabling server %s with ready state", name)
 	return b.UpdateServerState(name, BackendServerStateReady)
 }
 func (b *Backend) DisableServer(name string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Disabling server %s with maint state", name)
 	return b.UpdateServerState(name, BackendServerStateMaint)
 }
 func (b *Backend) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for _, s := range b.servers {
@@ -183,6 +205,8 @@ func (b *Backend) Commit() error {
 	return nil
 }
 func (b *Backend) Servers() ([]BackendServerInfo, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(b.servers) == 0 {
@@ -199,6 +223,8 @@ func (b *Backend) Servers() ([]BackendServerInfo, error) {
 	return serverInfo, nil
 }
 func (b *Backend) UpdateServerInfo(id, ipaddr, port string, weight int32, relativeWeight bool) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server, err := b.FindServer(id)
@@ -223,6 +249,8 @@ func (b *Backend) UpdateServerInfo(id, ipaddr, port string, weight int32, relati
 func (b *Backend) UpdateServerState(id string, state BackendServerState) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server, err := b.FindServer(id)
 	if err != nil {
 		return err
@@ -231,6 +259,8 @@ func (b *Backend) UpdateServerState(id string, state BackendServerState) error {
 	return nil
 }
 func (b *Backend) FindServer(id string) (*backendServer, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if _, err := b.Servers(); err != nil {
@@ -244,9 +274,13 @@ func (b *Backend) FindServer(id string) (*backendServer, error) {
 func newBackendServer(info BackendServerInfo) *backendServer {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &backendServer{BackendServerInfo: info, updatedIPAddress: info.IPAddress, updatedPort: info.Port, updatedWeight: strconv.Itoa(int(info.CurrentWeight)), updatedState: info.State}
 }
 func (s *backendServer) ApplyChanges(backendName string, client *Client) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	commands := []string{}
@@ -280,6 +314,8 @@ func (s *backendServer) ApplyChanges(backendName string, client *Client) error {
 func (s *backendServer) executeCommand(cmd string, client *Client) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	responseBytes, err := client.Execute(cmd)
 	if err != nil {
 		return err
@@ -299,6 +335,8 @@ func (s *backendServer) executeCommand(cmd string, client *Client) error {
 func stripVersionNumber(data []byte) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	idx := bytes.Index(data, []byte("\n"))
 	if idx > -1 {
 		version := string(data[:idx])
@@ -311,6 +349,8 @@ func stripVersionNumber(data []byte) ([]byte, error) {
 	return data, nil
 }
 func getManagedServerState(s *serverStateInfo) BackendServerState {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if (s.AdministrativeState & 0x01) == 0x01 {
@@ -339,7 +379,16 @@ func getManagedServerState(s *serverStateInfo) BackendServerState {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

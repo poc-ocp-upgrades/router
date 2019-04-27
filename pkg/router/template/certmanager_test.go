@@ -10,6 +10,8 @@ import (
 func TestCertManager(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cfg := newFakeCertificateManagerConfig()
 	fakeCertWriter := &fakeCertWriter{}
 	certManager, _ := newSimpleCertificateManager(cfg, fakeCertWriter)
@@ -60,6 +62,8 @@ func TestCertManager(t *testing.T) {
 func TestCertManagerSkipsWrittenConfigs(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fakeCertWriter := &fakeCertWriter{}
 	certManager, _ := newSimpleCertificateManager(newFakeCertificateManagerConfig(), fakeCertWriter)
 	cfg := &ServiceAliasConfig{Host: "www.example.com", TLSTermination: routev1.TLSTerminationEdge, Certificates: map[string]Certificate{"www.example.com": {ID: "testCert"}, "www.example.com" + caCertPostfix: {ID: "testCert"}}}
@@ -79,6 +83,8 @@ func TestCertManagerSkipsWrittenConfigs(t *testing.T) {
 	}
 }
 func TestCertManagerConfig(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	validCfg := newFakeCertificateManagerConfig()

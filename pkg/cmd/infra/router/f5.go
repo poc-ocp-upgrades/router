@@ -52,6 +52,8 @@ type F5Router struct {
 func (o *F5Router) Bind(flag *pflag.FlagSet) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	flag.StringVar(&o.Host, "f5-host", env("ROUTER_EXTERNAL_HOST_HOSTNAME", ""), "The host of F5 BIG-IP's management interface")
 	flag.StringVar(&o.Username, "f5-username", env("ROUTER_EXTERNAL_HOST_USERNAME", ""), "The username for F5 BIG-IP's management utility")
 	flag.StringVar(&o.Password, "f5-password", env("ROUTER_EXTERNAL_HOST_PASSWORD", ""), "The password for F5 BIG-IP's management utility")
@@ -64,6 +66,8 @@ func (o *F5Router) Bind(flag *pflag.FlagSet) {
 	flag.StringVar(&o.VxlanGateway, "f5-vxlan-gateway-cidr", env("ROUTER_EXTERNAL_HOST_VXLAN_GW_CIDR", ""), "The F5 BIG-IP gateway-ip-address/cidr-mask for setting up the VxLAN")
 }
 func (o *F5Router) Validate() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if o.Host == "" {
@@ -87,6 +91,8 @@ func (o *F5Router) Validate() error {
 func NewCommandF5Router(name string) *cobra.Command {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	options := &F5RouterOptions{Config: NewConfig()}
 	cmd := &cobra.Command{Use: name, Short: "Start an F5 route synchronizer", Long: f5Long, RunE: func(c *cobra.Command, args []string) error {
 		options.RouterSelection.Namespace = c.Flags().Lookup("namespace").Value.String()
@@ -108,6 +114,8 @@ func NewCommandF5Router(name string) *cobra.Command {
 func (o *F5RouterOptions) Complete() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(o.PartitionPath) == 0 {
 		o.PartitionPath = f5plugin.F5DefaultPartitionPath
 		glog.Warningf("Partition path was empty, using default: %q", f5plugin.F5DefaultPartitionPath)
@@ -117,9 +125,13 @@ func (o *F5RouterOptions) Complete() error {
 func (o *F5RouterOptions) Validate() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return o.F5Router.Validate()
 }
 func (o *F5RouterOptions) F5RouteAdmitterFunc() controller.RouteAdmissionFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(route *routev1.Route) error {
@@ -136,6 +148,8 @@ func (o *F5RouterOptions) F5RouteAdmitterFunc() controller.RouteAdmissionFunc {
 	}
 }
 func (o *F5RouterOptions) Run() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cfg := f5plugin.F5PluginConfig{Host: o.Host, Username: o.Username, Password: o.Password, HttpVserver: o.HttpVserver, HttpsVserver: o.HttpsVserver, PrivateKey: o.PrivateKey, Insecure: o.Insecure, PartitionPath: o.PartitionPath, InternalAddress: o.InternalAddress, VxlanGateway: o.VxlanGateway}

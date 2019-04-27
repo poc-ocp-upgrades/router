@@ -63,11 +63,15 @@ type haproxyConfigManager struct {
 func NewHAProxyConfigManager(options templaterouter.ConfigManagerOptions) *haproxyConfigManager {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	client := NewClient(options.ConnectionInfo, haproxyConnectionTimeout)
 	glog.V(4).Infof("%s: options = %+v\n", haproxyManagerName, options)
 	return &haproxyConfigManager{connectionInfo: options.ConnectionInfo, commitInterval: options.CommitInterval, blueprintRoutes: buildBlueprintRoutes(options.BlueprintRoutes, options.ExtendedValidation), blueprintRoutePoolSize: options.BlueprintRoutePoolSize, maxDynamicServers: options.MaxDynamicServers, wildcardRoutesAllowed: options.WildcardRoutesAllowed, extendedValidation: options.ExtendedValidation, defaultCertificate: "", client: client, reloadInProgress: false, backendEntries: make(map[string]*routeBackendEntry), poolUsage: make(map[string]string)}
 }
 func (cm *haproxyConfigManager) Initialize(router templaterouter.RouterInterface, certPath string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	certBytes := []byte{}
@@ -89,6 +93,8 @@ func (cm *haproxyConfigManager) Initialize(router templaterouter.RouterInterface
 	glog.V(2).Infof("haproxy Config Manager router will flush out any dynamically configured changes within %s of each other", cm.commitInterval.String())
 }
 func (cm *haproxyConfigManager) AddBlueprint(route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	newRoute := route.DeepCopy()
@@ -133,6 +139,8 @@ func (cm *haproxyConfigManager) AddBlueprint(route *routev1.Route) error {
 func (cm *haproxyConfigManager) RemoveBlueprint(route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	deletedRoute := route.DeepCopy()
 	deletedRoute.Namespace = blueprintRoutePoolNamespace
 	cm.lock.Lock()
@@ -158,6 +166,8 @@ func (cm *haproxyConfigManager) RemoveBlueprint(route *routev1.Route) {
 func (cm *haproxyConfigManager) Register(id string, route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	wildcard := cm.wildcardRoutesAllowed && (route.Spec.WildcardPolicy == routev1.WildcardPolicySubdomain)
 	entry := &routeBackendEntry{id: id, termination: routeTerminationType(route), wildcard: wildcard, backendName: routeBackendName(id, route), dynamicServerMap: make(endpointToDynamicServerMap)}
 	cm.lock.Lock()
@@ -166,6 +176,8 @@ func (cm *haproxyConfigManager) Register(id string, route *routev1.Route) {
 	cm.backendEntries[id] = entry
 }
 func (cm *haproxyConfigManager) AddRoute(id, routingKey string, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if cm.isReloading() {
@@ -216,6 +228,8 @@ func (cm *haproxyConfigManager) AddRoute(id, routingKey string, route *routev1.R
 func (cm *haproxyConfigManager) RemoveRoute(id string, route *routev1.Route) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Removing route %s", id)
 	if cm.isReloading() {
 		return fmt.Errorf("Router reload in progress, cannot dynamically remove route id %s", id)
@@ -254,6 +268,8 @@ func (cm *haproxyConfigManager) RemoveRoute(id string, route *routev1.Route) err
 	return backend.Commit()
 }
 func (cm *haproxyConfigManager) ReplaceRouteEndpoints(id string, oldEndpoints, newEndpoints []templaterouter.Endpoint, weight int32) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Replacing route endpoints for %s, weight=%v", id, weight)
@@ -358,6 +374,8 @@ func (cm *haproxyConfigManager) ReplaceRouteEndpoints(id string, oldEndpoints, n
 func (cm *haproxyConfigManager) RemoveRouteEndpoints(id string, endpoints []templaterouter.Endpoint) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Removing endpoints for id %s", id)
 	if cm.isReloading() {
 		return fmt.Errorf("Router reload in progress, cannot dynamically delete endpoints for %s", id)
@@ -396,6 +414,8 @@ func (cm *haproxyConfigManager) RemoveRouteEndpoints(id string, endpoints []temp
 func (cm *haproxyConfigManager) Notify(event templaterouter.RouterEventType) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Received a %s notification", string(event))
 	cm.lock.Lock()
 	defer cm.lock.Unlock()
@@ -412,10 +432,14 @@ func (cm *haproxyConfigManager) Notify(event templaterouter.RouterEventType) {
 func (cm *haproxyConfigManager) Commit() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Committing dynamic config manager changes")
 	cm.commitRouterConfig()
 }
 func (cm *haproxyConfigManager) ServerTemplateName(id string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if cm.maxDynamicServers > 0 {
@@ -426,12 +450,16 @@ func (cm *haproxyConfigManager) ServerTemplateName(id string) string {
 func (cm *haproxyConfigManager) ServerTemplateSize(id string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if cm.maxDynamicServers < 1 {
 		return ""
 	}
 	return fmt.Sprintf("%v", cm.maxDynamicServers)
 }
 func (cm *haproxyConfigManager) GenerateDynamicServerNames(id string) []string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if cm.maxDynamicServers > 0 {
@@ -448,6 +476,8 @@ func (cm *haproxyConfigManager) GenerateDynamicServerNames(id string) []string {
 func (cm *haproxyConfigManager) scheduleRouterReload() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cm.lock.Lock()
 	defer cm.lock.Unlock()
 	if cm.commitTimer == nil {
@@ -455,6 +485,8 @@ func (cm *haproxyConfigManager) scheduleRouterReload() {
 	}
 }
 func (cm *haproxyConfigManager) commitRouterConfig() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cm.lock.Lock()
@@ -470,6 +502,8 @@ func (cm *haproxyConfigManager) commitRouterConfig() {
 func (cm *haproxyConfigManager) isReloading() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cm.lock.Lock()
 	defer cm.lock.Unlock()
 	return cm.reloadInProgress
@@ -477,9 +511,13 @@ func (cm *haproxyConfigManager) isReloading() bool {
 func (cm *haproxyConfigManager) isManagedPoolRoute(route *routev1.Route) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return route.Namespace == blueprintRoutePoolNamespace
 }
 func (cm *haproxyConfigManager) provisionRoutePool(blueprint *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	poolSize := getPoolSize(blueprint, cm.blueprintRoutePoolSize)
@@ -495,6 +533,8 @@ func (cm *haproxyConfigManager) provisionRoutePool(blueprint *routev1.Route) {
 func (cm *haproxyConfigManager) removeRoutePool(blueprint *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	poolSize := getPoolSize(blueprint, cm.blueprintRoutePoolSize)
 	glog.Infof("Removing blueprint route pool %s/%s-[1-%d]", blueprint.Namespace, blueprint.Name, poolSize)
 	for i := 0; i < poolSize; i++ {
@@ -506,6 +546,8 @@ func (cm *haproxyConfigManager) removeRoutePool(blueprint *routev1.Route) {
 	}
 }
 func (cm *haproxyConfigManager) processMapAssociations(associations haproxyMapAssociation, add bool) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Associations = %+v", associations)
@@ -527,6 +569,8 @@ func (cm *haproxyConfigManager) processMapAssociations(associations haproxyMapAs
 func (cm *haproxyConfigManager) findFreeBackendPoolSlot(blueprint *routev1.Route) (string, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	poolSize := getPoolSize(blueprint, cm.blueprintRoutePoolSize)
 	idPrefix := fmt.Sprintf("%s:%s", blueprint.Namespace, blueprint.Name)
 	for i := 0; i < poolSize; i++ {
@@ -541,14 +585,20 @@ func (cm *haproxyConfigManager) findFreeBackendPoolSlot(blueprint *routev1.Route
 func (cm *haproxyConfigManager) addMapAssociations(m haproxyMapAssociation) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return cm.processMapAssociations(m, true)
 }
 func (cm *haproxyConfigManager) removeMapAssociations(m haproxyMapAssociation) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return cm.processMapAssociations(m, false)
 }
 func (cm *haproxyConfigManager) reset() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if cm.commitTimer != nil {
@@ -568,6 +618,8 @@ func (cm *haproxyConfigManager) reset() {
 	cm.client.Reset()
 }
 func (cm *haproxyConfigManager) findMatchingBlueprint(route *routev1.Route) *routev1.Route {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	termination := routeTerminationType(route)
@@ -606,12 +658,16 @@ func (cm *haproxyConfigManager) findMatchingBlueprint(route *routev1.Route) *rou
 func (entry *routeBackendEntry) BackendName() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(entry.poolRouteBackendName) > 0 {
 		return entry.poolRouteBackendName
 	}
 	return entry.backendName
 }
 func (entry *routeBackendEntry) BuildMapAssociations(route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	termination := routeTerminationType(route)
@@ -667,6 +723,8 @@ func (entry *routeBackendEntry) BuildMapAssociations(route *routev1.Route) {
 func buildBlueprintRoutes(customRoutes []*routev1.Route, validate bool) []*routev1.Route {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes := make([]*routev1.Route, 0)
 	terminationTypes := []routev1.TLSTerminationType{routev1.TLSTerminationType(""), routev1.TLSTerminationEdge, routev1.TLSTerminationPassthrough}
 	for _, v := range terminationTypes {
@@ -689,6 +747,8 @@ func buildBlueprintRoutes(customRoutes []*routev1.Route, validate bool) []*route
 func generateRouteName(routeType routev1.TLSTerminationType) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	prefix := "http"
 	switch routeType {
 	case routev1.TLSTerminationEdge:
@@ -703,10 +763,14 @@ func generateRouteName(routeType routev1.TLSTerminationType) string {
 func createBlueprintRoute(routeType routev1.TLSTerminationType) *routev1.Route {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	name := generateRouteName(routeType)
 	return &routev1.Route{ObjectMeta: metav1.ObjectMeta{Namespace: blueprintRoutePoolNamespace, Name: name}, Spec: routev1.RouteSpec{Host: "", TLS: &routev1.TLSConfig{Termination: routeType}, To: routev1.RouteTargetReference{Name: blueprintRoutePoolServiceName, Weight: new(int32)}}}
 }
 func routeBackendName(id string, route *routev1.Route) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	termination := routeTerminationType(route)
@@ -714,6 +778,8 @@ func routeBackendName(id string, route *routev1.Route) string {
 	return fmt.Sprintf("%s:%s", prefix, id)
 }
 func getPoolSize(r *routev1.Route, defaultSize int) int {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	v, ok := r.Annotations[routePoolSizeAnnotation]
@@ -730,6 +796,8 @@ func getPoolSize(r *routev1.Route, defaultSize int) int {
 func routeTerminationType(route *routev1.Route) routev1.TLSTerminationType {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	termination := routev1.TLSTerminationType("")
 	if route.Spec.TLS != nil {
 		termination = route.Spec.TLS.Termination
@@ -739,12 +807,16 @@ func routeTerminationType(route *routev1.Route) routev1.TLSTerminationType {
 func isDynamicBackendServer(server BackendServerInfo) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(dynamicServerPrefix) == 0 {
 		return false
 	}
 	return strings.HasPrefix(server.Name, dynamicServerPrefix)
 }
 func applyMapAssociations(m *HAProxyMap, associations map[string]string, add bool) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for k, v := range associations {
@@ -767,6 +839,8 @@ func applyMapAssociations(m *HAProxyMap, associations map[string]string, add boo
 func backendModAnnotations(route *routev1.Route) map[string]string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	termination := routeTerminationType(route)
 	backendModifiers := modAnnotationsList(termination)
 	annotations := make(map[string]string)
@@ -778,6 +852,8 @@ func backendModAnnotations(route *routev1.Route) map[string]string {
 	return annotations
 }
 func modAnnotationsList(termination routev1.TLSTerminationType) []string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	annotations := []string{"haproxy.router.openshift.io/balance", "haproxy.router.openshift.io/ip_whitelist", "haproxy.router.openshift.io/timeout", "haproxy.router.openshift.io/rate-limit-connections", "haproxy.router.openshift.io/rate-limit-connections.concurrent-tcp", "haproxy.router.openshift.io/rate-limit-connections.rate-tcp", "haproxy.router.openshift.io/rate-limit-connections.rate-http", "haproxy.router.openshift.io/pod-concurrent-connections", "router.openshift.io/haproxy.health.check.interval"}

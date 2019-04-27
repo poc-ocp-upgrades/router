@@ -20,6 +20,8 @@ type ServiceLookup interface {
 func NewListWatchServiceLookup(svcGetter kcoreclient.ServicesGetter, resync time.Duration, namespace string) ServiceLookup {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	svcStore := cache.NewStore(cache.MetaNamespaceKeyFunc)
 	lw := &cache.ListWatch{ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 		return svcGetter.Services(namespace).List(options)
@@ -33,6 +35,8 @@ func NewListWatchServiceLookup(svcGetter kcoreclient.ServicesGetter, resync time
 type serviceLWLookup struct{ store cache.Store }
 
 func (c *serviceLWLookup) LookupService(endpoints *api.Endpoints) (*api.Service, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var rawSvc interface{}

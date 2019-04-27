@@ -46,9 +46,13 @@ type RouterControllerFactory struct {
 func NewDefaultRouterControllerFactory(rc routeclientset.Interface, pc projectclient.ProjectInterface, kc kclientset.Interface) *RouterControllerFactory {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &RouterControllerFactory{KClient: kc, RClient: rc, ProjectClient: pc, ResyncInterval: DefaultResyncInterval, Namespace: v1.NamespaceAll, informers: map[reflect.Type]kcache.SharedIndexInformer{}}
 }
 func (f *RouterControllerFactory) Create(plugin router.Plugin, watchNodes bool) *routercontroller.RouterController {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	rc := &routercontroller.RouterController{Plugin: plugin, WatchNodes: watchNodes, NamespaceLabels: f.NamespaceLabels, FilteredNamespaceNames: make(sets.String), NamespaceRoutes: make(map[string]map[string]*routev1.Route), NamespaceEndpoints: make(map[string]map[string]*kapi.Endpoints), ProjectClient: f.ProjectClient, ProjectLabels: f.ProjectLabels, ProjectWaitInterval: 10 * time.Second, ProjectRetries: 5}
@@ -63,6 +67,8 @@ func (f *RouterControllerFactory) Create(plugin router.Plugin, watchNodes bool) 
 	return rc
 }
 func (f *RouterControllerFactory) initInformers(rc *routercontroller.RouterController) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if f.NamespaceLabels != nil {
@@ -85,6 +91,8 @@ func (f *RouterControllerFactory) initInformers(rc *routercontroller.RouterContr
 func (f *RouterControllerFactory) registerInformerEventHandlers(rc *routercontroller.RouterController) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if f.NamespaceLabels != nil {
 		f.registerSharedInformerEventHandlers(&kapi.Namespace{}, rc.HandleNamespace)
 	}
@@ -97,6 +105,8 @@ func (f *RouterControllerFactory) registerInformerEventHandlers(rc *routercontro
 func (f *RouterControllerFactory) informerStoreList(obj runtime.Object) []interface{} {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	objType := reflect.TypeOf(obj)
 	informer, ok := f.informers[objType]
 	if !ok {
@@ -106,6 +116,8 @@ func (f *RouterControllerFactory) informerStoreList(obj runtime.Object) []interf
 	return informer.GetStore().List()
 }
 func (f *RouterControllerFactory) processExistingItems(rc *routercontroller.RouterController) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if f.NamespaceLabels != nil {
@@ -138,10 +150,14 @@ func (f *RouterControllerFactory) processExistingItems(rc *routercontroller.Rout
 func (f *RouterControllerFactory) setSelectors(options *v1.ListOptions) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	options.LabelSelector = f.LabelSelector
 	options.FieldSelector = f.FieldSelector
 }
 func (f *RouterControllerFactory) createEndpointsSharedInformer() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	lw := &kcache.ListWatch{ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
@@ -156,6 +172,8 @@ func (f *RouterControllerFactory) createEndpointsSharedInformer() {
 	f.informers[objType] = informer
 }
 func (f *RouterControllerFactory) CreateRoutesSharedInformer() kcache.SharedIndexInformer {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	rt := &routev1.Route{}
@@ -200,12 +218,16 @@ func (f *RouterControllerFactory) CreateRoutesSharedInformer() kcache.SharedInde
 func (f *RouterControllerFactory) createNodesSharedInformer() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ifactory := informerfactory.NewSharedInformerFactory(f.KClient, f.ResyncInterval)
 	informer := ifactory.Core().V1().Nodes().Informer()
 	objType := reflect.TypeOf(&kapi.Node{})
 	f.informers[objType] = informer
 }
 func (f *RouterControllerFactory) createNamespacesSharedInformer() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	lw := &kcache.ListWatch{ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
@@ -222,6 +244,8 @@ func (f *RouterControllerFactory) createNamespacesSharedInformer() {
 	f.informers[objType] = informer
 }
 func (f *RouterControllerFactory) registerSharedInformerEventHandlers(obj runtime.Object, handleFunc func(watch.EventType, interface{})) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	objType := reflect.TypeOf(obj)
@@ -256,14 +280,20 @@ type routeAge []routev1.Route
 func (r routeAge) Len() int {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return len(r)
 }
 func (r routeAge) Swap(i, j int) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r[i], r[j] = r[j], r[i]
 }
 func (r routeAge) Less(i, j int) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return routeapihelpers.RouteLessThan(&r[i], &r[j])

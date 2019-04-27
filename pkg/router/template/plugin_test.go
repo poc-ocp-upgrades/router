@@ -120,9 +120,13 @@ type TestRouter struct {
 func newTestRouter(state map[string]ServiceAliasConfig) *TestRouter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &TestRouter{State: state, ServiceUnits: make(map[string]ServiceUnit)}
 }
 func (r *TestRouter) CreateServiceUnit(id string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	su := ServiceUnit{Name: id, EndpointTable: []Endpoint{}}
@@ -131,10 +135,14 @@ func (r *TestRouter) CreateServiceUnit(id string) {
 func (r *TestRouter) FindServiceUnit(id string) (v ServiceUnit, ok bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	v, ok = r.ServiceUnits[id]
 	return
 }
 func (r *TestRouter) AddEndpoints(id string, endpoints []Endpoint) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	su, _ := r.FindServiceUnit(id)
@@ -147,6 +155,8 @@ func (r *TestRouter) AddEndpoints(id string, endpoints []Endpoint) {
 func (r *TestRouter) DeleteEndpoints(id string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if su, ok := r.FindServiceUnit(id); !ok {
 		return
 	} else {
@@ -157,6 +167,8 @@ func (r *TestRouter) DeleteEndpoints(id string) {
 func (r *TestRouter) calculateServiceWeights(serviceUnits map[string]int32) map[string]int32 {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var serviceWeights = make(map[string]int32)
 	for key := range serviceUnits {
 		serviceWeights[key] = serviceUnits[key]
@@ -164,6 +176,8 @@ func (r *TestRouter) calculateServiceWeights(serviceUnits map[string]int32) map[
 	return serviceWeights
 }
 func (r *TestRouter) AddRoute(route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routeKey := getKey(route)
@@ -177,6 +191,8 @@ func (r *TestRouter) AddRoute(route *routev1.Route) {
 func (r *TestRouter) RemoveRoute(route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routeKey := getKey(route)
 	_, ok := r.State[routeKey]
 	if !ok {
@@ -188,14 +204,20 @@ func (r *TestRouter) RemoveRoute(route *routev1.Route) {
 func (r *TestRouter) HasRoute(route *routev1.Route) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return false
 }
 func (r *TestRouter) SyncedAtLeastOnce() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return false
 }
 func (r *TestRouter) FilterNamespaces(namespaces sets.String) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(namespaces) == 0 {
@@ -220,13 +242,19 @@ func (r *TestRouter) FilterNamespaces(namespaces sets.String) {
 func getKey(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return routeKeyFromParts(route.Spec.Host, route.Spec.Path)
 }
 func (r *TestRouter) Commit() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 }
 func TestHandleEndpoints(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {
@@ -258,6 +286,8 @@ func TestHandleEndpoints(t *testing.T) {
 	}
 }
 func TestHandleTCPEndpoints(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {
@@ -295,9 +325,13 @@ type fakeRejections struct{ rejections []rejection }
 func (r *fakeRejections) RecordRouteRejection(route *routev1.Route, reason, message string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.rejections = append(r.rejections, rejection{route: route, reason: reason, message: message})
 }
 func TestHandleRoute(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	rejections := &fakeRejections{}
@@ -435,10 +469,14 @@ type fakePlugin struct {
 func (p *fakePlugin) HandleRoute(event watch.EventType, route *routev1.Route) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.Route = route
 	return p.Err
 }
 func (p *fakePlugin) HandleEndpoints(watch.EventType, *kapi.Endpoints) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return p.Err
@@ -446,9 +484,13 @@ func (p *fakePlugin) HandleEndpoints(watch.EventType, *kapi.Endpoints) error {
 func (p *fakePlugin) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.Err
 }
 func (p *fakePlugin) HandleNode(watch.EventType, *kapi.Node) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return p.Err
@@ -456,9 +498,13 @@ func (p *fakePlugin) HandleNode(watch.EventType, *kapi.Node) error {
 func (p *fakePlugin) Commit() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.Err
 }
 func TestHandleRouteExtendedValidation(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	rejections := &fakeRejections{}
@@ -494,6 +540,8 @@ func TestHandleRouteExtendedValidation(t *testing.T) {
 	}
 }
 func TestNamespaceScopingFromEmpty(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := newTestRouter(make(map[string]ServiceAliasConfig))

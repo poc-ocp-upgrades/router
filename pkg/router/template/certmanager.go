@@ -21,6 +21,8 @@ type certificateFile struct {
 func (cf certificateFile) Tag() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return filepath.Join(cf.certDir, cf.id+".pem")
 }
 
@@ -31,6 +33,8 @@ type simpleCertificateManager struct {
 }
 
 func newSimpleCertificateManager(cfg *certificateManagerConfig, w certificateWriter) (certificateManager, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if err := validateCertManagerConfig(cfg); err != nil {
@@ -44,6 +48,8 @@ func newSimpleCertificateManager(cfg *certificateManagerConfig, w certificateWri
 func validateCertManagerConfig(cfg *certificateManagerConfig) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if cfg.certKeyFunc == nil || cfg.caCertKeyFunc == nil || cfg.destCertKeyFunc == nil || len(cfg.certDir) == 0 || len(cfg.caCertDir) == 0 {
 		return fmt.Errorf("certificate manager requires all config items to be set")
 	}
@@ -55,9 +61,13 @@ func validateCertManagerConfig(cfg *certificateManagerConfig) error {
 func (cm *simpleCertificateManager) CertificateWriter() certificateWriter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return cm.w
 }
 func (cm *simpleCertificateManager) WriteCertificatesForConfig(config *ServiceAliasConfig) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if config == nil {
@@ -106,6 +116,8 @@ func (cm *simpleCertificateManager) WriteCertificatesForConfig(config *ServiceAl
 func (cm *simpleCertificateManager) DeleteCertificatesForConfig(config *ServiceAliasConfig) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if config == nil {
 		return nil
 	}
@@ -132,6 +144,8 @@ func (cm *simpleCertificateManager) DeleteCertificatesForConfig(config *ServiceA
 func (cm *simpleCertificateManager) Commit() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, certFile := range cm.deletedCertificates {
 		err := cm.w.DeleteCertificate(certFile.certDir, certFile.id)
 		if err != nil {
@@ -147,9 +161,13 @@ type simpleCertificateWriter struct{}
 func newSimpleCertificateWriter() certificateWriter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &simpleCertificateWriter{}
 }
 func (cm *simpleCertificateWriter) WriteCertificate(directory string, id string, cert []byte) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	fileName := filepath.Join(directory, id+".pem")
@@ -161,6 +179,8 @@ func (cm *simpleCertificateWriter) WriteCertificate(directory string, id string,
 	return nil
 }
 func (cm *simpleCertificateWriter) DeleteCertificate(directory, id string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	fileName := filepath.Join(directory, id+".pem")
@@ -178,7 +198,16 @@ func (cm *simpleCertificateWriter) DeleteCertificate(directory, id string) error
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

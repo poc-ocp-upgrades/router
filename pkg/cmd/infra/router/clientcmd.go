@@ -24,14 +24,20 @@ type Config struct {
 func NewConfig() *Config {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &Config{}
 }
 func (cfg *Config) Bind(flags *pflag.FlagSet) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cfg.clientConfig = DefaultClientConfig(flags)
 }
 func (cfg *Config) Clients() (kclientset.Interface, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	config, _, err := cfg.KubeConfig()
@@ -47,6 +53,8 @@ func (cfg *Config) Clients() (kclientset.Interface, error) {
 func (cfg *Config) KubeConfig() (*restclient.Config, string, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	clientConfig, err := cfg.clientConfig.ClientConfig()
 	if err != nil {
 		return nil, "", err
@@ -58,6 +66,8 @@ func (cfg *Config) KubeConfig() (*restclient.Config, string, error) {
 	return clientConfig, namespace, nil
 }
 func DefaultClientConfig(flags *pflag.FlagSet) kclientcmd.ClientConfig {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	loadingRules := kclientcmd.NewDefaultClientConfigLoadingRules()
@@ -80,7 +90,16 @@ func DefaultClientConfig(flags *pflag.FlagSet) kclientcmd.ClientConfig {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

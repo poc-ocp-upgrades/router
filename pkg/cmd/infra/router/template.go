@@ -119,10 +119,14 @@ type TemplateRouterConfigManager struct {
 func isTrue(s string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	v, _ := strconv.ParseBool(s)
 	return v
 }
 func getIntervalFromEnv(name string, defaultValSecs int) time.Duration {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	interval := env(name, fmt.Sprintf("%vs", defaultValSecs))
@@ -134,6 +138,8 @@ func getIntervalFromEnv(name string, defaultValSecs int) time.Duration {
 	return value
 }
 func (o *TemplateRouter) Bind(flag *pflag.FlagSet) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	flag.StringVar(&o.WorkingDir, "working-dir", "/var/lib/haproxy/router", "The working directory for the router plugin")
@@ -167,11 +173,15 @@ type RouterStats struct {
 func (o *RouterStats) Bind(flag *pflag.FlagSet) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	flag.StringVar(&o.StatsPortString, "stats-port", env("STATS_PORT", ""), "If the underlying router implementation can provide statistics this is a hint to expose it on this port. Ignored if listen-addr is specified.")
 	flag.StringVar(&o.StatsPassword, "stats-password", env("STATS_PASSWORD", ""), "If the underlying router implementation can provide statistics this is the requested password for auth.")
 	flag.StringVar(&o.StatsUsername, "stats-user", env("STATS_USERNAME", ""), "If the underlying router implementation can provide statistics this is the requested username for auth.")
 }
 func NewCommandTemplateRouter(name string) *cobra.Command {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	options := &TemplateRouterOptions{Config: NewConfig()}
@@ -199,6 +209,8 @@ func NewCommandTemplateRouter(name string) *cobra.Command {
 	return cmd
 }
 func (o *TemplateRouterOptions) Complete() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routerSvcName := env("ROUTER_SERVICE_NAME", "")
@@ -245,6 +257,8 @@ var supportedMetricsTypes = sets.NewString("haproxy")
 func (o *TemplateRouterOptions) Validate() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(o.MetricsType) > 0 && !supportedMetricsTypes.Has(o.MetricsType) {
 		return fmt.Errorf("supported metrics types are: %s", strings.Join(supportedMetricsTypes.List(), ", "))
 	}
@@ -265,6 +279,8 @@ func (o *TemplateRouterOptions) Validate() error {
 	return nil
 }
 func (o *TemplateRouterOptions) Run() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.Infof("Starting template router (%s)", version.Get())
@@ -432,6 +448,8 @@ func (o *TemplateRouterOptions) Run() error {
 	select {}
 }
 func (o *TemplateRouterOptions) blueprintRoutes(routeclient *routeclientset.Clientset) ([]*routev1.Route, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	blueprints := make([]*routev1.Route, 0)

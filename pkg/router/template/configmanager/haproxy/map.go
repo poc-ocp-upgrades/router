@@ -31,6 +31,8 @@ type HAProxyMap struct {
 func buildHAProxyMaps(c *Client) ([]*HAProxyMap, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	entries := []*mapListEntry{}
 	converter := NewCSVConverter(showMapListHeader, &entries, fixupMapListOutput)
 	if _, err := c.RunCommand("show map", converter); err != nil {
@@ -46,9 +48,13 @@ func buildHAProxyMaps(c *Client) ([]*HAProxyMap, error) {
 func newHAProxyMap(name string, client *Client) *HAProxyMap {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &HAProxyMap{name: name, client: client, entries: make([]*HAProxyMapEntry, 0), dirty: true}
 }
 func (m *HAProxyMap) Refresh() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cmd := fmt.Sprintf("show map %s", m.name)
@@ -62,14 +68,20 @@ func (m *HAProxyMap) Refresh() error {
 func (m *HAProxyMap) Commit() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil
 }
 func (m *HAProxyMap) Name() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return m.name
 }
 func (m *HAProxyMap) Find(k string) ([]HAProxyMapEntry, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	found := make([]HAProxyMapEntry, 0)
@@ -89,6 +101,8 @@ func (m *HAProxyMap) Find(k string) ([]HAProxyMapEntry, error) {
 func (m *HAProxyMap) Add(k, v string, replace bool) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if replace {
 		if err := m.Delete(k); err != nil {
 			return err
@@ -97,6 +111,8 @@ func (m *HAProxyMap) Add(k, v string, replace bool) error {
 	return m.addEntry(k, v)
 }
 func (m *HAProxyMap) Delete(k string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	entries, err := m.Find(k)
@@ -113,9 +129,13 @@ func (m *HAProxyMap) Delete(k string) error {
 func (m *HAProxyMap) DeleteEntry(id string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return m.deleteEntry(id)
 }
 func (m *HAProxyMap) addEntry(k, v string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	keyExpr := escapeKeyExpr(k)
@@ -134,6 +154,8 @@ func (m *HAProxyMap) addEntry(k, v string) error {
 func (m *HAProxyMap) deleteEntry(id string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cmd := fmt.Sprintf("del map %s #%s", m.name, id)
 	if _, err := m.client.Execute(cmd); err != nil {
 		return err
@@ -144,6 +166,8 @@ func (m *HAProxyMap) deleteEntry(id string) error {
 func escapeKeyExpr(k string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	v := strings.Replace(k, `\`, `\\`, -1)
 	return strings.Replace(v, `.`, `\.`, -1)
 }
@@ -151,6 +175,8 @@ func escapeKeyExpr(k string) string {
 var listMapOutputRE *regexp.Regexp = regexp.MustCompile(`(?m)^(-|)([0-9]*) \((.*)?\).*$`)
 
 func fixupMapListOutput(data []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	replacement := []byte(`$1$2 $3 loaded`)

@@ -29,6 +29,8 @@ type logRecorder struct{}
 func (logRecorder) RecordRouteRejection(route *routev1.Route, reason, message string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(3).Infof("Rejected route %s in namespace %s: %s: %s", route.Name, route.Namespace, reason, message)
 }
 
@@ -45,9 +47,13 @@ type StatusAdmitter struct {
 func NewStatusAdmitter(plugin router.Plugin, client client.RoutesGetter, lister routelisters.RouteLister, name, hostName string, lease writerlease.Lease, tracker ContentionTracker) *StatusAdmitter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &StatusAdmitter{plugin: plugin, client: client, lister: lister, routerName: name, routerCanonicalHostname: hostName, tracker: tracker, lease: lease}
 }
 func getRfc3339Timestamp() metav1.Time {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return metav1.Now().Rfc3339Copy()
@@ -56,6 +62,8 @@ func getRfc3339Timestamp() metav1.Time {
 var nowFn = getRfc3339Timestamp
 
 func (a *StatusAdmitter) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch eventType {
@@ -67,9 +75,13 @@ func (a *StatusAdmitter) HandleRoute(eventType watch.EventType, route *routev1.R
 func (a *StatusAdmitter) HandleNode(eventType watch.EventType, node *kapi.Node) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return a.plugin.HandleNode(eventType, node)
 }
 func (a *StatusAdmitter) HandleEndpoints(eventType watch.EventType, route *kapi.Endpoints) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return a.plugin.HandleEndpoints(eventType, route)
@@ -77,9 +89,13 @@ func (a *StatusAdmitter) HandleEndpoints(eventType watch.EventType, route *kapi.
 func (a *StatusAdmitter) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return a.plugin.HandleNamespaces(namespaces)
 }
 func (a *StatusAdmitter) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return a.plugin.Commit()
@@ -87,9 +103,13 @@ func (a *StatusAdmitter) Commit() error {
 func (a *StatusAdmitter) RecordRouteRejection(route *routev1.Route, reason, message string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	performIngressConditionUpdate("reject", a.lease, a.tracker, a.client, a.lister, route, a.routerName, a.routerCanonicalHostname, routev1.RouteIngressCondition{Type: routev1.RouteAdmitted, Status: corev1.ConditionFalse, Reason: reason, Message: message})
 }
 func performIngressConditionUpdate(action string, lease writerlease.Lease, tracker ContentionTracker, oc client.RoutesGetter, lister routelisters.RouteLister, route *routev1.Route, routerName, hostName string, condition routev1.RouteIngressCondition) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	attempts := 3
@@ -142,6 +162,8 @@ func performIngressConditionUpdate(action string, lease writerlease.Lease, track
 func recordIngressCondition(route *routev1.Route, name, hostName string, condition routev1.RouteIngressCondition) (changed, created bool, at time.Time, latest, original *routev1.RouteIngress) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for i := range route.Status.Ingress {
 		existing := &route.Status.Ingress[i]
 		if existing.RouterName != name {
@@ -182,6 +204,8 @@ func recordIngressCondition(route *routev1.Route, name, hostName string, conditi
 func findMostRecentIngress(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var newest string
 	var recent time.Time
 	for _, ingress := range route.Status.Ingress {
@@ -195,6 +219,8 @@ func findMostRecentIngress(route *routev1.Route) string {
 	return newest
 }
 func findCondition(ingress *routev1.RouteIngress, t routev1.RouteIngressConditionType) (_ *routev1.RouteIngressCondition) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for i, existing := range ingress.Conditions {

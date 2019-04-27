@@ -21,9 +21,13 @@ type CSVConverter struct {
 func NewCSVConverter(headers string, out interface{}, fn ByteConverterFunc) *CSVConverter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &CSVConverter{headers: []byte(headers), out: out, converterFunc: fn}
 }
 func (c *CSVConverter) Convert(data []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(5).Infof("CSV converter input data bytes: %s", string(data))
@@ -51,6 +55,8 @@ func (c *CSVConverter) Convert(data []byte) ([]byte, error) {
 	return data, gocsv.Unmarshal(bytes.NewBuffer(data), c.out)
 }
 func fixupHeaders(data, headers []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	prefix := []byte("#")

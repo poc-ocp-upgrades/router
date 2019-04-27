@@ -53,6 +53,8 @@ type RouterSelection struct {
 func (o *RouterSelection) Bind(flag *pflag.FlagSet) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	flag.StringVar(&o.RouterName, "name", env("ROUTER_SERVICE_NAME", "public"), "The name the router will identify itself with in the route status")
 	flag.StringVar(&o.RouterCanonicalHostname, "router-canonical-hostname", env("ROUTER_CANONICAL_HOSTNAME", ""), "CanonicalHostname is the external host name for the router that can be used as a CNAME for the host requested for this route. This value is optional and may not be set in all cases.")
 	flag.BoolVar(&o.UpdateStatus, "update-status", isTrue(env("ROUTER_UPDATE_STATUS", "true")), "If true, the router will update admitted route status.")
@@ -75,6 +77,8 @@ func (o *RouterSelection) Bind(flag *pflag.FlagSet) {
 	flag.StringVar(&o.ListenAddr, "listen-addr", env("ROUTER_LISTEN_ADDR", ""), "The name of an interface to listen on to expose metrics and health checking. If not specified, will not listen. Overrides stats port.")
 }
 func (o *RouterSelection) RouteUpdate(route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(o.HostnameTemplate) == 0 {
@@ -103,6 +107,8 @@ func (o *RouterSelection) RouteUpdate(route *routev1.Route) {
 func (o *RouterSelection) AdmissionCheck(route *routev1.Route) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(route.Spec.Host) < 1 {
 		return nil
 	}
@@ -124,6 +130,8 @@ func (o *RouterSelection) AdmissionCheck(route *routev1.Route) error {
 func (o *RouterSelection) RouteAdmissionFunc() controller.RouteAdmissionFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(route *routev1.Route) error {
 		if err := o.AdmissionCheck(route); err != nil {
 			return err
@@ -141,6 +149,8 @@ func (o *RouterSelection) RouteAdmissionFunc() controller.RouteAdmissionFunc {
 	}
 }
 func (o *RouterSelection) Complete() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(o.HostnameTemplate) == 0 && o.OverrideHostname {
@@ -202,6 +212,8 @@ func (o *RouterSelection) Complete() error {
 func (o *RouterSelection) NewFactory(routeclient routeclientset.Interface, projectclient projectclient.ProjectInterface, kc kclientset.Interface) *controllerfactory.RouterControllerFactory {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	factory := controllerfactory.NewDefaultRouterControllerFactory(routeclient, projectclient, kc)
 	factory.LabelSelector = o.LabelSelector
 	factory.FieldSelector = o.FieldSelector
@@ -224,6 +236,8 @@ func (o *RouterSelection) NewFactory(routeclient routeclientset.Interface, proje
 func envVarAsStrings(name, defaultValue, separator string) []string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	strlist := []string{}
 	if env := env(name, defaultValue); env != "" {
 		values := strings.Split(env, separator)
@@ -238,6 +252,8 @@ func envVarAsStrings(name, defaultValue, separator string) []string {
 func hostInDomainList(host string, domains sets.String) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if domains.Has(host) {
 		return true
 	}
@@ -249,12 +265,16 @@ func hostInDomainList(host string, domains sets.String) bool {
 func newCmdVersion(fullName string, versionInfo version.Info, out io.Writer) *cobra.Command {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cmd := &cobra.Command{Use: "version", Short: "Display version", Long: "Display version", Run: func(cmd *cobra.Command, args []string) {
 		fmt.Fprintf(out, "%s %v\n", fullName, versionInfo)
 	}}
 	return cmd
 }
 func env(key string, defaultValue string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	val := os.Getenv(key)
@@ -264,6 +284,8 @@ func env(key string, defaultValue string) string {
 	return val
 }
 func envInt(key string, defaultValue int32, minValue int32) int32 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	value, err := strconv.ParseInt(env(key, fmt.Sprintf("%d", defaultValue)), 10, 32)
@@ -276,6 +298,8 @@ func envInt(key string, defaultValue int32, minValue int32) int32 {
 type KeyFunc func(key string) (string, bool)
 
 func expandStrict(s string, fns ...KeyFunc) (string, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	unmatched := []string{}

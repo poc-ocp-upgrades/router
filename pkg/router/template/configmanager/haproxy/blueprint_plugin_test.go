@@ -17,13 +17,19 @@ type fakeConfigManager struct{ blueprints map[string]*routev1.Route }
 func newFakeConfigManager() *fakeConfigManager {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &fakeConfigManager{blueprints: make(map[string]*routev1.Route)}
 }
 func (cm *fakeConfigManager) Initialize(router templaterouter.RouterInterface, certPath string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 }
 func (cm *fakeConfigManager) AddBlueprint(route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cm.blueprints[routeKey(route)] = route
@@ -32,9 +38,13 @@ func (cm *fakeConfigManager) AddBlueprint(route *routev1.Route) error {
 func (cm *fakeConfigManager) RemoveBlueprint(route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	delete(cm.blueprints, routeKey(route))
 }
 func (cm *fakeConfigManager) FindBlueprint(id string) (*routev1.Route, bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	route, ok := cm.blueprints[id]
@@ -43,8 +53,12 @@ func (cm *fakeConfigManager) FindBlueprint(id string) (*routev1.Route, bool) {
 func (cm *fakeConfigManager) Register(id string, route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 }
 func (cm *fakeConfigManager) AddRoute(id, routingKey string, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return nil
@@ -52,9 +66,13 @@ func (cm *fakeConfigManager) AddRoute(id, routingKey string, route *routev1.Rout
 func (cm *fakeConfigManager) RemoveRoute(id string, route *routev1.Route) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil
 }
 func (cm *fakeConfigManager) ReplaceRouteEndpoints(id string, oldEndpoints, newEndpoints []templaterouter.Endpoint, weight int32) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return nil
@@ -62,13 +80,19 @@ func (cm *fakeConfigManager) ReplaceRouteEndpoints(id string, oldEndpoints, newE
 func (cm *fakeConfigManager) RemoveRouteEndpoints(id string, endpoints []templaterouter.Endpoint) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil
 }
 func (cm *fakeConfigManager) Notify(event templaterouter.RouterEventType) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 }
 func (cm *fakeConfigManager) ServerTemplateName(id string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return "fakeConfigManager"
@@ -76,9 +100,13 @@ func (cm *fakeConfigManager) ServerTemplateName(id string) string {
 func (cm *fakeConfigManager) ServerTemplateSize(id string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return "1"
 }
 func (cm *fakeConfigManager) GenerateDynamicServerNames(id string) []string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return []string{}
@@ -86,9 +114,13 @@ func (cm *fakeConfigManager) GenerateDynamicServerNames(id string) []string {
 func routeKey(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Sprintf("%s:%s", route.Name, route.Namespace)
 }
 func TestHandleRoute(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	original := metav1.Time{Time: time.Now()}
@@ -120,6 +152,8 @@ func TestHandleRoute(t *testing.T) {
 func TestHandleNode(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	node := &kapi.Node{ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"design": "blueprint"}}}
 	cm := newFakeConfigManager()
 	plugin := NewBlueprintPlugin(cm)
@@ -134,6 +168,8 @@ func TestHandleNode(t *testing.T) {
 	}
 }
 func TestHandleEndpoints(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	endpoints := &kapi.Endpoints{ObjectMeta: metav1.ObjectMeta{Namespace: "bpe", Name: "shell"}, Subsets: []kapi.EndpointSubset{{Addresses: []kapi.EndpointAddress{{IP: "1.1.1.1"}}, Ports: []kapi.EndpointPort{{Port: 9876}}}}}
@@ -151,6 +187,8 @@ func TestHandleEndpoints(t *testing.T) {
 	}
 }
 func TestHandleNamespaces(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cm := newFakeConfigManager()

@@ -10,6 +10,8 @@ import (
 func TestOldestFirst(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	test1 := newRoute("test", "1", 1, 1, routev1.RouteSpec{Host: "test.com"})
 	test2 := newRoute("test", "2", 11, 2, routev1.RouteSpec{Host: "test.com"})
 	test3a := newRoute("test", "3", 12, 3, routev1.RouteSpec{Host: "test.com", Path: "/a"})
@@ -62,6 +64,8 @@ func TestOldestFirst(t *testing.T) {
 	}
 }
 func TestSameNamespace(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	test1 := newRoute("test", "1", 1, 1, routev1.RouteSpec{Host: "test.com"})

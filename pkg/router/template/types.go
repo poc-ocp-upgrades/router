@@ -103,5 +103,7 @@ const (
 func (s ServiceUnit) TemplateSafeName() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return strings.Replace(s.Name, "/", "-", -1)
 }

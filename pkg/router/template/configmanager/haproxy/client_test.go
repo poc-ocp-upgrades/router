@@ -13,6 +13,8 @@ type infoEntry struct {
 func TestNewClient(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name		string
 		sockFile	string
@@ -24,6 +26,8 @@ func TestNewClient(t *testing.T) {
 	}
 }
 func TestClientRunCommand(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
@@ -45,6 +49,8 @@ func TestClientRunCommand(t *testing.T) {
 	}
 }
 func TestClientRunInfoCommandConverter(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {
@@ -72,6 +78,8 @@ func TestClientRunInfoCommandConverter(t *testing.T) {
 func TestClientRunBackendCommandConverter(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name		string
 		command		string
@@ -95,6 +103,8 @@ func TestClientRunBackendCommandConverter(t *testing.T) {
 	}
 }
 func TestClientRunMapCommandConverter(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {
@@ -122,6 +132,8 @@ func TestClientRunMapCommandConverter(t *testing.T) {
 func TestClientRunServerCommandConverter(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name		string
 		command		string
@@ -147,6 +159,8 @@ func TestClientRunServerCommandConverter(t *testing.T) {
 func TestClientExecute(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name		string
 		command		string
@@ -166,6 +180,8 @@ func TestClientExecute(t *testing.T) {
 	}
 }
 func TestClientReset(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
@@ -203,6 +219,8 @@ func TestClientReset(t *testing.T) {
 	}
 }
 func TestClientCommit(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
@@ -256,6 +274,8 @@ func TestClientCommit(t *testing.T) {
 func TestClientBackends(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	client := NewClient(server.SocketFile(), 1)
@@ -268,6 +288,8 @@ func TestClientBackends(t *testing.T) {
 	}
 }
 func TestClientFindBackend(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {
@@ -300,6 +322,8 @@ func TestClientFindBackend(t *testing.T) {
 func TestClientMaps(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	client := NewClient(server.SocketFile(), 1)
@@ -312,6 +336,8 @@ func TestClientMaps(t *testing.T) {
 	}
 }
 func TestClientFindMap(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {

@@ -46,6 +46,8 @@ const (
 func mockExecCommand(command string, args ...string) *exec.Cmd {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return exec.Command("true")
 }
 
@@ -61,6 +63,8 @@ var f5Routes = []Route{{"getPolicy", "GET", "/mgmt/tm/ltm/policy/{policyName}", 
 func newF5Routes(mockF5State f5testing.MockF5State) *mux.Router {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	mockF5 := mux.NewRouter().StrictSlash(true)
 	for _, route := range f5Routes {
 		mockF5.Methods(route.Method).Path(route.Pattern).Name(route.Name).Handler(route.HandlerFunc(mockF5State))
@@ -68,6 +72,8 @@ func newF5Routes(mockF5State f5testing.MockF5State) *mux.Router {
 	return mockF5
 }
 func newTestRouterWithState(state f5testing.MockF5State, partitionPath string) (*F5Plugin, *mockF5, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routerLogLevel := os.Getenv("TEST_ROUTER_LOGLEVEL")
@@ -91,6 +97,8 @@ func newTestRouterWithState(state f5testing.MockF5State, partitionPath string) (
 func newTestRouter(partitionPath string) (*F5Plugin, *mockF5, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pathKey := strings.Replace(partitionPath, "/", "~", -1)
 	httpVserverPath := path.Join(partitionPath, httpVserverName)
 	httpsVserverPath := path.Join(partitionPath, httpsVserverName)
@@ -100,14 +108,20 @@ func newTestRouter(partitionPath string) (*F5Plugin, *mockF5, error) {
 func (f5 *mockF5) close() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	f5.server.Close()
 }
 func normalizeiControlUriPath(pathName string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return strings.Replace(pathName, "~", "/", -1)
 }
 func normalizeResourcePath(resourcePath string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	unescapedPath := normalizeiControlUriPath(resourcePath)
@@ -119,9 +133,13 @@ func normalizeResourcePath(resourcePath string) string {
 func (r *mockF5iControlResource) id() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return r.FullPath
 }
 func (r *mockF5iControlResource) uriPath() string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return encodeiControlUriPathComponent(r.FullPath)
@@ -129,11 +147,15 @@ func (r *mockF5iControlResource) uriPath() string {
 func newMockF5iControlResource(resourceType, resourceName string) *mockF5iControlResource {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	resourcePath := normalizeResourcePath(resourceName)
 	resourcePartitionPath, _ := path.Split(resourcePath)
 	return &mockF5iControlResource{Type: resourceType, Name: resourceName, FullPath: resourcePath, Partition: resourcePartitionPath}
 }
 func validatePolicy(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, policy *mockF5iControlResource) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	_, ok := f5state.Policies[policy.id()]
@@ -145,6 +167,8 @@ func validatePolicy(response http.ResponseWriter, request *http.Request, f5state
 	return true
 }
 func getPolicyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -160,9 +184,13 @@ func getPolicyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func OK(response http.ResponseWriter) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fmt.Fprint(response, `{"code":200,"message":"OK"}`)
 }
 func postPolicyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -178,6 +206,8 @@ func postPolicyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func postRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -200,6 +230,8 @@ func postRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func validateVserver(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, vserver *mockF5iControlResource) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if !recogniseVserver(vserver) {
 		response.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(response, `{"code":404,"errorStack":[],"message":"01020036:3: The requested Virtual Server (%s) was not found."}`, vserver.FullPath)
@@ -208,6 +240,8 @@ func validateVserver(response http.ResponseWriter, request *http.Request, f5stat
 	return true
 }
 func getPoliciesHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -228,11 +262,15 @@ func getPoliciesHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func recogniseVserver(vserver *mockF5iControlResource) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	isHttpVserver := strings.HasSuffix(vserver.FullPath, httpVserverName)
 	isHttpsVserver := strings.HasSuffix(vserver.FullPath, httpsVserverName)
 	return isHttpVserver || isHttpsVserver
 }
 func associatePolicyWithVserverHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -273,6 +311,8 @@ func associatePolicyWithVserverHandler(f5state f5testing.MockF5State) http.Handl
 func validateDatagroup(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, datagroupResource *mockF5iControlResource) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, ok := f5state.Datagroups[datagroupResource.id()]
 	if !ok {
 		response.WriteHeader(http.StatusNotFound)
@@ -282,6 +322,8 @@ func validateDatagroup(response http.ResponseWriter, request *http.Request, f5st
 	return true
 }
 func getDatagroupHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -305,6 +347,8 @@ func getDatagroupHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func patchDatagroupHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -333,6 +377,8 @@ func patchDatagroupHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func postDatagroupHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		payload := struct {
 			Name string `json:"name"`
@@ -353,6 +399,8 @@ func postDatagroupHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func getIRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		rule := newMockF5iControlResource("irule", vars["iRuleName"])
@@ -366,6 +414,8 @@ func getIRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func postIRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -399,6 +449,8 @@ func postIRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func getVserverHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		vserver := newMockF5iControlResource("vserver", vars["vserverName"])
@@ -428,6 +480,8 @@ func getVserverHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func patchVserverHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		vserver := newMockF5iControlResource("policy", vars["vserverName"])
@@ -447,6 +501,8 @@ func patchVserverHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func validatePartition(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, partition *mockF5iControlResource) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, ok := f5state.PartitionPaths[partition.id()]
 	if !ok {
 		response.WriteHeader(http.StatusNotFound)
@@ -456,6 +512,8 @@ func validatePartition(response http.ResponseWriter, request *http.Request, f5st
 	return true
 }
 func getPartitionPath(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -471,6 +529,8 @@ func getPartitionPath(f5state f5testing.MockF5State) http.HandlerFunc {
 func postPartitionPathHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		payload := struct {
 			Name string `json:"name"`
@@ -483,6 +543,8 @@ func postPartitionPathHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func postPoolHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -505,6 +567,8 @@ func postPoolHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func validatePool(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, poolResource *mockF5iControlResource) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, ok := f5state.Pools[poolResource.id()]
 	if !ok {
 		response.WriteHeader(http.StatusNotFound)
@@ -514,6 +578,8 @@ func validatePool(response http.ResponseWriter, request *http.Request, f5state f
 	return true
 }
 func deletePoolHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -527,6 +593,8 @@ func deletePoolHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func getPoolMembersHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -550,6 +618,8 @@ func getPoolMembersHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func postPoolMemberHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -577,6 +647,8 @@ func postPoolMemberHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func deletePoolMemberHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		poolResource := newMockF5iControlResource("policy", vars["poolName"])
@@ -593,6 +665,8 @@ func deletePoolMemberHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func getRulesHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -619,6 +693,8 @@ func getRulesHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func validateRuleName(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, policy *mockF5iControlResource, ruleName string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for rule := range f5state.Policies[policy.id()] {
 		if rule == ruleName {
 			return true
@@ -629,6 +705,8 @@ func validateRuleName(response http.ResponseWriter, request *http.Request, f5sta
 	return false
 }
 func postConditionHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -654,6 +732,8 @@ func postConditionHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func postActionHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		policy := newMockF5iControlResource("policy", vars["policyName"])
@@ -669,6 +749,8 @@ func postActionHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func deleteRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -689,6 +771,8 @@ func deleteRuleHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func postSslCertHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		payload := struct {
 			Name string `json:"name"`
@@ -701,6 +785,8 @@ func postSslCertHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func postSslKeyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -717,6 +803,8 @@ func postSslKeyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func validateClientKey(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, keyName string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, ok := f5state.Keys[keyName]
 	if !ok {
 		response.WriteHeader(http.StatusNotFound)
@@ -728,6 +816,8 @@ func validateClientKey(response http.ResponseWriter, request *http.Request, f5st
 func validateCert(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, certName string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, ok := f5state.Certs[certName]
 	if !ok {
 		response.WriteHeader(http.StatusNotFound)
@@ -737,6 +827,8 @@ func validateCert(response http.ResponseWriter, request *http.Request, f5state f
 	return true
 }
 func postClientSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -775,6 +867,8 @@ func postClientSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc
 func deleteClientSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		clientSslProfileName := vars["profileName"]
@@ -791,6 +885,8 @@ func deleteClientSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFu
 func validateServerKey(response http.ResponseWriter, request *http.Request, f5state f5testing.MockF5State, keyName string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, ok := f5state.Keys[keyName]
 	if !ok {
 		response.WriteHeader(http.StatusNotFound)
@@ -800,6 +896,8 @@ func validateServerKey(response http.ResponseWriter, request *http.Request, f5st
 	return true
 }
 func postServerSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -833,6 +931,8 @@ func postServerSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc
 func deleteServerSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		serverSslProfileName := vars["profileName"]
@@ -847,6 +947,8 @@ func deleteServerSslProfileHandler(f5state f5testing.MockF5State) http.HandlerFu
 	}
 }
 func associateProfileWithVserver(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -868,6 +970,8 @@ func associateProfileWithVserver(f5state f5testing.MockF5State) http.HandlerFunc
 func deleteSslVserverProfileHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		vserver := newMockF5iControlResource("vserver", vars["vserverName"])
@@ -880,6 +984,8 @@ func deleteSslVserverProfileHandler(f5state f5testing.MockF5State) http.HandlerF
 	}
 }
 func deleteSslKeyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
@@ -898,6 +1004,8 @@ func deleteSslKeyHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 func deleteSslCertHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return func(response http.ResponseWriter, request *http.Request) {
 		vars := mux.Vars(request)
 		certName := vars["certName"]
@@ -912,6 +1020,8 @@ func deleteSslCertHandler(f5state f5testing.MockF5State) http.HandlerFunc {
 	}
 }
 func TestInitializeF5Plugin(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router, mockF5, err := newTestRouter(F5DefaultPartitionPath)
@@ -998,6 +1108,8 @@ func TestInitializeF5Plugin(t *testing.T) {
 func TestF5RouterPartition(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name		string
 		partition	string
@@ -1015,6 +1127,8 @@ func TestF5RouterPartition(t *testing.T) {
 	}
 }
 func TestHandleEndpoints(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router, mockF5, err := newTestRouter(F5DefaultPartitionPath)
@@ -1083,6 +1197,8 @@ func TestHandleEndpoints(t *testing.T) {
 	}
 }
 func TestHandleRoute(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router, mockF5, err := newTestRouter(F5DefaultPartitionPath)
@@ -1320,6 +1436,8 @@ func TestHandleRoute(t *testing.T) {
 func TestHandleRouteModifications(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	router, mockF5, err := newTestRouter(F5DefaultPartitionPath)
 	if err != nil {
 		t.Fatalf("Failed to initialize test router: %v", err)
@@ -1352,6 +1470,8 @@ func TestHandleRouteModifications(t *testing.T) {
 	}
 }
 func TestF5RouterSuccessiveInstances(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router, mockF5, err := newTestRouter(F5DefaultPartitionPath)

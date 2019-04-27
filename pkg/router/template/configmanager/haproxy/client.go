@@ -26,6 +26,8 @@ type Client struct {
 func NewClient(socketName string, timeout int) *Client {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	sockAddr := socketName
 	if !strings.HasPrefix(sockAddr, afUnixSocketPrefix) && !strings.HasPrefix(sockAddr, tcpSocketPrefix) {
 		sockAddr = fmt.Sprintf("%s%s", afUnixSocketPrefix, sockAddr)
@@ -33,6 +35,8 @@ func NewClient(socketName string, timeout int) *Client {
 	return &Client{socketAddress: sockAddr, timeout: timeout, backends: make([]*Backend, 0), maps: make(map[string]*HAProxyMap)}
 }
 func (c *Client) RunCommand(cmd string, converter Converter) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Running haproxy command: %q ...", cmd)
@@ -51,15 +55,21 @@ func (c *Client) RunCommand(cmd string, converter Converter) ([]byte, error) {
 func (c *Client) Execute(cmd string) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return c.RunCommand(cmd, nil)
 }
 func (c *Client) Reset() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	c.backends = make([]*Backend, 0)
 	c.maps = make(map[string]*HAProxyMap)
 }
 func (c *Client) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for _, b := range c.backends {
@@ -77,6 +87,8 @@ func (c *Client) Commit() error {
 func (c *Client) Backends() ([]*Backend, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(c.backends) == 0 {
 		if backends, err := buildHAProxyBackends(c); err != nil {
 			return nil, err
@@ -87,6 +99,8 @@ func (c *Client) Backends() ([]*Backend, error) {
 	return c.backends, nil
 }
 func (c *Client) FindBackend(id string) (*Backend, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if _, err := c.Backends(); err != nil {
@@ -100,6 +114,8 @@ func (c *Client) FindBackend(id string) (*Backend, error) {
 	return nil, fmt.Errorf("no backend found for id: %s", id)
 }
 func (c *Client) Maps() ([]*HAProxyMap, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(c.maps) == 0 {
@@ -123,6 +139,8 @@ func (c *Client) Maps() ([]*HAProxyMap, error) {
 func (c *Client) FindMap(name string) (*HAProxyMap, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if _, err := c.Maps(); err != nil {
 		return nil, err
 	}
@@ -132,6 +150,8 @@ func (c *Client) FindMap(name string) (*HAProxyMap, error) {
 	return nil, fmt.Errorf("no map found for name: %s", name)
 }
 func (c *Client) runCommandWithRetries(cmd string, limit int) (*bytes.Buffer, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var buffer *bytes.Buffer
@@ -156,6 +176,8 @@ func (c *Client) runCommandWithRetries(cmd string, limit int) (*bytes.Buffer, er
 	return buffer, cmdErr
 }
 func isRetriable(err error, cmd string) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	retryableErrors := []string{"connection reset by peer", "connection refused"}

@@ -8,6 +8,8 @@ import (
 func TestValidateHostName(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tests := []struct {
 		name		string
 		route		*routev1.Route

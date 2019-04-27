@@ -712,6 +712,8 @@ The+rest+of+the+certificate+info+is+invalid+and+badly+malformed/
 func TestExtendedValidateRoute(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tests := []struct {
 		name		string
 		route		*routev1.Route

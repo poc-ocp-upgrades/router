@@ -9,6 +9,8 @@ import (
 func TestGenerateRouteRegexp(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tests := []struct {
 		name		string
 		hostname	string
@@ -34,6 +36,8 @@ func TestGenerateRouteRegexp(t *testing.T) {
 func TestGenCertificateHostName(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tests := []struct {
 		name		string
 		hostname	string
@@ -48,6 +52,8 @@ func TestGenCertificateHostName(t *testing.T) {
 	}
 }
 func TestGenerateBackendNamePrefix(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testPrefixes := []struct {

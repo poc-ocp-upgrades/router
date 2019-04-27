@@ -36,6 +36,8 @@ type RouterController struct {
 func (c *RouterController) Run() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Info("Running router controller")
 	if c.ProjectLabels != nil {
 		c.HandleProjects()
@@ -44,6 +46,8 @@ func (c *RouterController) Run() {
 	c.handleFirstSync()
 }
 func (c *RouterController) HandleProjects() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for i := 0; i < c.ProjectRetries; i++ {
@@ -67,6 +71,8 @@ func (c *RouterController) HandleProjects() {
 func (c *RouterController) GetFilteredProjectNames() (sets.String, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	names := sets.String{}
 	all, err := c.ProjectClient.List(v1.ListOptions{LabelSelector: c.ProjectLabels.String()})
 	if err != nil {
@@ -78,6 +84,8 @@ func (c *RouterController) GetFilteredProjectNames() (sets.String, error) {
 	return names, nil
 }
 func (c *RouterController) processNamespace(eventType watch.EventType, ns *kapi.Namespace) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	before := c.FilteredNamespaceNames.Has(ns.Name)
@@ -114,6 +122,8 @@ func (c *RouterController) processNamespace(eventType watch.EventType, ns *kapi.
 func (c *RouterController) UpdateNamespaces() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	namespaces := sets.NewString(c.FilteredNamespaceNames.List()...)
 	glog.V(4).Infof("Updating watched namespaces: %v", namespaces)
 	if err := c.Plugin.HandleNamespaces(namespaces); err != nil {
@@ -121,6 +131,8 @@ func (c *RouterController) UpdateNamespaces() {
 	}
 }
 func (c *RouterController) RecordNamespaceEndpoints(eventType watch.EventType, ep *kapi.Endpoints) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch eventType {
@@ -141,6 +153,8 @@ func (c *RouterController) RecordNamespaceEndpoints(eventType watch.EventType, e
 func (c *RouterController) RecordNamespaceRoutes(eventType watch.EventType, rt *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	switch eventType {
 	case watch.Added, watch.Modified:
 		if _, ok := c.NamespaceRoutes[rt.Namespace]; !ok {
@@ -159,6 +173,8 @@ func (c *RouterController) RecordNamespaceRoutes(eventType watch.EventType, rt *
 func (c *RouterController) HandleNamespace(eventType watch.EventType, obj interface{}) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ns := obj.(*kapi.Namespace)
 	c.lock.Lock()
 	defer c.lock.Unlock()
@@ -168,6 +184,8 @@ func (c *RouterController) HandleNamespace(eventType watch.EventType, obj interf
 	c.Commit()
 }
 func (c *RouterController) HandleNode(eventType watch.EventType, obj interface{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	node := obj.(*kapi.Node)
@@ -182,6 +200,8 @@ func (c *RouterController) HandleNode(eventType watch.EventType, obj interface{}
 func (c *RouterController) HandleRoute(eventType watch.EventType, obj interface{}) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	route := obj.(*routev1.Route)
 	c.lock.Lock()
 	defer c.lock.Unlock()
@@ -189,6 +209,8 @@ func (c *RouterController) HandleRoute(eventType watch.EventType, obj interface{
 	c.Commit()
 }
 func (c *RouterController) HandleEndpoints(eventType watch.EventType, obj interface{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	endpoints := obj.(*kapi.Endpoints)
@@ -203,6 +225,8 @@ func (c *RouterController) HandleEndpoints(eventType watch.EventType, obj interf
 func (c *RouterController) Commit() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if c.firstSyncDone {
 		if err := c.Plugin.Commit(); err != nil {
 			utilruntime.HandleError(err)
@@ -210,6 +234,8 @@ func (c *RouterController) Commit() {
 	}
 }
 func (c *RouterController) processRoute(eventType watch.EventType, route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Processing route: %s/%s -> %s %s", route.Namespace, route.Name, route.Spec.To.Name, route.UID)
@@ -224,6 +250,8 @@ func (c *RouterController) processRoute(eventType watch.EventType, route *routev
 	}
 }
 func (c *RouterController) handleFirstSync() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	c.lock.Lock()

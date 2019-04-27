@@ -27,9 +27,13 @@ type noopLease struct{}
 func (_ noopLease) Wait() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	panic("not implemented")
 }
 func (_ noopLease) WaitUntil(t time.Duration) (leader bool, ok bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	panic("not implemented")
@@ -37,13 +41,19 @@ func (_ noopLease) WaitUntil(t time.Duration) (leader bool, ok bool) {
 func (_ noopLease) Try(key string, fn writerlease.WorkFunc) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fn()
 }
 func (_ noopLease) Extend(key string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 }
 func (_ noopLease) Remove(key string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	panic("not implemented")
@@ -58,10 +68,14 @@ type fakePlugin struct {
 func (p *fakePlugin) HandleRoute(t watch.EventType, route *routev1.Route) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.t, p.route = t, route
 	return p.err
 }
 func (p *fakePlugin) HandleNode(t watch.EventType, node *kapi.Node) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return fmt.Errorf("not expected")
@@ -69,14 +83,20 @@ func (p *fakePlugin) HandleNode(t watch.EventType, node *kapi.Node) error {
 func (p *fakePlugin) HandleEndpoints(watch.EventType, *kapi.Endpoints) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Errorf("not expected")
 }
 func (p *fakePlugin) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Errorf("not expected")
 }
 func (p *fakePlugin) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return fmt.Errorf("not expected")
@@ -90,9 +110,13 @@ type routeLister struct {
 func (l *routeLister) List(selector labels.Selector) (ret []*routev1.Route, err error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return l.items, l.err
 }
 func (l *routeLister) Routes(namespace string) routelisters.RouteNamespaceLister {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return routeNamespaceLister{namespace: namespace, l: l}
@@ -106,6 +130,8 @@ type routeNamespaceLister struct {
 func (l routeNamespaceLister) List(selector labels.Selector) (ret []*routev1.Route, err error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var items []*routev1.Route
 	for _, item := range l.l.items {
 		if item.Namespace == l.namespace {
@@ -115,6 +141,8 @@ func (l routeNamespaceLister) List(selector labels.Selector) (ret []*routev1.Rou
 	return items, l.l.err
 }
 func (l routeNamespaceLister) Get(name string) (*routev1.Route, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for _, item := range l.l.items {
@@ -138,6 +166,8 @@ type fakeTracker struct {
 func (t *fakeTracker) IsChangeContended(id string, now time.Time, ingress *routev1.RouteIngress) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if t.contended == nil {
 		t.contended = make(map[string]recorded)
 	}
@@ -147,12 +177,16 @@ func (t *fakeTracker) IsChangeContended(id string, now time.Time, ingress *route
 func (t *fakeTracker) Clear(id string, ingress *routev1.RouteIngress) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if t.cleared == nil {
 		t.cleared = make(map[string]recorded)
 	}
 	t.cleared[id] = recorded{ingress: ingress, at: ingressConditionTouched(ingress).Time}
 }
 func TestStatusNoOp(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	now := nowFn()
@@ -172,6 +206,8 @@ func TestStatusNoOp(t *testing.T) {
 	}
 }
 func checkResult(t *testing.T, err error, c *fake.Clientset, admitter *StatusAdmitter, targetHost string, targetObjTime metav1.Time, targetCachedTime *time.Time, ingressInd int, actionInd int) *routev1.Route {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	t.Helper()
@@ -206,6 +242,8 @@ func checkResult(t *testing.T, err error, c *fake.Clientset, admitter *StatusAdm
 func TestStatusResetsHost(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	now := metav1.Now()
 	nowFn = func() metav1.Time {
 		return now
@@ -230,6 +268,8 @@ func TestStatusResetsHost(t *testing.T) {
 func findIngressForRoute(route *routev1.Route, routerName string) *routev1.RouteIngress {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for i := range route.Status.Ingress {
 		if route.Status.Ingress[i].RouterName == routerName {
 			return &route.Status.Ingress[i]
@@ -238,6 +278,8 @@ func findIngressForRoute(route *routev1.Route, routerName string) *routev1.Route
 	return nil
 }
 func TestStatusAdmitsRouteOnForbidden(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	now := nowFn()
@@ -270,6 +312,8 @@ func TestStatusAdmitsRouteOnForbidden(t *testing.T) {
 func TestStatusBackoffOnConflict(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	now := nowFn()
 	nowFn = func() metav1.Time {
 		return now
@@ -291,6 +335,8 @@ func TestStatusBackoffOnConflict(t *testing.T) {
 	checkResult(t, err, c, admitter, "route1.test.local", now, nil, 0, 0)
 }
 func TestStatusRecordRejection(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	now := nowFn()
@@ -323,6 +369,8 @@ func TestStatusRecordRejection(t *testing.T) {
 func TestStatusRecordRejectionNoChange(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	now := nowFn()
 	nowFn = func() metav1.Time {
 		return now
@@ -340,6 +388,8 @@ func TestStatusRecordRejectionNoChange(t *testing.T) {
 	}
 }
 func TestStatusRecordRejectionWithStatus(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	now := nowFn()
@@ -371,6 +421,8 @@ func TestStatusRecordRejectionWithStatus(t *testing.T) {
 	}
 }
 func TestStatusRecordRejectionOnHostUpdateOnly(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	now := nowFn()
@@ -405,6 +457,8 @@ func TestStatusRecordRejectionOnHostUpdateOnly(t *testing.T) {
 	}
 }
 func TestStatusRecordRejectionConflict(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	now := nowFn()
@@ -442,6 +496,8 @@ func TestStatusRecordRejectionConflict(t *testing.T) {
 	}
 }
 func TestStatusFightBetweenReplicas(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}
@@ -495,6 +551,8 @@ func TestStatusFightBetweenReplicas(t *testing.T) {
 func TestStatusFightBetweenRouters(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p := &fakePlugin{}
 	now1 := metav1.Now()
 	nowFn = func() metav1.Time {
@@ -540,6 +598,8 @@ func TestStatusFightBetweenRouters(t *testing.T) {
 func makePass(t *testing.T, host string, admitter *StatusAdmitter, srcObj *routev1.Route, expectUpdate bool, conflict bool) *routev1.Route {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	t.Helper()
 	c := fake.NewSimpleClientset(srcObj)
 	if conflict {
@@ -568,6 +628,8 @@ func makePass(t *testing.T, host string, admitter *StatusAdmitter, srcObj *route
 	return nil
 }
 func TestRouterContention(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}
@@ -633,6 +695,8 @@ func TestRouterContention(t *testing.T) {
 func ingressChangeWithNewHost(route *routev1.Route, routerName, newHost string) *routev1.RouteIngress {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ingress := findIngressForRoute(route, routerName).DeepCopy()
 	ingress.Host = newHost
 	return ingress
@@ -643,6 +707,8 @@ type fakeInformer struct{ handlers []cache.ResourceEventHandler }
 func (i *fakeInformer) Update(old, obj interface{}) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, h := range i.handlers {
 		h.OnUpdate(old, obj)
 	}
@@ -650,9 +716,13 @@ func (i *fakeInformer) Update(old, obj interface{}) {
 func (i *fakeInformer) AddEventHandler(handler cache.ResourceEventHandler) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	i.handlers = append(i.handlers, handler)
 }
 func (i *fakeInformer) AddEventHandlerWithResyncPeriod(handler cache.ResourceEventHandler, resyncPeriod time.Duration) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	panic("not implemented")
@@ -660,9 +730,13 @@ func (i *fakeInformer) AddEventHandlerWithResyncPeriod(handler cache.ResourceEve
 func (i *fakeInformer) GetStore() cache.Store {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	panic("not implemented")
 }
 func (i *fakeInformer) GetController() cache.Controller {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	panic("not implemented")
@@ -670,14 +744,20 @@ func (i *fakeInformer) GetController() cache.Controller {
 func (i *fakeInformer) Run(stopCh <-chan struct{}) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	panic("not implemented")
 }
 func (i *fakeInformer) HasSynced() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	panic("not implemented")
 }
 func (i *fakeInformer) LastSyncResourceVersion() string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	panic("not implemented")

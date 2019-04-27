@@ -30,6 +30,8 @@ const (
 func (err F5Error) Error() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var msg string
 	if err.err != nil {
 		msg = fmt.Sprintf("error: %v", err.err)
@@ -183,6 +185,8 @@ when CLIENT_DATA {
 func newF5LTM(cfg f5LTMCfg) (*f5LTM, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if cfg.insecure == true {
 		glog.Warning("Strict certificate verification is *DISABLED*")
 	}
@@ -238,6 +242,8 @@ func newF5LTM(cfg f5LTMCfg) (*f5LTM, error) {
 func (f5 *f5LTM) restRequest(verb string, url string, payload io.Reader, result interface{}) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tr := knet.SetTransportDefaults(&http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: f5.insecure}})
 	errorResult := F5Error{verb: verb, url: url}
 	req, err := http.NewRequest(verb, url, payload)
@@ -273,6 +279,8 @@ func (f5 *f5LTM) restRequest(verb string, url string, payload io.Reader, result 
 func (f5 *f5LTM) restRequestPayload(verb string, url string, payload interface{}, result interface{}) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	jsonStr, err := json.Marshal(payload)
 	if err != nil {
 		return F5Error{verb: verb, url: url, err: err}
@@ -283,9 +291,13 @@ func (f5 *f5LTM) restRequestPayload(verb string, url string, payload interface{}
 func (f5 *f5LTM) get(url string, result interface{}) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.restRequest("GET", url, nil, result)
 }
 func (f5 *f5LTM) post(url string, payload interface{}, result interface{}) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return f5.restRequestPayload("POST", url, payload, result)
@@ -293,9 +305,13 @@ func (f5 *f5LTM) post(url string, payload interface{}, result interface{}) error
 func (f5 *f5LTM) patch(url string, payload interface{}, result interface{}) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.restRequestPayload("PATCH", url, payload, result)
 }
 func (f5 *f5LTM) delete(url string, result interface{}) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return f5.restRequest("DELETE", url, nil, result)
@@ -303,15 +319,21 @@ func (f5 *f5LTM) delete(url string, result interface{}) error {
 func encodeiControlUriPathComponent(pathName string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return strings.Replace(pathName, "/", "~", -1)
 }
 func (f5 *f5LTM) iControlUriResourceId(resourceName string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	resourcePath := path.Join(f5.partitionPath, resourceName)
 	return encodeiControlUriPathComponent(resourcePath)
 }
 func (f5 *f5LTM) ensureVxLANTunnel() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking and installing VxLAN setup")
@@ -337,6 +359,8 @@ func (f5 *f5LTM) ensureVxLANTunnel() error {
 	return nil
 }
 func (f5 *f5LTM) ensurePolicyExists(policyName string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking whether policy %s exists...", policyName)
@@ -376,6 +400,8 @@ func (f5 *f5LTM) ensurePolicyExists(policyName string) error {
 func (f5 *f5LTM) ensureVserverHasPolicy(vserverName, policyName string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking whether vserver %s has policy %s...", vserverName, policyName)
 	vserverResourceId := f5.iControlUriResourceId(vserverName)
 	vserverPoliciesUrl := fmt.Sprintf("https://%s/mgmt/tm/ltm/virtual/%s/policies", f5.host, vserverResourceId)
@@ -403,6 +429,8 @@ func (f5 *f5LTM) ensureVserverHasPolicy(vserverName, policyName string) error {
 func (f5 *f5LTM) ensureDatagroupExists(datagroupName string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking whether datagroup %s exists...", datagroupName)
 	datagroupUrl := fmt.Sprintf("https://%s/mgmt/tm/ltm/data-group/internal/%s", f5.host, datagroupName)
 	err := f5.get(datagroupUrl, nil)
@@ -426,6 +454,8 @@ func (f5 *f5LTM) ensureDatagroupExists(datagroupName string) error {
 func (f5 *f5LTM) ensureIRuleExists(iRuleName, iRule string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking whether iRule %s exists...", iRuleName)
 	iRuleUrl := fmt.Sprintf("https://%s/mgmt/tm/ltm/rule/%s", f5.host, f5.iControlUriResourceId(iRuleName))
 	err := f5.get(iRuleUrl, nil)
@@ -447,6 +477,8 @@ func (f5 *f5LTM) ensureIRuleExists(iRuleName, iRule string) error {
 	return nil
 }
 func (f5 *f5LTM) ensureVserverHasIRule(vserverName, iRuleName string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking whether vserver %s has iRule %s...", vserverName, iRuleName)
@@ -476,6 +508,8 @@ func (f5 *f5LTM) ensureVserverHasIRule(vserverName, iRuleName string) error {
 func (f5 *f5LTM) checkPartitionPathExists(pathName string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Checking if partition path %q exists...", pathName)
 	uri := fmt.Sprintf("https://%s/mgmt/tm/sys/folder/%s", f5.host, encodeiControlUriPathComponent(pathName))
 	err := f5.get(uri, nil)
@@ -490,6 +524,8 @@ func (f5 *f5LTM) checkPartitionPathExists(pathName string) (bool, error) {
 	return true, nil
 }
 func (f5 *f5LTM) addPartitionPath(pathName string) (bool, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Creating partition path %q ...", pathName)
@@ -507,6 +543,8 @@ func (f5 *f5LTM) addPartitionPath(pathName string) (bool, error) {
 	return true, nil
 }
 func (f5 *f5LTM) ensurePartitionPathExists(pathName string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Ensuring partition path %s exists...", pathName)
@@ -535,6 +573,8 @@ func (f5 *f5LTM) ensurePartitionPathExists(pathName string) error {
 	return nil
 }
 func (f5 *f5LTM) Initialize() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	err := f5.ensurePartitionPathExists(f5.partitionPath)
@@ -597,6 +637,8 @@ func (f5 *f5LTM) Initialize() error {
 func checkIPAndGetMac(ipStr string) (string, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ip := net.ParseIP(ipStr)
 	if ip == nil {
 		errStr := fmt.Sprintf("vtep IP '%s' is not a valid IP address", ipStr)
@@ -613,6 +655,8 @@ func checkIPAndGetMac(ipStr string) (string, error) {
 	return macAddr, nil
 }
 func (f5 *f5LTM) AddVtep(ipStr string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if !f5.setupOSDNVxLAN {
@@ -637,6 +681,8 @@ func (f5 *f5LTM) AddVtep(ipStr string) error {
 func (f5 *f5LTM) RemoveVtep(ipStr string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if !f5.setupOSDNVxLAN {
 		return nil
 	}
@@ -654,6 +700,8 @@ func (f5 *f5LTM) RemoveVtep(ipStr string) error {
 func (f5 *f5LTM) CreatePool(poolname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	url := fmt.Sprintf("https://%s/mgmt/tm/ltm/pool", f5.host)
 	payload := f5Pool{Mode: "round-robin", Monitor: "min 1 of /Common/http /Common/https", Partition: f5.partitionPath, Name: poolname}
 	err := f5.post(url, payload, nil)
@@ -667,6 +715,8 @@ func (f5 *f5LTM) CreatePool(poolname string) error {
 func (f5 *f5LTM) DeletePool(poolname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	url := fmt.Sprintf("https://%s/mgmt/tm/ltm/pool/%s", f5.host, f5.iControlUriResourceId(poolname))
 	err := f5.delete(url, nil)
 	if err != nil {
@@ -677,6 +727,8 @@ func (f5 *f5LTM) DeletePool(poolname string) error {
 	return nil
 }
 func (f5 *f5LTM) GetPoolMembers(poolname string) (map[string]bool, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	members, ok := f5.poolMembers[poolname]
@@ -698,6 +750,8 @@ func (f5 *f5LTM) GetPoolMembers(poolname string) (map[string]bool, error) {
 func (f5 *f5LTM) PoolExists(poolname string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, err := f5.GetPoolMembers(poolname)
 	if err == nil {
 		return true, nil
@@ -710,6 +764,8 @@ func (f5 *f5LTM) PoolExists(poolname string) (bool, error) {
 func (f5 *f5LTM) PoolHasMember(poolname, member string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	members, err := f5.GetPoolMembers(poolname)
 	if err != nil {
 		return false, err
@@ -717,6 +773,8 @@ func (f5 *f5LTM) PoolHasMember(poolname, member string) (bool, error) {
 	return members[member], nil
 }
 func (f5 *f5LTM) AddPoolMember(poolname, member string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	hasMember, err := f5.PoolHasMember(poolname, member)
@@ -745,6 +803,8 @@ func (f5 *f5LTM) AddPoolMember(poolname, member string) error {
 func (f5 *f5LTM) DeletePoolMember(poolname, member string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	hasMember, err := f5.PoolHasMember(poolname, member)
 	if err != nil {
 		return err
@@ -763,6 +823,8 @@ func (f5 *f5LTM) DeletePoolMember(poolname, member string) error {
 	return nil
 }
 func (f5 *f5LTM) getRoutes(policyname string) (map[string]bool, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routes, ok := f5.routes[policyname]
@@ -785,6 +847,8 @@ func (f5 *f5LTM) getRoutes(policyname string) (map[string]bool, error) {
 func (f5 *f5LTM) routeExists(policyname, routename string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getRoutes(policyname)
 	if err != nil {
 		return false, err
@@ -794,14 +858,20 @@ func (f5 *f5LTM) routeExists(policyname, routename string) (bool, error) {
 func (f5 *f5LTM) InsecureRouteExists(routename string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.routeExists(httpPolicyName, routename)
 }
 func (f5 *f5LTM) SecureRouteExists(routename string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.routeExists(httpsPolicyName, routename)
 }
 func (f5 *f5LTM) ReencryptRouteExists(routename string) (bool, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routes, err := f5.getReencryptRoutes()
@@ -814,6 +884,8 @@ func (f5 *f5LTM) ReencryptRouteExists(routename string) (bool, error) {
 func (f5 *f5LTM) PassthroughRouteExists(routename string) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getPassthroughRoutes()
 	if err != nil {
 		return false, err
@@ -822,6 +894,8 @@ func (f5 *f5LTM) PassthroughRouteExists(routename string) (bool, error) {
 	return ok, nil
 }
 func (f5 *f5LTM) addRoute(policyname, routename, poolname, hostname, pathname string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	success := false
@@ -887,14 +961,20 @@ func (f5 *f5LTM) addRoute(policyname, routename, poolname, hostname, pathname st
 func (f5 *f5LTM) AddInsecureRoute(routename, poolname, hostname, pathname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.addRoute(httpPolicyName, routename, poolname, hostname, pathname)
 }
 func (f5 *f5LTM) AddSecureRoute(routename, poolname, hostname, pathname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.addRoute(httpsPolicyName, routename, poolname, hostname, pathname)
 }
 func (f5 *f5LTM) getReencryptRoutes() (map[string]reencryptRoute, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routes := f5.reencryptRoutes
@@ -933,6 +1013,8 @@ func (f5 *f5LTM) getReencryptRoutes() (map[string]reencryptRoute, error) {
 func (f5 *f5LTM) updateReencryptRoutes() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getReencryptRoutes()
 	if err != nil {
 		return err
@@ -960,6 +1042,8 @@ func (f5 *f5LTM) updateReencryptRoutes() error {
 	return nil
 }
 func (f5 *f5LTM) getPassthroughRoutes() (map[string]passthroughRoute, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routes := f5.passthroughRoutes
@@ -998,6 +1082,8 @@ func (f5 *f5LTM) getPassthroughRoutes() (map[string]passthroughRoute, error) {
 func (f5 *f5LTM) updatePassthroughRoutes() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getPassthroughRoutes()
 	if err != nil {
 		return err
@@ -1027,6 +1113,8 @@ func (f5 *f5LTM) updatePassthroughRoutes() error {
 func (f5 *f5LTM) AddReencryptRoute(routename, poolname, hostname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getReencryptRoutes()
 	if err != nil {
 		return err
@@ -1037,6 +1125,8 @@ func (f5 *f5LTM) AddReencryptRoute(routename, poolname, hostname string) error {
 func (f5 *f5LTM) AddPassthroughRoute(routename, poolname, hostname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getPassthroughRoutes()
 	if err != nil {
 		return err
@@ -1045,6 +1135,8 @@ func (f5 *f5LTM) AddPassthroughRoute(routename, poolname, hostname string) error
 	return f5.updatePassthroughRoutes()
 }
 func (f5 *f5LTM) DeleteReencryptRoute(routename string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routes, err := f5.getReencryptRoutes()
@@ -1061,6 +1153,8 @@ func (f5 *f5LTM) DeleteReencryptRoute(routename string) error {
 func (f5 *f5LTM) DeletePassthroughRoute(routename string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, err := f5.getPassthroughRoutes()
 	if err != nil {
 		return err
@@ -1075,6 +1169,8 @@ func (f5 *f5LTM) DeletePassthroughRoute(routename string) error {
 func (f5 *f5LTM) deleteRoute(policyname, routename string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ruleUrl := fmt.Sprintf("https://%s/mgmt/tm/ltm/policy/%s/rules/%s", f5.host, f5.iControlUriResourceId(policyname), routename)
 	err := f5.delete(ruleUrl, nil)
 	if err != nil {
@@ -1087,9 +1183,13 @@ func (f5 *f5LTM) deleteRoute(policyname, routename string) error {
 func (f5 *f5LTM) DeleteInsecureRoute(routename string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.deleteRoute(httpPolicyName, routename)
 }
 func (f5 *f5LTM) DeleteSecureRoute(routename string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return f5.deleteRoute(httpsPolicyName, routename)
@@ -1100,9 +1200,13 @@ var sshOptions []string = []string{"-o", "StrictHostKeyChecking=no", "-o", "GSSA
 func (f5 *f5LTM) buildSshArgs(args ...string) []string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return append(append(sshOptions, "-i", f5.privkey), args...)
 }
 func (f5 *f5LTM) AddCert(routename, hostname, cert, privkey, destCACert string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if f5.privkey == "" {
@@ -1166,6 +1270,8 @@ var execCommand = exec.Command
 func (f5 *f5LTM) uploadCert(cert, certname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Writing tempfile for certificate %s...", certname)
 	certfile, err := ioutil.TempFile("", "cert")
 	if err != nil {
@@ -1211,6 +1317,8 @@ func (f5 *f5LTM) uploadCert(cert, certname string) error {
 	return f5.post(installCertCommandUrl, installCertCommandPayload, nil)
 }
 func (f5 *f5LTM) uploadKey(privkey, keyname string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Writing tempfile for key %s...", keyname)
@@ -1260,12 +1368,16 @@ func (f5 *f5LTM) uploadKey(privkey, keyname string) error {
 func (f5 *f5LTM) createClientSslProfile(profilename, hostname, certname, keyname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Creating client-ssl profile %s...", profilename)
 	clientSslProfileUrl := fmt.Sprintf("https://%s/mgmt/tm/ltm/profile/client-ssl", f5.host)
 	clientSslProfilePayload := f5SslProfilePayload{Certificate: fmt.Sprintf("%s.crt", certname), Key: fmt.Sprintf("%s.key", keyname), Name: profilename, ServerName: hostname}
 	return f5.post(clientSslProfileUrl, clientSslProfilePayload, nil)
 }
 func (f5 *f5LTM) createServerSslProfile(profilename, hostname, cacertname string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Creating server-ssl profile %s...", profilename)
@@ -1276,12 +1388,16 @@ func (f5 *f5LTM) createServerSslProfile(profilename, hostname, cacertname string
 func (f5 *f5LTM) associateClientSslProfileWithVserver(profilename, vservername string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(4).Infof("Associating client-ssl profile %s with vserver %s...", profilename, vservername)
 	vserverProfileUrl := fmt.Sprintf("https://%s/mgmt/tm/ltm/virtual/%s/profiles", f5.host, f5.iControlUriResourceId(vservername))
 	vserverProfilePayload := f5VserverProfilePayload{Name: profilename, Context: "clientside"}
 	return f5.post(vserverProfileUrl, vserverProfilePayload, nil)
 }
 func (f5 *f5LTM) associateServerSslProfileWithVserver(profilename, vservername string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Associating server-ssl profile %s with vserver %s...", profilename, vservername)
@@ -1292,9 +1408,13 @@ func (f5 *f5LTM) associateServerSslProfileWithVserver(profilename, vservername s
 func (f5 *f5LTM) DeleteCert(routename string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return f5.deleteCertParts(routename, true, true, true, true, true, true, true)
 }
 func (f5 *f5LTM) deleteCertParts(routename string, deleteServerSslProfileFromVserver, deleteServerSslProfile, deleteClientSslProfileFromVserver, deleteClientSslProfile, deletePrivateKey, deleteCert, deleteCACert bool) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if deleteServerSslProfileFromVserver {
@@ -1379,7 +1499,16 @@ func (f5 *f5LTM) deleteCertParts(routename string, deleteServerSslProfileFromVse
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

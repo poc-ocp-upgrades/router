@@ -25,10 +25,14 @@ const (
 func isTrue(s string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	v, _ := strconv.ParseBool(s)
 	return v
 }
 func firstMatch(pattern string, values ...string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(7).Infof("firstMatch called with %s and %v", pattern, values)
@@ -48,6 +52,8 @@ func firstMatch(pattern string, values ...string) string {
 func env(name string, defaults ...string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if envValue := os.Getenv(name); envValue != "" {
 		return envValue
 	}
@@ -61,10 +67,14 @@ func env(name string, defaults ...string) string {
 func isInteger(s string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, err := strconv.Atoi(s)
 	return (err == nil)
 }
 func matchValues(s string, allowedValues ...string) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(7).Infof("matchValues called with %s and %v", s, allowedValues)
@@ -80,6 +90,8 @@ func matchValues(s string, allowedValues ...string) bool {
 func matchPattern(pattern, s string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(7).Infof("matchPattern called with %s and %s", pattern, s)
 	status, err := regexp.MatchString(`\A(?:`+pattern+`)\z`, s)
 	if err == nil {
@@ -90,6 +102,8 @@ func matchPattern(pattern, s string) bool {
 	return false
 }
 func genSubdomainWildcardRegexp(hostname, path string, exactPath bool) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	subdomain := routeapihelpers.GetDomainForHost(hostname)
@@ -106,14 +120,20 @@ func genSubdomainWildcardRegexp(hostname, path string, exactPath bool) string {
 func generateRouteRegexp(hostname, path string, wildcard bool) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return templateutil.GenerateRouteRegexp(hostname, path, wildcard)
 }
 func genCertificateHostName(hostname string, wildcard bool) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return templateutil.GenCertificateHostName(hostname, wildcard)
 }
 func processEndpointsForAlias(alias ServiceAliasConfig, svc ServiceUnit, action string) []Endpoint {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	endpoints := endpointsForAlias(alias, svc)
@@ -126,6 +146,8 @@ func processEndpointsForAlias(alias ServiceAliasConfig, svc ServiceUnit, action 
 	return endpoints
 }
 func endpointsForAlias(alias ServiceAliasConfig, svc ServiceUnit) []Endpoint {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(alias.PreferPort) == 0 {
@@ -143,9 +165,13 @@ func endpointsForAlias(alias ServiceAliasConfig, svc ServiceUnit) []Endpoint {
 func backendConfig(name string, cfg ServiceAliasConfig, hascert bool) *haproxyutil.BackendConfig {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &haproxyutil.BackendConfig{Name: name, Host: cfg.Host, Path: cfg.Path, IsWildcard: cfg.IsWildcard, Termination: cfg.TLSTermination, InsecurePolicy: cfg.InsecureEdgeTerminationPolicy, HasCertificate: hascert}
 }
 func generateHAProxyCertConfigMap(td templateData) []string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	lines := make([]string, 0)
@@ -167,10 +193,14 @@ func generateHAProxyCertConfigMap(td templateData) []string {
 func validateHAProxyWhiteList(value string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_, valid := haproxyutil.ValidateWhiteList(value)
 	return valid
 }
 func generateHAProxyWhiteListFile(workingDir, id, value string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	name := path.Join(workingDir, "whitelists", fmt.Sprintf("%s.txt", id))
@@ -183,6 +213,8 @@ func generateHAProxyWhiteListFile(workingDir, id, value string) string {
 	return name
 }
 func getHTTPAliasesGroupedByHost(aliases map[string]ServiceAliasConfig) map[string]map[string]ServiceAliasConfig {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	result := make(map[string]map[string]ServiceAliasConfig)
@@ -198,6 +230,8 @@ func getHTTPAliasesGroupedByHost(aliases map[string]ServiceAliasConfig) map[stri
 	return result
 }
 func getPrimaryAliasKey(aliases map[string]ServiceAliasConfig) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(aliases) == 0 {
@@ -221,6 +255,8 @@ func getPrimaryAliasKey(aliases map[string]ServiceAliasConfig) string {
 	return keys[0]
 }
 func generateHAProxyMap(name string, td templateData) []string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if name == certConfigMap {

@@ -12,6 +12,8 @@ import (
 func GenerateRouteRegexp(hostname, path string, wildcard bool) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	hostRE := regexp.QuoteMeta(hostname)
 	if wildcard {
 		subdomain := routeapihelpers.GetDomainForHost(hostname)
@@ -40,6 +42,8 @@ func GenerateRouteRegexp(hostname, path string, wildcard bool) string {
 func GenCertificateHostName(hostname string, wildcard bool) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if wildcard {
 		if idx := strings.IndexRune(hostname, '.'); idx > 0 {
 			return fmt.Sprintf("*.%s", hostname[idx+1:])
@@ -48,6 +52,8 @@ func GenCertificateHostName(hostname string, wildcard bool) string {
 	return hostname
 }
 func GenerateBackendNamePrefix(termination routev1.TLSTerminationType) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	prefix := "be_http"

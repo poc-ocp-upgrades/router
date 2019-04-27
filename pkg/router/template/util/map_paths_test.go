@@ -10,6 +10,8 @@ import (
 func checkSortExpectation(data, suffixOrder []string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(data) != len(suffixOrder) {
 		return fmt.Errorf("sorted data length %d did not match expected length %d", len(data), len(suffixOrder))
 	}
@@ -23,6 +25,8 @@ func checkSortExpectation(data, suffixOrder []string) error {
 func shuffle(data []string) []string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	shuffled := make([]string, len(data))
 	copy(shuffled, data)
 	for idx := range shuffled {
@@ -32,6 +36,8 @@ func shuffle(data []string) []string {
 	return shuffled
 }
 func TestSortMapPaths(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tests := []struct {
@@ -52,6 +58,8 @@ func TestSortMapPaths(t *testing.T) {
 	}
 }
 func TestSortMapPathWithWildcards(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testData := []string{`^api-stg\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ stg:api-route`, `^api-prod\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ prod:api-route`, `^[^\.]*\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ prod:wildcard-route`, `^3dev\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ dev:api-route`, `^api-prod\.127\.0\.0\.1\.nip\.io(:[0-9]+)?/x/y/z(/.*)?$ prod:api-path-route`, `^3app-admin\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ dev:admin-route`, `^[^\.]*\.foo\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ devel2:foo-wildcard-route`, `^zzz-production\.wildcard\.test(:[0-9]+)?/x/y/z(/.*)?$ test:api-route`, `^backend-app\.127\.0\.0\.1\.nip\.io(:[0-9]+)?(/.*)?$ prod:backend-route`, `^[^\.]*\.foo\.wildcard\.test(:[0-9]+)?(/.*)?$ devel2:foo-wildcard-test`}

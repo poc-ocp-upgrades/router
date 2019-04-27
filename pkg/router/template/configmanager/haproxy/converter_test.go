@@ -10,6 +10,8 @@ import (
 func TestNewConverter(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name	string
 		headers	string
@@ -23,6 +25,8 @@ func TestNewConverter(t *testing.T) {
 	}
 }
 func TestShowInfoCommandConverter(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	infoCommandOutput := `Name: converter-test
@@ -51,6 +55,8 @@ Pid: 42
 	}
 }
 func TestShowBackendCommandConverter(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	showBackendOutput := `# name
@@ -96,6 +102,8 @@ be_secure:ns3:re2
 func TestShowMapCommandConverter(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	listMapOutput := `# id (file) description
 1 (/var/lib/haproxy/conf/os_route_http_redirect.map) pattern loaded from file '/var/lib/haproxy/conf/os_route_http_redirect.map' used by map at file '/var/lib/haproxy/conf/haproxy.config' line 68
 5 (/var/lib/haproxy/conf/os_sni_passthrough.map) pattern loaded from file '/var/lib/haproxy/conf/os_sni_passthrough.map' used by map at file '/var/lib/haproxy/conf/haproxy.config' line 87
@@ -123,6 +131,8 @@ func TestShowMapCommandConverter(t *testing.T) {
 func TestShowServerStateOutputConverter(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name		string
 		commandOutput	string
@@ -145,9 +155,13 @@ func TestShowServerStateOutputConverter(t *testing.T) {
 func noopConverter(data []byte) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return data, nil
 }
 func removeLeadingHashConverter(data []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	prefix := []byte("#")
@@ -160,9 +174,13 @@ func removeLeadingHashConverter(data []byte) ([]byte, error) {
 func commentFirstLineConverter(data []byte) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return bytes.Join([][]byte{[]byte("#"), data}, []byte("")), nil
 }
 func removeFirstLineConverter(data []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(data) > 0 {
@@ -176,6 +194,8 @@ func removeFirstLineConverter(data []byte) ([]byte, error) {
 	return []byte(""), nil
 }
 func errorConverter(data []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return data, fmt.Errorf("converter test error")

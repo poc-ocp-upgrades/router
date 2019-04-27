@@ -11,6 +11,8 @@ import (
 func generateTestData(n int) []string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cidrs := make([]string, 0)
 	prefix := fmt.Sprintf("%d.%d.%d", utilrand.IntnRange(1, 254), utilrand.IntnRange(1, 254), utilrand.IntnRange(1, 254))
 	for i := 1; i <= n; i++ {
@@ -26,6 +28,8 @@ func generateTestData(n int) []string {
 	return cidrs
 }
 func TestValidateWhiteList(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tests := []struct {

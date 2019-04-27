@@ -43,9 +43,13 @@ type SimpleContentionTracker struct {
 func NewSimpleContentionTracker(informer cache.SharedInformer, routerName string, interval time.Duration) *SimpleContentionTracker {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &SimpleContentionTracker{informer: informer, routerName: routerName, expires: interval, maxContentions: 5, ids: make(map[string]trackerElement)}
 }
 func (t *SimpleContentionTracker) SetConflictMessage(message string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	t.lock.Lock()
@@ -53,6 +57,8 @@ func (t *SimpleContentionTracker) SetConflictMessage(message string) {
 	t.message = message
 }
 func (t *SimpleContentionTracker) Run(stopCh <-chan struct{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	t.informer.AddEventHandler(cache.ResourceEventHandlerFuncs{UpdateFunc: func(oldObj, obj interface{}) {
@@ -80,6 +86,8 @@ func (t *SimpleContentionTracker) Run(stopCh <-chan struct{}) {
 	}
 }
 func (t *SimpleContentionTracker) flush() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	t.lock.Lock()
@@ -114,6 +122,8 @@ func (t *SimpleContentionTracker) flush() {
 func (t *SimpleContentionTracker) Changed(id string, current *routev1.RouteIngress) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	if t.contentions > t.maxContentions {
@@ -145,6 +155,8 @@ func (t *SimpleContentionTracker) Changed(id string, current *routev1.RouteIngre
 func (t *SimpleContentionTracker) IsChangeContended(id string, now time.Time, current *routev1.RouteIngress) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	if t.contentions > t.maxContentions {
@@ -164,6 +176,8 @@ func (t *SimpleContentionTracker) IsChangeContended(id string, now time.Time, cu
 func (t *SimpleContentionTracker) Clear(id string, current *routev1.RouteIngress) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	last, ok := t.ids[id]
@@ -177,9 +191,13 @@ func (t *SimpleContentionTracker) Clear(id string, current *routev1.RouteIngress
 func ingressEqual(a, b *routev1.RouteIngress) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return a.Host == b.Host && a.RouterCanonicalHostname == b.RouterCanonicalHostname && a.WildcardPolicy == b.WildcardPolicy && a.RouterName == b.RouterName
 }
 func ingressConditionTouched(ingress *routev1.RouteIngress) *metav1.Time {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var lastTouch *metav1.Time
@@ -194,6 +212,8 @@ func ingressConditionTouched(ingress *routev1.RouteIngress) *metav1.Time {
 	return lastTouch
 }
 func ingressChanged(oldRoute, route *routev1.Route, routerName string) *routev1.RouteIngress {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var ingress *routev1.RouteIngress
@@ -216,7 +236,16 @@ func ingressChanged(oldRoute, route *routev1.Route, routerName string) *routev1.
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

@@ -11,6 +11,8 @@ import (
 func TestRouteLessThan(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	olderTimestamp := metav1.Now().Rfc3339Copy()
 	newerTimestamp := metav1.Time{Time: olderTimestamp.Add(1 * time.Minute)}
 	tcs := []struct {
@@ -36,6 +38,8 @@ func TestRouteLessThan(t *testing.T) {
 	}
 }
 func TestGetDomainForHost(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tests := []struct {

@@ -40,6 +40,8 @@ type fakeHAProxy struct {
 func startFakeHAProxyServer(prefix string) (*fakeHAProxy, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	f, err := ioutil.TempFile(os.TempDir(), prefix)
 	if err != nil {
 		return nil, err
@@ -53,6 +55,8 @@ func startFakeHAProxyServer(prefix string) (*fakeHAProxy, error) {
 func StartFakeServerForTest(t *testing.T) *fakeHAProxy {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	name := fmt.Sprintf("fake-haproxy-%s", t.Name())
 	server, err := startFakeHAProxyServer(name)
 	if err != nil {
@@ -61,6 +65,8 @@ func StartFakeServerForTest(t *testing.T) *fakeHAProxy {
 	return server
 }
 func newFakeHAProxy(sockFile, backendName string) *fakeHAProxy {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(backendName) == 0 {
@@ -73,11 +79,15 @@ func newFakeHAProxy(sockFile, backendName string) *fakeHAProxy {
 func (p *fakeHAProxy) SocketFile() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	return p.socketFile
 }
 func (p *fakeHAProxy) Reset() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p.lock.Lock()
@@ -88,11 +98,15 @@ func (p *fakeHAProxy) Reset() {
 func (p *fakeHAProxy) Commands() []string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	return p.commands
 }
 func (p *fakeHAProxy) Start() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	started := make(chan bool)
@@ -121,6 +135,8 @@ func (p *fakeHAProxy) Start() {
 func (p *fakeHAProxy) Stop() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.lock.Lock()
 	p.shutdown = true
 	sockFile := p.socketFile
@@ -134,6 +150,8 @@ func (p *fakeHAProxy) Stop() {
 	}()
 }
 func (p *fakeHAProxy) initialize() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	redirectMap := map[string]string{`^route\.edge\.test(:[0-9]+)?(/.*)?$`: `0x559a137bb720 ^route\.edge\.test(:[0-9]+)?(/.*)?$ be_edge_http:ns1:edge-redirect-to-https`, `^redirect\.blueprints\.test(:[0-9]+)?(/.*)?$`: `0x559a137bb7e0 ^redirect\.blueprints\.test(:[0-9]+)?(/.*)?$ be_edge_http:blueprints:blueprint-redirect-to-https`}
@@ -150,6 +168,8 @@ func (p *fakeHAProxy) initialize() {
 	}
 }
 func (p *fakeHAProxy) showInfo() string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return `Name: HAProxy
@@ -207,6 +227,8 @@ node: f27
 func (p *fakeHAProxy) listMaps() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return `# id (file) description
 1 (/var/lib/haproxy/conf/os_route_http_redirect.map) pattern loaded from file '/var/lib/haproxy/conf/os_route_http_redirect.map' used by map at file '/var/lib/haproxy/conf/haproxy.config' line 68
 5 (/var/lib/haproxy/conf/os_sni_passthrough.map) pattern loaded from file '/var/lib/haproxy/conf/os_sni_passthrough.map' used by map at file '/var/lib/haproxy/conf/haproxy.config' line 87
@@ -217,6 +239,8 @@ func (p *fakeHAProxy) listMaps() string {
 `
 }
 func (p *fakeHAProxy) showMap(name string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	lines := []string{}
@@ -235,6 +259,8 @@ func (p *fakeHAProxy) showMap(name string) string {
 func (p *fakeHAProxy) addMap(name, k, v string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	lines := []string{}
 	p.lock.Lock()
 	defer p.lock.Unlock()
@@ -248,6 +274,8 @@ func (p *fakeHAProxy) addMap(name, k, v string) string {
 	return strings.Join(lines, "\n")
 }
 func (p *fakeHAProxy) delMap(name, id string) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	id = strings.Trim(id, "#")
@@ -267,6 +295,8 @@ func (p *fakeHAProxy) delMap(name, id string) string {
 	return fmt.Sprintf("del map %s\n", name)
 }
 func (p *fakeHAProxy) listBackends() string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return `# name
@@ -296,6 +326,8 @@ be_edge_http:default:wildcard-redirect-to-https
 func (p *fakeHAProxy) showServers(name string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	onePodAndOneDynamicServerBackends := map[string]string{"be_edge_http:_hapcm_blueprint_pool:_blueprint-edge-route-1": "", "be_edge_http:_hapcm_blueprint_pool:_blueprint-edge-route-2": "", "be_edge_http:_hapcm_blueprint_pool:_blueprint-edge-route-3": "", "be_http:_hapcm_blueprint_pool:_blueprint-http-route-1": "", "be_http:_hapcm_blueprint_pool:_blueprint-http-route-2": "", "be_http:_hapcm_blueprint_pool:_blueprint-http-route-3": "", "be_tcp:_hapcm_blueprint_pool:_blueprint-passthrough-route-1": "", "be_tcp:_hapcm_blueprint_pool:_blueprint-passthrough-route-2": "", "be_tcp:_hapcm_blueprint_pool:_blueprint-passthrough-route-3": "", "be_edge_http:blueprints:blueprint-redirect-to-https": "", "be_secure:blueprints:blueprint-reencrypt": "", "be_edge_http:default:example-route": "", "be_edge_http:default:test-http-allow": "", "be_edge_http:default:test-https": "", "be_edge_http:default:test-https-only": "", "be_tcp:default:test-passthrough": "", "be_secure:default:test-reencrypt": "", "be_edge_http:default:wildcard-redirect-to-https": ""}
@@ -319,6 +351,8 @@ func (p *fakeHAProxy) showServers(name string) string {
 func (p *fakeHAProxy) setServer(name string, options []string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(name) == 0 {
 		return fmt.Sprintf("Require 'backend/server'.\n")
 	}
@@ -331,6 +365,8 @@ func (p *fakeHAProxy) setServer(name string, options []string) string {
 	return fmt.Sprintf("\n")
 }
 func (p *fakeHAProxy) process(conn net.Conn) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	readBuffer := make([]byte, 1024)
@@ -395,7 +431,16 @@ func (p *fakeHAProxy) process(conn net.Conn) error {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

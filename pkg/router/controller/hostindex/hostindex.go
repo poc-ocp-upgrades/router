@@ -26,6 +26,8 @@ type routeKey struct {
 func sameRouteForKey(a *routev1.Route, key routeKey) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return a.Name == key.name && a.Namespace == key.namespace
 }
 
@@ -38,9 +40,13 @@ type hostIndex struct {
 func New(fn RouteActivationFunc) Interface {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &hostIndex{activateFn: fn, hostToRoute: make(map[string]*hostRules), routeToHost: make(map[routeKey]string)}
 }
 func sameRoute(a, b *routev1.Route) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return a.Name == b.Name && a.Namespace == b.Namespace
@@ -48,11 +54,15 @@ func sameRoute(a, b *routev1.Route) bool {
 func (hi *hostIndex) Add(route *routev1.Route) (Changes, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	changes := &routeChanges{}
 	added := hi.add(route, changes)
 	return changes, added
 }
 func (hi *hostIndex) add(route *routev1.Route, changes *routeChanges) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	host := route.Spec.Host
@@ -95,6 +105,8 @@ func (hi *hostIndex) add(route *routev1.Route, changes *routeChanges) bool {
 func (hi *hostIndex) findRoute(host string, key routeKey) (_ *routev1.Route, _ *hostRules, active, ok bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	rules, ok := hi.hostToRoute[host]
 	if !ok {
 		return nil, nil, false, false
@@ -114,10 +126,14 @@ func (hi *hostIndex) findRoute(host string, key routeKey) (_ *routev1.Route, _ *
 func (hi *hostIndex) Remove(route *routev1.Route) Changes {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	delete(hi.routeToHost, routeKey{namespace: route.Namespace, name: route.Name})
 	return hi.remove(route, true, nil)
 }
 func (hi *hostIndex) remove(route *routev1.Route, removeLast bool, changes *routeChanges) *routeChanges {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	host := route.Spec.Host
@@ -151,6 +167,8 @@ func (hi *hostIndex) remove(route *routev1.Route, removeLast bool, changes *rout
 	return nil
 }
 func (hi *hostIndex) Filter(fn func(*routev1.Route) (keep bool)) Changes {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	changes := &routeChanges{}
@@ -189,9 +207,13 @@ func (hi *hostIndex) Filter(fn func(*routev1.Route) (keep bool)) Changes {
 func (hi *hostIndex) HostLen() int {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return len(hi.hostToRoute)
 }
 func (hi *hostIndex) RoutesForHost(host string) ([]*routev1.Route, bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	rules, ok := hi.hostToRoute[host]
@@ -211,9 +233,13 @@ type hostRules struct {
 func (r *hostRules) Empty() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return len(r.active) == 0 && len(r.inactive) == 0
 }
 func (r *hostRules) replace(old, route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for i, existing := range r.active {
@@ -228,6 +254,8 @@ func (r *hostRules) replace(old, route *routev1.Route) {
 	}
 }
 func (r *hostRules) add(route *routev1.Route, fn RouteActivationFunc, changes *routeChanges) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(r.active) == 0 {
@@ -252,6 +280,8 @@ func (r *hostRules) add(route *routev1.Route, fn RouteActivationFunc, changes *r
 func (r *hostRules) removeActive(i int, fn RouteActivationFunc, changes *routeChanges) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.active = append(r.active[0:i], r.active[i+1:]...)
 	if len(r.active) == 0 || i == 0 {
 		r.reset(fn, changes)
@@ -259,6 +289,8 @@ func (r *hostRules) removeActive(i int, fn RouteActivationFunc, changes *routeCh
 	}
 }
 func (r *hostRules) reset(fn RouteActivationFunc, changes *routeChanges) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	active, displaced := fn(changes, r.active, r.inactive...)
@@ -271,6 +303,8 @@ func (r *hostRules) reset(fn RouteActivationFunc, changes *routeChanges) {
 func (r *hostRules) removeInactive(i int) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.inactive = append(r.inactive[0:i], r.inactive[i+1:]...)
 }
 
@@ -280,6 +314,8 @@ type routeChanges struct {
 }
 
 func (c *routeChanges) GetActivated() []*routev1.Route {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if c == nil {
@@ -294,6 +330,8 @@ func (c *routeChanges) GetActivated() []*routev1.Route {
 func (c *routeChanges) GetDisplaced() []*routev1.Route {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if c == nil {
 		return nil
 	}
@@ -306,6 +344,8 @@ func (c *routeChanges) GetDisplaced() []*routev1.Route {
 func (c *routeChanges) Activated(route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if c.active == nil {
 		c.active = make(map[types.UID]*routev1.Route)
 	}
@@ -313,6 +353,8 @@ func (c *routeChanges) Activated(route *routev1.Route) {
 	delete(c.displace, route.UID)
 }
 func (c *routeChanges) Displaced(route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if c.displace == nil {

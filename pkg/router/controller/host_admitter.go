@@ -17,6 +17,8 @@ type RouteMap map[string][]*routev1.Route
 func (srm RouteMap) RemoveRoute(key string, route *routev1.Route) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	k := 0
 	removed := false
 	m := srm[key]
@@ -37,6 +39,8 @@ func (srm RouteMap) RemoveRoute(key string, route *routev1.Route) bool {
 	return removed
 }
 func (srm RouteMap) InsertRoute(key string, route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	srm.RemoveRoute(key, route)
@@ -68,9 +72,13 @@ type HostAdmitter struct {
 func NewHostAdmitter(plugin router.Plugin, fn RouteAdmissionFunc, allowWildcards, disableNamespaceCheck bool, recorder RejectionRecorder) *HostAdmitter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &HostAdmitter{plugin: plugin, admitter: fn, recorder: recorder, allowWildcardRoutes: allowWildcards, disableNamespaceCheck: disableNamespaceCheck, claimedHosts: RouteMap{}, claimedWildcards: RouteMap{}, blockedWildcards: RouteMap{}}
 }
 func (p *HostAdmitter) HandleNode(eventType watch.EventType, node *kapi.Node) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return p.plugin.HandleNode(eventType, node)
@@ -78,9 +86,13 @@ func (p *HostAdmitter) HandleNode(eventType watch.EventType, node *kapi.Node) er
 func (p *HostAdmitter) HandleEndpoints(eventType watch.EventType, endpoints *kapi.Endpoints) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.plugin.HandleEndpoints(eventType, endpoints)
 }
 func (p *HostAdmitter) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if p.allowedNamespaces != nil && !p.allowedNamespaces.Has(route.Namespace) {
@@ -111,15 +123,21 @@ func (p *HostAdmitter) HandleRoute(eventType watch.EventType, route *routev1.Rou
 func (p *HostAdmitter) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.allowedNamespaces = namespaces
 	return p.plugin.HandleNamespaces(namespaces)
 }
 func (p *HostAdmitter) Commit() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.plugin.Commit()
 }
 func (p *HostAdmitter) addRoute(route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	displacedRoutes, err, ownerNamespace := p.displacedRoutes(route)
@@ -173,6 +191,8 @@ func (p *HostAdmitter) addRoute(route *routev1.Route) error {
 	return nil
 }
 func (p *HostAdmitter) displacedRoutes(newRoute *routev1.Route) ([]*routev1.Route, error, string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	displaced := []*routev1.Route{}

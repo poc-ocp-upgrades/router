@@ -15,6 +15,8 @@ type handler struct {
 func (h *handler) handle() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	h.Lock()
 	defer h.Unlock()
 	h.count += 1
@@ -23,11 +25,15 @@ func (h *handler) handle() error {
 func (h *handler) counter() int {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	h.Lock()
 	defer h.Unlock()
 	return h.count
 }
 func TestCoalescingSerializingRateLimiter(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	fmt.Println("start")

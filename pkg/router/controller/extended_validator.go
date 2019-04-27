@@ -19,9 +19,13 @@ type ExtendedValidator struct {
 func NewExtendedValidator(plugin router.Plugin, recorder RejectionRecorder) *ExtendedValidator {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &ExtendedValidator{plugin: plugin, recorder: recorder}
 }
 func (p *ExtendedValidator) HandleNode(eventType watch.EventType, node *kapi.Node) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return p.plugin.HandleNode(eventType, node)
@@ -29,9 +33,13 @@ func (p *ExtendedValidator) HandleNode(eventType watch.EventType, node *kapi.Nod
 func (p *ExtendedValidator) HandleEndpoints(eventType watch.EventType, endpoints *kapi.Endpoints) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.plugin.HandleEndpoints(eventType, endpoints)
 }
 func (p *ExtendedValidator) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	routeName := routeNameKey(route)
@@ -50,9 +58,13 @@ func (p *ExtendedValidator) HandleRoute(eventType watch.EventType, route *routev
 func (p *ExtendedValidator) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.plugin.HandleNamespaces(namespaces)
 }
 func (p *ExtendedValidator) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return p.plugin.Commit()

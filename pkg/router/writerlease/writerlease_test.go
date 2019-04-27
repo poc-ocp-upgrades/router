@@ -8,6 +8,8 @@ import (
 func TestWaitForLeader(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(0, 0)
 	defer func() {
 		if len(l.queued) > 0 {
@@ -32,6 +34,8 @@ func TestWaitForLeader(t *testing.T) {
 func TestBecomeLeaderAfterRetry(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l := New(0, 0)
 	ch := make(chan struct{})
 	defer close(ch)
@@ -51,6 +55,8 @@ func TestBecomeLeaderAfterRetry(t *testing.T) {
 	}
 }
 func TestBecomeFollowerAfterRetry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	l := New(0, 0)
@@ -74,6 +80,8 @@ func TestBecomeFollowerAfterRetry(t *testing.T) {
 	}
 }
 func TestRunOverlappingWork(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	l := New(0, 0)
@@ -113,6 +121,8 @@ func TestRunOverlappingWork(t *testing.T) {
 	<-done
 }
 func TestExtend(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	l := New(10*time.Millisecond, 0)

@@ -13,9 +13,13 @@ type BlueprintPlugin struct{ manager templaterouter.ConfigManager }
 func NewBlueprintPlugin(cm templaterouter.ConfigManager) *BlueprintPlugin {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &BlueprintPlugin{manager: cm}
 }
 func (p *BlueprintPlugin) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch eventType {
@@ -29,9 +33,13 @@ func (p *BlueprintPlugin) HandleRoute(eventType watch.EventType, route *routev1.
 func (p *BlueprintPlugin) HandleNode(eventType watch.EventType, node *kapi.Node) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil
 }
 func (p *BlueprintPlugin) HandleEndpoints(eventType watch.EventType, endpoints *kapi.Endpoints) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return nil
@@ -39,9 +47,13 @@ func (p *BlueprintPlugin) HandleEndpoints(eventType watch.EventType, endpoints *
 func (p *BlueprintPlugin) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil
 }
 func (p *BlueprintPlugin) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return nil

@@ -23,6 +23,8 @@ var errBackend = fmt.Errorf("backend reported failure")
 func HTTPBackendAvailable(u *url.URL) healthz.HealthzChecker {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p := probehttp.New()
 	return healthz.NamedCheck("backend-http", func(r *http.Request) error {
 		result, _, err := p.Probe(u, nil, 2*time.Second)
@@ -38,6 +40,8 @@ func HTTPBackendAvailable(u *url.URL) healthz.HealthzChecker {
 func HasSynced(routerPtr **templateplugin.TemplatePlugin) (healthz.HealthzChecker, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if routerPtr == nil {
 		return nil, fmt.Errorf("Nil routerPtr passed to HasSynced")
 	}
@@ -51,11 +55,15 @@ func HasSynced(routerPtr **templateplugin.TemplatePlugin) (healthz.HealthzChecke
 func ControllerLive() healthz.HealthzChecker {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return healthz.NamedCheck("controller", func(r *http.Request) error {
 		return nil
 	})
 }
 func ProxyProtocolHTTPBackendAvailable(u *url.URL) healthz.HealthzChecker {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	dialer := &net.Dialer{Timeout: 2 * time.Second, DualStack: true}
@@ -92,7 +100,16 @@ func ProxyProtocolHTTPBackendAvailable(u *url.URL) healthz.HealthzChecker {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

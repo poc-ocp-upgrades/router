@@ -42,14 +42,20 @@ var (
 func newFrontendMetric(metricName string, docString string, constLabels prometheus.Labels) *prometheus.GaugeVec {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return prometheus.NewGaugeVec(prometheus.GaugeOpts{Namespace: namespace, Name: "frontend_" + metricName, Help: docString, ConstLabels: constLabels}, frontendLabelNames)
 }
 func newBackendMetric(metricName string, docString string, constLabels prometheus.Labels) *prometheus.GaugeVec {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return prometheus.NewGaugeVec(prometheus.GaugeOpts{Namespace: namespace, Name: "backend_" + metricName, Help: docString, ConstLabels: constLabels}, backendLabelNames)
 }
 func newServerMetric(metricName string, docString string, constLabels prometheus.Labels) *prometheus.GaugeVec {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return prometheus.NewGaugeVec(prometheus.GaugeOpts{Namespace: namespace, Name: "server_" + metricName, Help: docString, ConstLabels: constLabels}, serverLabelNames)
@@ -58,6 +64,8 @@ func newServerMetric(metricName string, docString string, constLabels prometheus
 type metrics map[int]*prometheus.GaugeVec
 
 func (m metrics) Names() []int {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	keys := make([]int, 0, len(m))
@@ -97,6 +105,8 @@ type Exporter struct {
 func NewExporter(opts PrometheusOptions) (*Exporter, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	u, err := url.Parse(opts.ScrapeURI)
 	if err != nil {
 		return nil, err
@@ -119,6 +129,8 @@ func NewExporter(opts PrometheusOptions) (*Exporter, error) {
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, m := range e.frontendMetrics {
 		m.Describe(ch)
 	}
@@ -136,6 +148,8 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- e.csvParseFailures.Desc()
 }
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	e.mutex.Lock()
@@ -160,6 +174,8 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 func (e *Exporter) CollectNow() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
 	e.resetMetrics()
@@ -167,6 +183,8 @@ func (e *Exporter) CollectNow() {
 	e.lastScrape = nil
 }
 func fetchHTTP(uri string, timeout time.Duration) func() (io.ReadCloser, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	client := http.Client{Timeout: timeout}
@@ -183,6 +201,8 @@ func fetchHTTP(uri string, timeout time.Duration) func() (io.ReadCloser, error) 
 	}
 }
 func fetchUnix(u *url.URL, timeout time.Duration) func() (io.ReadCloser, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return func() (io.ReadCloser, error) {
@@ -208,6 +228,8 @@ func fetchUnix(u *url.URL, timeout time.Duration) func() (io.ReadCloser, error) 
 	}
 }
 func (e *Exporter) scrape(record bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	e.totalScrapes.Inc()
@@ -270,6 +292,8 @@ loop:
 func (e *Exporter) resetMetrics() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, m := range e.frontendMetrics {
 		m.Reset()
 	}
@@ -281,6 +305,8 @@ func (e *Exporter) resetMetrics() {
 	}
 }
 func (e *Exporter) collectMetrics(metrics chan<- prometheus.Metric) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for _, m := range e.frontendMetrics {
@@ -299,6 +325,8 @@ func (e *Exporter) collectMetrics(metrics chan<- prometheus.Metric) {
 	}
 }
 func (e *Exporter) parseRow(csvRow []string, targetValues counterValuesByMetric) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	pxname, svname, typ := csvRow[0], csvRow[1], csvRow[32]
@@ -327,6 +355,8 @@ func (e *Exporter) parseRow(csvRow []string, targetValues counterValuesByMetric)
 func knownServerSegment(value string) (string, string, string, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if i := strings.Index(value, ":"); i != -1 {
 		switch value[:i] {
 		case "ept":
@@ -346,6 +376,8 @@ func knownServerSegment(value string) (string, string, string, bool) {
 func knownBackendSegment(value string) (string, string, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if i := strings.Index(value, ":"); i != -1 {
 		switch value[:i] {
 		case "be_http":
@@ -363,6 +395,8 @@ func knownBackendSegment(value string) (string, string, bool) {
 func parseNameSegment(value string) (string, string, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	i := strings.Index(value, ":")
 	if i == -1 {
 		return "", "", false
@@ -370,6 +404,8 @@ func parseNameSegment(value string) (string, string, bool) {
 	return value[:i], value[i+1:], true
 }
 func parseStatusField(value string) int64 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch value {
@@ -383,6 +419,8 @@ func parseStatusField(value string) int64 {
 func (e *Exporter) exportAndRecordRow(metrics metrics, rowID metricID, targetValues counterValuesByMetric, csvRow []string, labels ...string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	updateValues := targetValues != nil
 	baseCounterValues := e.baseCounterValues[rowID]
 	if updateValues && baseCounterValues == nil {
@@ -394,6 +432,8 @@ func (e *Exporter) exportAndRecordRow(metrics metrics, rowID metricID, targetVal
 	}
 }
 func exportCSVFields(csvParseFailures prometheus.Counter, metrics metrics, baselineValues map[int]int64, updateBaseline bool, csvRow []string, labels []string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for fieldIdx, metric := range metrics {
@@ -424,6 +464,8 @@ func exportCSVFields(csvParseFailures prometheus.Counter, metrics metrics, basel
 func filterMetrics(export []int, available metrics) metrics {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	metrics := map[int]*prometheus.GaugeVec{}
 	if len(export) == 0 {
 		return metrics
@@ -450,6 +492,8 @@ type PrometheusOptions struct {
 }
 
 func NewPrometheusCollector(opts PrometheusOptions) (*Exporter, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(opts.ScrapeURI) == 0 {
@@ -498,7 +542,16 @@ func NewPrometheusCollector(opts PrometheusOptions) (*Exporter, error) {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

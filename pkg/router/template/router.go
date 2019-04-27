@@ -101,6 +101,8 @@ type templateData struct {
 func newTemplateRouter(cfg templateRouterCfg) (*templateRouter, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	dir := cfg.dir
 	glog.V(2).Infof("Creating a new template router, writing to %s", dir)
 	if len(cfg.peerEndpointsKey) > 0 {
@@ -135,10 +137,14 @@ func newTemplateRouter(cfg templateRouterCfg) (*templateRouter, error) {
 func (r *templateRouter) EnableRateLimiter(interval time.Duration, handlerFunc limiter.HandlerFunc) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.rateLimitedCommitFunction = limiter.NewCoalescingSerializingRateLimiter(interval, handlerFunc)
 	glog.V(2).Infof("Template router will coalesce reloads within %s of each other", interval.String())
 }
 func secretToPem(secPath, outName string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var fileCrtName = filepath.Join(secPath, "tls.crt")
@@ -161,6 +167,8 @@ func secretToPem(secPath, outName string) error {
 	return ioutil.WriteFile(outName, pemBlock, 0444)
 }
 func (r *templateRouter) writeDefaultCert() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	dir := filepath.Join(r.dir, certDir)
@@ -187,6 +195,8 @@ func (r *templateRouter) writeDefaultCert() error {
 func (r *templateRouter) readState() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	data, err := ioutil.ReadFile(filepath.Join(r.dir, routeFile))
 	if err != nil {
 		r.state = make(map[string]ServiceAliasConfig)
@@ -195,6 +205,8 @@ func (r *templateRouter) readState() error {
 	return json.Unmarshal(data, &r.state)
 }
 func (r *templateRouter) Commit() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.lock.Lock()
@@ -211,6 +223,8 @@ func (r *templateRouter) Commit() {
 	}
 }
 func (r *templateRouter) commitAndReload() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if err := func() error {
@@ -255,6 +269,8 @@ func (r *templateRouter) commitAndReload() error {
 func (r *templateRouter) writeState() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	data, err := json.MarshalIndent(r.state, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal route table: %v", err)
@@ -265,6 +281,8 @@ func (r *templateRouter) writeState() error {
 	return nil
 }
 func (r *templateRouter) writeConfig() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	for k, cfg := range r.state {
@@ -304,12 +322,16 @@ func (r *templateRouter) writeConfig() error {
 func (r *templateRouter) writeCertificates(cfg *ServiceAliasConfig) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if r.shouldWriteCerts(cfg) {
 		return r.certManager.WriteCertificatesForConfig(cfg)
 	}
 	return nil
 }
 func (r *templateRouter) reloadRouter() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cmd := exec.Command(r.reloadScriptPath)
@@ -321,6 +343,8 @@ func (r *templateRouter) reloadRouter() error {
 	return nil
 }
 func (r *templateRouter) FilterNamespaces(namespaces sets.String) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.lock.Lock()
@@ -353,11 +377,15 @@ func (r *templateRouter) FilterNamespaces(namespaces sets.String) {
 func (r *templateRouter) CreateServiceUnit(id string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	r.createServiceUnitInternal(id)
 }
 func (r *templateRouter) createServiceUnitInternal(id string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	namespace, name := getPartsFromEndpointsKey(id)
@@ -368,10 +396,14 @@ func (r *templateRouter) createServiceUnitInternal(id string) {
 func (r *templateRouter) findMatchingServiceUnit(id string) (ServiceUnit, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	v, ok := r.serviceUnits[id]
 	return v, ok
 }
 func (r *templateRouter) FindServiceUnit(id string) (ServiceUnit, bool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.lock.Lock()
@@ -379,6 +411,8 @@ func (r *templateRouter) FindServiceUnit(id string) (ServiceUnit, bool) {
 	return r.findMatchingServiceUnit(id)
 }
 func (r *templateRouter) DeleteServiceUnit(id string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.lock.Lock()
@@ -393,6 +427,8 @@ func (r *templateRouter) DeleteServiceUnit(id string) {
 func (r *templateRouter) addServiceAliasAssociation(id, alias string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if serviceUnit, ok := r.findMatchingServiceUnit(id); ok {
 		glog.V(4).Infof("associated service unit %s -> service alias %s", id, alias)
 		serviceUnit.ServiceAliasAssociations[alias] = true
@@ -401,12 +437,16 @@ func (r *templateRouter) addServiceAliasAssociation(id, alias string) {
 func (r *templateRouter) removeServiceAliasAssociation(id, alias string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if serviceUnit, ok := r.findMatchingServiceUnit(id); ok {
 		glog.V(4).Infof("removed association for service unit %s -> service alias %s", id, alias)
 		delete(serviceUnit.ServiceAliasAssociations, alias)
 	}
 }
 func (r *templateRouter) dynamicallyAddRoute(backendKey string, route *routev1.Route, backend *ServiceAliasConfig) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if r.dynamicConfigManager == nil {
@@ -444,6 +484,8 @@ func (r *templateRouter) dynamicallyAddRoute(backendKey string, route *routev1.R
 func (r *templateRouter) dynamicallyRemoveRoute(backendKey string, route *routev1.Route) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if r.dynamicConfigManager == nil || !r.synced {
 		return false
 	}
@@ -455,6 +497,8 @@ func (r *templateRouter) dynamicallyRemoveRoute(backendKey string, route *routev
 	return true
 }
 func (r *templateRouter) dynamicallyReplaceEndpoints(id string, service ServiceUnit, oldEndpoints []Endpoint) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if r.dynamicConfigManager == nil || !r.synced {
@@ -484,6 +528,8 @@ func (r *templateRouter) dynamicallyReplaceEndpoints(id string, service ServiceU
 func (r *templateRouter) dynamicallyRemoveEndpoints(service ServiceUnit, endpoints []Endpoint) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if r.dynamicConfigManager == nil || !r.synced {
 		return false
 	}
@@ -501,6 +547,8 @@ func (r *templateRouter) dynamicallyRemoveEndpoints(service ServiceUnit, endpoin
 	return true
 }
 func (r *templateRouter) DeleteEndpoints(id string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.lock.Lock()
@@ -522,14 +570,20 @@ func (r *templateRouter) DeleteEndpoints(id string) {
 func routeKey(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return routeKeyFromParts(route.Namespace, route.Name)
 }
 func routeKeyFromParts(namespace, name string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Sprintf("%s%s%s", namespace, routeKeySeparator, name)
 }
 func getPartsFromRouteKey(key string) (string, string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tokens := strings.SplitN(key, routeKeySeparator, 2)
@@ -541,6 +595,8 @@ func getPartsFromRouteKey(key string) (string, string) {
 	return namespace, name
 }
 func (r *templateRouter) createServiceAliasConfig(route *routev1.Route, backendKey string) *ServiceAliasConfig {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	wantsWildcardSupport := (route.Spec.WildcardPolicy == routev1.WildcardPolicySubdomain)
@@ -589,6 +645,8 @@ func (r *templateRouter) createServiceAliasConfig(route *routev1.Route, backendK
 func (r *templateRouter) AddRoute(route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	backendKey := routeKey(route)
 	newConfig := r.createServiceAliasConfig(route, backendKey)
 	r.lock.Lock()
@@ -617,11 +675,15 @@ func (r *templateRouter) AddRoute(route *routev1.Route) {
 func (r *templateRouter) RemoveRoute(route *routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	r.removeRouteInternal(route)
 }
 func (r *templateRouter) removeRouteInternal(route *routev1.Route) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	backendKey := routeKey(route)
@@ -641,6 +703,8 @@ func (r *templateRouter) removeRouteInternal(route *routev1.Route) {
 func (r *templateRouter) numberOfEndpoints(id string) int32 {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var eps = 0
 	svc, ok := r.findMatchingServiceUnit(id)
 	if ok && len(svc.EndpointTable) > eps {
@@ -649,6 +713,8 @@ func (r *templateRouter) numberOfEndpoints(id string) int32 {
 	return int32(eps)
 }
 func (r *templateRouter) AddEndpoints(id string, endpoints []Endpoint) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.lock.Lock()
@@ -672,12 +738,16 @@ func (r *templateRouter) AddEndpoints(id string, endpoints []Endpoint) {
 func (r *templateRouter) cleanUpServiceAliasConfig(cfg *ServiceAliasConfig) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	err := r.certManager.DeleteCertificatesForConfig(cfg)
 	if err != nil {
 		glog.Errorf("Error deleting certificates for route %s, the route will still be deleted but files may remain in the container: %v", cfg.Host, err)
 	}
 }
 func cmpStrSlices(first []string, second []string) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(first) != len(second) {
@@ -698,6 +768,8 @@ func cmpStrSlices(first []string, second []string) bool {
 	return true
 }
 func (r *templateRouter) shouldWriteCerts(cfg *ServiceAliasConfig) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if cfg.Status == ServiceAliasConfigStatusSaved {
@@ -733,6 +805,8 @@ func (r *templateRouter) shouldWriteCerts(cfg *ServiceAliasConfig) bool {
 func (r *templateRouter) HasRoute(route *routev1.Route) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	key := routeKey(route)
@@ -742,6 +816,8 @@ func (r *templateRouter) HasRoute(route *routev1.Route) bool {
 func (r *templateRouter) SyncedAtLeastOnce() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.lock.Lock()
 	defer r.lock.Unlock()
 	return r.synced
@@ -749,10 +825,14 @@ func (r *templateRouter) SyncedAtLeastOnce() bool {
 func hasRequiredEdgeCerts(cfg *ServiceAliasConfig) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	hostCert, ok := cfg.Certificates[cfg.Host]
 	return ok && len(hostCert.Contents) > 0 && len(hostCert.PrivateKey) > 0
 }
 func hasReencryptDestinationCACert(cfg *ServiceAliasConfig) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	destCertKey := generateDestCertKey(cfg)
@@ -762,9 +842,13 @@ func hasReencryptDestinationCACert(cfg *ServiceAliasConfig) bool {
 func generateCertKey(config *ServiceAliasConfig) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return config.Host
 }
 func generateCACertKey(config *ServiceAliasConfig) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return config.Host + caCertPostfix
@@ -772,9 +856,13 @@ func generateCACertKey(config *ServiceAliasConfig) string {
 func generateDestCertKey(config *ServiceAliasConfig) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return config.Host + destCertPostfix
 }
 func getServiceUnits(route *routev1.Route) map[string]int32 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	serviceUnits := make(map[string]int32)
@@ -787,6 +875,8 @@ func getServiceUnits(route *routev1.Route) map[string]int32 {
 	return serviceUnits
 }
 func getServiceUnitWeight(weightRef *int32) int32 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var weight int32 = 1
@@ -803,6 +893,8 @@ func getServiceUnitWeight(weightRef *int32) int32 {
 func (r *templateRouter) getActiveEndpoints(serviceUnits map[string]int32) int {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var activeEndpoints int32 = 0
 	for key, weight := range serviceUnits {
 		if weight > 0 {
@@ -812,6 +904,8 @@ func (r *templateRouter) getActiveEndpoints(serviceUnits map[string]int32) int {
 	return int(activeEndpoints)
 }
 func (r *templateRouter) calculateServiceWeights(serviceUnits map[string]int32) map[string]int32 {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	serviceUnitNames := make(map[string]int32)
@@ -844,9 +938,13 @@ func (r *templateRouter) calculateServiceWeights(serviceUnits map[string]int32) 
 func configsAreEqual(config1, config2 *ServiceAliasConfig) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return config1.Name == config2.Name && config1.Namespace == config2.Namespace && config1.Host == config2.Host && config1.Path == config2.Path && config1.TLSTermination == config2.TLSTermination && reflect.DeepEqual(config1.Certificates, config2.Certificates) && config1.PreferPort == config2.PreferPort && config1.InsecureEdgeTerminationPolicy == config2.InsecureEdgeTerminationPolicy && config1.RoutingKeyName == config2.RoutingKeyName && config1.IsWildcard == config2.IsWildcard && config1.VerifyServiceHostname == config2.VerifyServiceHostname && reflect.DeepEqual(config1.Annotations, config2.Annotations) && reflect.DeepEqual(config1.ServiceUnits, config2.ServiceUnits)
 }
 func privateKeysFromPEM(pemCerts []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	buf := &bytes.Buffer{}

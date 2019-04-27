@@ -11,9 +11,13 @@ import (
 func getTestTerminations() []routev1.TLSTerminationType {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return []routev1.TLSTerminationType{routev1.TLSTerminationType(""), routev1.TLSTerminationEdge, routev1.TLSTerminationReencrypt, routev1.TLSTerminationPassthrough, routev1.TLSTerminationType("invalid")}
 }
 func getTestInsecurePolicies() []routev1.InsecureEdgeTerminationPolicyType {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return []routev1.InsecureEdgeTerminationPolicyType{routev1.InsecureEdgeTerminationPolicyNone, routev1.InsecureEdgeTerminationPolicyAllow, routev1.InsecureEdgeTerminationPolicyRedirect, routev1.InsecureEdgeTerminationPolicyType("hsts"), routev1.InsecureEdgeTerminationPolicyType("invalid2")}
@@ -21,9 +25,13 @@ func getTestInsecurePolicies() []routev1.InsecureEdgeTerminationPolicyType {
 func testBackendConfig(name, host, path string, wildcard bool, termination routev1.TLSTerminationType, insecurePolicy routev1.InsecureEdgeTerminationPolicyType, hascert bool) *BackendConfig {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &BackendConfig{Name: name, Host: host, Path: path, IsWildcard: wildcard, Termination: termination, InsecurePolicy: insecurePolicy, HasCertificate: hascert}
 }
 func TestGenerateWildcardDomainMapEntry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	mapName := "os_wildcard_domain.map"
@@ -67,6 +75,8 @@ func TestGenerateWildcardDomainMapEntry(t *testing.T) {
 	}
 }
 func TestGenerateHttpMapEntry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	mapName := "os_http_be.map"
@@ -127,6 +137,8 @@ func TestGenerateHttpMapEntry(t *testing.T) {
 func TestGenerateEdgeReencryptMapEntry(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	mapName := "os_edge_reencrypt_be.map"
 	tests := []struct {
 		name		string
@@ -185,6 +197,8 @@ func TestGenerateEdgeReencryptMapEntry(t *testing.T) {
 func TestGenerateHttpRedirectMapEntry(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	mapName := "os_route_http_redirect.map"
 	tests := []struct {
 		name		string
@@ -240,6 +254,8 @@ func TestGenerateHttpRedirectMapEntry(t *testing.T) {
 	}
 }
 func TestGenerateTCPMapEntry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	mapName := "os_tcp_be.map"
@@ -303,6 +319,8 @@ func TestGenerateTCPMapEntry(t *testing.T) {
 func TestGenerateSNIPassthroughMapEntry(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	mapName := "os_sni_passthrough.map"
 	tests := []struct {
 		name		string
@@ -358,6 +376,8 @@ func TestGenerateSNIPassthroughMapEntry(t *testing.T) {
 	}
 }
 func TestGenerateCertConfigMapEntry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	mapName := "cert_config.map"

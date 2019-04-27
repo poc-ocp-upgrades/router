@@ -13,6 +13,8 @@ import (
 func buildServiceAliasConfig(name, namespace, host, path string, termination routev1.TLSTerminationType, policy routev1.InsecureEdgeTerminationPolicyType, wildcard bool) ServiceAliasConfig {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	certs := make(map[string]Certificate)
 	if termination != routev1.TLSTerminationPassthrough {
 		certs[host] = Certificate{ID: fmt.Sprintf("id_%s", host), Contents: "abcdefghijklmnopqrstuvwxyz"}
@@ -20,6 +22,8 @@ func buildServiceAliasConfig(name, namespace, host, path string, termination rou
 	return ServiceAliasConfig{Name: name, Namespace: namespace, Host: host, Path: path, IsWildcard: wildcard, Certificates: certs, TLSTermination: termination, InsecureEdgeTerminationPolicy: policy}
 }
 func buildTestTemplateState() map[string]ServiceAliasConfig {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	state := make(map[string]ServiceAliasConfig)
@@ -42,6 +46,8 @@ func buildTestTemplateState() map[string]ServiceAliasConfig {
 func checkExpectedOrderPrefixes(lines, expectedOrder []string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(lines) != len(expectedOrder) {
 		return fmt.Errorf("sorted data length %d did not match expected length %d", len(lines), len(expectedOrder))
 	}
@@ -55,6 +61,8 @@ func checkExpectedOrderPrefixes(lines, expectedOrder []string) error {
 func checkExpectedOrderSuffixes(lines, expectedOrder []string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(lines) != len(expectedOrder) {
 		return fmt.Errorf("sorted data length %d did not match expected length %d", len(lines), len(expectedOrder))
 	}
@@ -66,6 +74,8 @@ func checkExpectedOrderSuffixes(lines, expectedOrder []string) error {
 	return nil
 }
 func TestFirstMatch(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {
@@ -82,6 +92,8 @@ func TestFirstMatch(t *testing.T) {
 	}
 }
 func TestGenerateRouteRegexp(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tests := []struct {
@@ -107,6 +119,8 @@ func TestGenerateRouteRegexp(t *testing.T) {
 	}
 }
 func TestMatchPattern(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testMatches := []struct {
@@ -135,6 +149,8 @@ func TestMatchPattern(t *testing.T) {
 func createTempMapFile(prefix string, data []string) (string, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	name := ""
 	tempFile, err := ioutil.TempFile("", prefix)
 	if err != nil {
@@ -152,6 +168,8 @@ func createTempMapFile(prefix string, data []string) (string, error) {
 func TestGenerateHAProxyCertConfigMap(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	td := templateData{WorkingDir: "/path/to", State: buildTestTemplateState(), ServiceUnits: make(map[string]ServiceUnit)}
 	expectedOrder := []string{"/path/to/certs/zzz:zed-route.pem", "/path/to/certs/test:api-route.pem", "/path/to/certs/stg:api-route.pem", "/path/to/certs/prod:wildcard-route.pem", "/path/to/certs/prod:backend-route.pem", "/path/to/certs/prod:api-route.pem", "/path/to/certs/prod:api-path-route.pem", "/path/to/certs/devel2:foo-wildcard-test.pem", "/path/to/certs/devel2:foo-wildcard-route.pem", "/path/to/certs/dev:reencrypt-route.pem", "/path/to/certs/dev:api-route.pem", "/path/to/certs/dev:admin-route.pem"}
 	lines := generateHAProxyCertConfigMap(td)
@@ -160,6 +178,8 @@ func TestGenerateHAProxyCertConfigMap(t *testing.T) {
 	}
 }
 func TestGenerateHAProxyMap(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	td := templateData{WorkingDir: "/path/to", State: buildTestTemplateState(), ServiceUnits: make(map[string]ServiceUnit)}
@@ -202,6 +222,8 @@ func TestGenerateHAProxyMap(t *testing.T) {
 func TestGetHTTPAliasesGroupedByHost(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	aliases := map[string]ServiceAliasConfig{"project1:route1": {Host: "example.com", Path: "/"}, "project2:route1": {Host: "example.org", Path: "/v1"}, "project2:route2": {Host: "example.org", Path: "/v2"}, "project3.route3": {Host: "example.net", TLSTermination: routev1.TLSTerminationPassthrough}}
 	expected := map[string]map[string]ServiceAliasConfig{"example.com": {"project1:route1": {Host: "example.com", Path: "/"}}, "example.org": {"project2:route1": {Host: "example.org", Path: "/v1"}, "project2:route2": {Host: "example.org", Path: "/v2"}}}
 	result := getHTTPAliasesGroupedByHost(aliases)
@@ -210,6 +232,8 @@ func TestGetHTTPAliasesGroupedByHost(t *testing.T) {
 	}
 }
 func TestGetPrimaryAliasKey(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	testCases := []struct {

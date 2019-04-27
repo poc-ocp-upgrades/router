@@ -31,6 +31,8 @@ type F5PluginConfig struct {
 func NewF5Plugin(cfg F5PluginConfig) (*F5Plugin, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	f5LTMCfg := f5LTMCfg{host: cfg.Host, username: cfg.Username, password: cfg.Password, httpVserver: cfg.HttpVserver, httpsVserver: cfg.HttpsVserver, privkey: cfg.PrivateKey, insecure: cfg.Insecure, partitionPath: cfg.PartitionPath, vxlanGateway: cfg.VxlanGateway, internalAddress: cfg.InternalAddress}
 	f5, err := newF5LTM(f5LTMCfg)
 	if err != nil {
@@ -39,6 +41,8 @@ func NewF5Plugin(cfg F5PluginConfig) (*F5Plugin, error) {
 	return &F5Plugin{f5, map[types.UID]string{}}, f5.Initialize()
 }
 func (p *F5Plugin) ensurePoolExists(poolname string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	poolExists, err := p.F5Client.PoolExists(poolname)
@@ -56,6 +60,8 @@ func (p *F5Plugin) ensurePoolExists(poolname string) error {
 	return nil
 }
 func (p *F5Plugin) updatePool(poolname string, endpoints *kapi.Endpoints) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	members, err := p.F5Client.GetPoolMembers(poolname)
@@ -101,6 +107,8 @@ func (p *F5Plugin) updatePool(poolname string, endpoints *kapi.Endpoints) error 
 func (p *F5Plugin) deletePool(poolname string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	poolExists, err := p.F5Client.PoolExists(poolname)
 	if err != nil {
 		glog.V(4).Infof("F5Client.PoolExists failed: %v", err)
@@ -116,6 +124,8 @@ func (p *F5Plugin) deletePool(poolname string) error {
 	return nil
 }
 func (p *F5Plugin) deletePoolIfEmpty(poolname string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	poolExists, err := p.F5Client.PoolExists(poolname)
@@ -142,9 +152,13 @@ func (p *F5Plugin) deletePoolIfEmpty(poolname string) error {
 func poolName(endpointsNamespace, endpointsName string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Sprintf("openshift_%s_%s", endpointsNamespace, endpointsName)
 }
 func (p *F5Plugin) HandleEndpoints(eventType watch.EventType, endpoints *kapi.Endpoints) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Processing %d Endpoints for Name: %v (%v)", len(endpoints.Subsets), endpoints.Name, eventType)
@@ -195,9 +209,13 @@ func (p *F5Plugin) HandleEndpoints(eventType watch.EventType, endpoints *kapi.En
 func routeName(route routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Sprintf("openshift_route_%s_%s", route.Namespace, route.Name)
 }
 func (p *F5Plugin) addRoute(routename, poolname, hostname, pathname string, tls *routev1.TLSConfig) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Adding route %s...", routename)
@@ -247,6 +265,8 @@ func (p *F5Plugin) addRoute(routename, poolname, hostname, pathname string, tls 
 	return nil
 }
 func (p *F5Plugin) deleteRoute(routename string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Deleting route %s...", routename)
@@ -337,12 +357,16 @@ func (p *F5Plugin) deleteRoute(routename string) error {
 func getNodeIP(node *kapi.Node) (string, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(node.Status.Addresses) > 0 && node.Status.Addresses[0].Address != "" {
 		return node.Status.Addresses[0].Address, nil
 	}
 	return getNodeIPByName(node.Name)
 }
 func getNodeIPByName(nodeName string) (string, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	ip := net.ParseIP(nodeName)
@@ -371,9 +395,13 @@ func getNodeIPByName(nodeName string) (string, error) {
 func (p *F5Plugin) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Errorf("namespace limiting for F5 is not implemented")
 }
 func (p *F5Plugin) HandleNode(eventType watch.EventType, node *kapi.Node) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch eventType {
@@ -410,6 +438,8 @@ func (p *F5Plugin) HandleNode(eventType watch.EventType, node *kapi.Node) error 
 	return nil
 }
 func (p *F5Plugin) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	glog.V(4).Infof("Processing route for service: %v (%v)", route.Spec.To, route)
@@ -455,6 +485,8 @@ func (p *F5Plugin) HandleRoute(eventType watch.EventType, route *routev1.Route) 
 	return nil
 }
 func (p *F5Plugin) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return nil

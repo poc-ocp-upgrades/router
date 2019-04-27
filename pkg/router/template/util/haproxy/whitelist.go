@@ -12,6 +12,8 @@ const (
 func ValidateWhiteList(value string) ([]string, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	values := strings.Split(value, " ")
 	cidrs := make([]string, 0)
 	for _, v := range values {

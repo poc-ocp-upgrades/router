@@ -8,6 +8,8 @@ import (
 func TestBuildHAProxyMaps(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	testCases := []struct {
@@ -38,6 +40,8 @@ func TestBuildHAProxyMaps(t *testing.T) {
 func TestNewHAProxyMap(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	testCases := []struct {
@@ -55,6 +59,8 @@ func TestNewHAProxyMap(t *testing.T) {
 	}
 }
 func TestHAProxyMapRefresh(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
@@ -86,6 +92,8 @@ func TestHAProxyMapRefresh(t *testing.T) {
 func TestHAProxyMapCommit(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	testCases := []struct {
@@ -105,6 +113,8 @@ func TestHAProxyMapCommit(t *testing.T) {
 	}
 }
 func TestHAProxyMapName(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
@@ -134,6 +144,8 @@ func TestHAProxyMapName(t *testing.T) {
 	}
 }
 func TestHAProxyMapFind(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
@@ -171,6 +183,8 @@ func TestHAProxyMapFind(t *testing.T) {
 func TestHAProxyMapAdd(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	testCases := []struct {
@@ -204,6 +218,8 @@ func TestHAProxyMapAdd(t *testing.T) {
 func TestHAProxyMapDelete(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)
 	defer server.Stop()
 	testCases := []struct {
@@ -233,6 +249,8 @@ func TestHAProxyMapDelete(t *testing.T) {
 	}
 }
 func TestHAProxyMapDeleteEntry(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	server := haproxytesting.StartFakeServerForTest(t)

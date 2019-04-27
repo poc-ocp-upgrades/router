@@ -25,9 +25,13 @@ type rejectionRecorder struct{ rejections map[string]string }
 func (_ rejectionRecorder) rejectionKey(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return route.Namespace + "-" + route.Name
 }
 func (r rejectionRecorder) RecordRouteRejection(route *routev1.Route, reason, message string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	r.rejections[r.rejectionKey(route)] = reason
@@ -35,9 +39,13 @@ func (r rejectionRecorder) RecordRouteRejection(route *routev1.Route, reason, me
 func (r rejectionRecorder) Clear() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.rejections = make(map[string]string)
 }
 func wildcardAdmitter(route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(route.Spec.Host) < 1 {
@@ -49,6 +57,8 @@ func wildcardAdmitter(route *routev1.Route) error {
 	return nil
 }
 func wildcardRejecter(route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if len(route.Spec.Host) < 1 {
@@ -63,6 +73,8 @@ func wildcardRejecter(route *routev1.Route) error {
 	return nil
 }
 func TestHostAdmit(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}
@@ -90,6 +102,8 @@ func TestHostAdmit(t *testing.T) {
 func TestWildcardHostDeny(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p := &fakePlugin{}
 	admitter := NewHostAdmitter(p, wildcardRejecter, false, false, LogRejections)
 	tests := []struct {
@@ -113,6 +127,8 @@ func TestWildcardHostDeny(t *testing.T) {
 	}
 }
 func TestWildcardSubDomainOwnership(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}
@@ -176,6 +192,8 @@ func TestWildcardSubDomainOwnership(t *testing.T) {
 func TestValidRouteAdmissionFuzzing(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p := &fakePlugin{}
 	admitAll := func(route *routev1.Route) error {
 		return nil
@@ -231,6 +249,8 @@ func TestValidRouteAdmissionFuzzing(t *testing.T) {
 func makeRoute(ns, name, host, path string, wildcard bool, creationTimestamp metav1.Time) *routev1.Route {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	policy := routev1.WildcardPolicyNone
 	if wildcard {
 		policy = routev1.WildcardPolicySubdomain
@@ -238,6 +258,8 @@ func makeRoute(ns, name, host, path string, wildcard bool, creationTimestamp met
 	return &routev1.Route{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: ns, CreationTimestamp: creationTimestamp, UID: types.UID(fmt.Sprintf("%d_%s_%s", creationTimestamp.Time.Unix(), ns, name))}, Spec: routev1.RouteSpec{Host: host, Path: path, WildcardPolicy: policy}}
 }
 func TestInvalidRouteAdmissionFuzzing(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}
@@ -346,6 +368,8 @@ func TestInvalidRouteAdmissionFuzzing(t *testing.T) {
 func TestStatusWildcardPolicyNoOp(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	now := nowFn()
 	touched := metav1.Time{Time: now.Add(-time.Minute)}
 	p := &fakePlugin{}
@@ -363,6 +387,8 @@ func TestStatusWildcardPolicyNoOp(t *testing.T) {
 func TestStatusWildcardPolicyNotAllowedNoOp(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	now := nowFn()
 	touched := metav1.Time{Time: now.Add(-time.Minute)}
 	p := &fakePlugin{}
@@ -378,6 +404,8 @@ func TestStatusWildcardPolicyNotAllowedNoOp(t *testing.T) {
 	}
 }
 func TestDisableOwnershipChecksFuzzing(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}
@@ -491,6 +519,8 @@ func TestDisableOwnershipChecksFuzzing(t *testing.T) {
 func TestHandleNamespaceProcessing(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p := &fakePlugin{}
 	recorder := rejectionRecorder{rejections: make(map[string]string)}
 	admitter := NewHostAdmitter(p, wildcardAdmitter, true, false, recorder)
@@ -521,6 +551,8 @@ func TestHandleNamespaceProcessing(t *testing.T) {
 	}
 }
 func TestWildcardPathRoutesWithoutNSCheckResyncs(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p := &fakePlugin{}

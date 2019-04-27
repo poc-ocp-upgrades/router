@@ -14,6 +14,8 @@ import (
 func oldest(changes Changed, active []*routev1.Route, routes ...*routev1.Route) (updated, displaced []*routev1.Route) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(routes) == 0 {
 		return active, nil
 	}
@@ -34,6 +36,8 @@ func oldest(changes Changed, active []*routev1.Route, routes ...*routev1.Route) 
 func newRoute(namespace, name string, uid, rv int, spec routev1.RouteSpec) *routev1.Route {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	route := &routev1.Route{Spec: spec}
 	route.Name = name
 	route.Namespace = namespace
@@ -43,6 +47,8 @@ func newRoute(namespace, name string, uid, rv int, spec routev1.RouteSpec) *rout
 	return route
 }
 func Test_hostIndex(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	type step struct {
@@ -121,6 +127,8 @@ func Test_hostIndex(t *testing.T) {
 func Test_Filter(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	type step struct {
 		remove	bool
 		route	*routev1.Route
@@ -194,6 +202,8 @@ func Test_Filter(t *testing.T) {
 	}
 }
 func changesToMap(routes []*routev1.Route) map[string]struct{} {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	m := make(map[string]struct{})

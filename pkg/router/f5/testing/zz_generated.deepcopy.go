@@ -3,6 +3,8 @@ package testing
 func (in Datagroup) DeepCopyInto(out *Datagroup) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	{
 		in := &in
 		*out = make(Datagroup, len(*in))
@@ -15,6 +17,8 @@ func (in Datagroup) DeepCopyInto(out *Datagroup) {
 func (in Datagroup) DeepCopy() Datagroup {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if in == nil {
 		return nil
 	}
@@ -23,6 +27,8 @@ func (in Datagroup) DeepCopy() Datagroup {
 	return *out
 }
 func (in *PolicyCondition) DeepCopyInto(out *PolicyCondition) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	*out = *in
@@ -36,6 +42,8 @@ func (in *PolicyCondition) DeepCopyInto(out *PolicyCondition) {
 func (in *PolicyCondition) DeepCopy() *PolicyCondition {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if in == nil {
 		return nil
 	}
@@ -44,6 +52,8 @@ func (in *PolicyCondition) DeepCopy() *PolicyCondition {
 	return out
 }
 func (in *PolicyRule) DeepCopyInto(out *PolicyRule) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	*out = *in
@@ -59,6 +69,8 @@ func (in *PolicyRule) DeepCopyInto(out *PolicyRule) {
 func (in *PolicyRule) DeepCopy() *PolicyRule {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if in == nil {
 		return nil
 	}
@@ -67,6 +79,8 @@ func (in *PolicyRule) DeepCopy() *PolicyRule {
 	return out
 }
 func (in Pool) DeepCopyInto(out *Pool) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	{
@@ -79,6 +93,8 @@ func (in Pool) DeepCopyInto(out *Pool) {
 	}
 }
 func (in Pool) DeepCopy() Pool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if in == nil {

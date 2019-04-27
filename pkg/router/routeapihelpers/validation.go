@@ -18,6 +18,8 @@ type blockVerifierFunc func(block *pem.Block) (*pem.Block, error)
 func publicKeyBlockVerifier(block *pem.Block) (*pem.Block, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	key, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		return nil, err
@@ -31,6 +33,8 @@ func publicKeyBlockVerifier(block *pem.Block) (*pem.Block, error) {
 func certificateBlockVerifier(block *pem.Block) (*pem.Block, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
 		return nil, err
@@ -39,6 +43,8 @@ func certificateBlockVerifier(block *pem.Block) (*pem.Block, error) {
 	return block, nil
 }
 func privateKeyBlockVerifier(block *pem.Block) (*pem.Block, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
@@ -67,12 +73,16 @@ func privateKeyBlockVerifier(block *pem.Block) (*pem.Block, error) {
 func ignoreBlockVerifier(block *pem.Block) (*pem.Block, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil, nil
 }
 
 var knownBlockDecoders = map[string]blockVerifierFunc{"RSA PRIVATE KEY": privateKeyBlockVerifier, "ECDSA PRIVATE KEY": privateKeyBlockVerifier, "PRIVATE KEY": privateKeyBlockVerifier, "PUBLIC KEY": publicKeyBlockVerifier, "RSA PUBLIC KEY": publicKeyBlockVerifier, "DSA PUBLIC KEY": publicKeyBlockVerifier, "ECDSA PUBLIC KEY": publicKeyBlockVerifier, "CERTIFICATE": certificateBlockVerifier, "EC PARAMETERS": ignoreBlockVerifier}
 
 func sanitizePEM(data []byte) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var block *pem.Block
@@ -100,6 +110,8 @@ func sanitizePEM(data []byte) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 func ExtendedValidateRoute(route *routev1.Route) field.ErrorList {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tlsConfig := route.Spec.TLS
@@ -174,6 +186,8 @@ func ExtendedValidateRoute(route *routev1.Route) field.ErrorList {
 func validateTLS(route *routev1.Route, fldPath *field.Path) field.ErrorList {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	result := field.ErrorList{}
 	tls := route.Spec.TLS
 	if tls == nil {
@@ -210,6 +224,8 @@ func validateTLS(route *routev1.Route, fldPath *field.Path) field.ErrorList {
 func validateInsecureEdgeTerminationPolicy(tls *routev1.TLSConfig, fldPath *field.Path) *field.Error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if len(tls.InsecureEdgeTerminationPolicy) == 0 {
 		return nil
 	}
@@ -231,6 +247,8 @@ func validateInsecureEdgeTerminationPolicy(tls *routev1.TLSConfig, fldPath *fiel
 	return nil
 }
 func validateCertificatePEM(certPEM string, options *x509.VerifyOptions) ([]*x509.Certificate, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	certs, err := cert.ParseCertsPEM([]byte(certPEM))

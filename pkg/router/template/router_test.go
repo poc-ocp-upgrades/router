@@ -14,6 +14,8 @@ import (
 func TestCreateServiceUnit(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
 	suKey := "ns/test"
 	router.CreateServiceUnit(suKey)
@@ -22,6 +24,8 @@ func TestCreateServiceUnit(t *testing.T) {
 	}
 }
 func TestDeleteServiceUnit(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
@@ -36,6 +40,8 @@ func TestDeleteServiceUnit(t *testing.T) {
 	}
 }
 func TestAddEndpoints(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
@@ -64,6 +70,8 @@ func TestAddEndpoints(t *testing.T) {
 	}
 }
 func TestAddEndpointDuplicates(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
@@ -106,6 +114,8 @@ func TestAddEndpointDuplicates(t *testing.T) {
 func TestDeleteEndpoints(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
 	suKey := "ns/test"
 	router.CreateServiceUnit(suKey)
@@ -139,6 +149,8 @@ func TestDeleteEndpoints(t *testing.T) {
 func TestRouteKey(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
 	route := &routev1.Route{ObjectMeta: metav1.ObjectMeta{Namespace: "foo", Name: "bar"}}
 	key := routeKey(route)
@@ -168,6 +180,8 @@ func TestRouteKey(t *testing.T) {
 func TestCreateServiceAliasConfig(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
 	namespace := "foo"
 	serviceName := "TestService"
@@ -181,6 +195,8 @@ func TestCreateServiceAliasConfig(t *testing.T) {
 	}
 }
 func TestAddRoute(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
@@ -206,6 +222,8 @@ func TestAddRoute(t *testing.T) {
 func TestUpdateRoute(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
 	route := &routev1.Route{ObjectMeta: metav1.ObjectMeta{Namespace: "foo", Name: "bar"}, Spec: routev1.RouteSpec{Host: "host", Path: "/foo"}}
 	router.AddRoute(route)
@@ -226,9 +244,13 @@ func TestUpdateRoute(t *testing.T) {
 func compareTLS(route *routev1.Route, saCfg ServiceAliasConfig, t *testing.T) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return findCert(route.Spec.TLS.DestinationCACertificate, saCfg.Certificates, false, t) && findCert(route.Spec.TLS.CACertificate, saCfg.Certificates, false, t) && findCert(route.Spec.TLS.Key, saCfg.Certificates, true, t) && findCert(route.Spec.TLS.Certificate, saCfg.Certificates, false, t)
 }
 func findCert(cert string, certs map[string]Certificate, isPrivateKey bool, t *testing.T) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	found := false
@@ -251,6 +273,8 @@ func findCert(cert string, certs map[string]Certificate, isPrivateKey bool, t *t
 	return found
 }
 func TestRemoveRoute(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
@@ -283,6 +307,8 @@ func TestRemoveRoute(t *testing.T) {
 func TestShouldWriteCertificates(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	testCases := []struct {
 		name			string
 		cfg			*ServiceAliasConfig
@@ -299,6 +325,8 @@ func TestShouldWriteCertificates(t *testing.T) {
 func TestHasRequiredEdgeCerts(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	validCertMap := makeCertMap("host", true)
 	cfg := &ServiceAliasConfig{Host: "host", Certificates: validCertMap}
 	if !hasRequiredEdgeCerts(cfg) {
@@ -313,6 +341,8 @@ func TestHasRequiredEdgeCerts(t *testing.T) {
 func makeCertMap(host string, valid bool) map[string]Certificate {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	privateKey := "private Key"
 	if !valid {
 		privateKey = ""
@@ -321,6 +351,8 @@ func makeCertMap(host string, valid bool) map[string]Certificate {
 	return certMap
 }
 func TestAddRouteEdgeTerminationInsecurePolicy(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()
@@ -343,6 +375,8 @@ func TestAddRouteEdgeTerminationInsecurePolicy(t *testing.T) {
 	}
 }
 func TestFilterNamespaces(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	router := NewFakeTemplateRouter()

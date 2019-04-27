@@ -31,6 +31,8 @@ type TemplatePlugin struct {
 func newDefaultTemplatePlugin(router RouterInterface, includeUDP bool, lookupSvc ServiceLookup) *TemplatePlugin {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &TemplatePlugin{Router: router, IncludeUDP: includeUDP, ServiceFetcher: lookupSvc}
 }
 
@@ -72,6 +74,8 @@ type RouterInterface interface {
 func createTemplateWithHelper(t *template.Template) (*template.Template, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	funcMap := template.FuncMap{"generateHAProxyMap": func(data templateData) []string {
 		return generateHAProxyMap(filepath.Base(t.Name()), data)
 	}}
@@ -82,6 +86,8 @@ func createTemplateWithHelper(t *template.Template) (*template.Template, error) 
 	return clone.Funcs(funcMap), nil
 }
 func NewTemplatePlugin(cfg TemplatePluginConfig, lookupSvc ServiceLookup) (*TemplatePlugin, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	templateBaseName := filepath.Base(cfg.TemplatePath)
@@ -111,6 +117,8 @@ func NewTemplatePlugin(cfg TemplatePluginConfig, lookupSvc ServiceLookup) (*Temp
 func (p *TemplatePlugin) HandleEndpoints(eventType watch.EventType, endpoints *kapi.Endpoints) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	key := endpointsKey(endpoints)
 	glog.V(4).Infof("Processing %d Endpoints for %s/%s (%v)", len(endpoints.Subsets), endpoints.Namespace, endpoints.Name, eventType)
 	for i, s := range endpoints.Subsets {
@@ -134,9 +142,13 @@ func (p *TemplatePlugin) HandleEndpoints(eventType watch.EventType, endpoints *k
 func (p *TemplatePlugin) HandleNode(eventType watch.EventType, node *kapi.Node) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return nil
 }
 func (p *TemplatePlugin) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch eventType {
@@ -151,10 +163,14 @@ func (p *TemplatePlugin) HandleRoute(eventType watch.EventType, route *routev1.R
 func (p *TemplatePlugin) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.Router.FilterNamespaces(namespaces)
 	return nil
 }
 func (p *TemplatePlugin) Commit() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	p.Router.Commit()
@@ -163,14 +179,20 @@ func (p *TemplatePlugin) Commit() error {
 func endpointsKey(endpoints *kapi.Endpoints) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return endpointsKeyFromParts(endpoints.Namespace, endpoints.Name)
 }
 func endpointsKeyFromParts(namespace, name string) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Sprintf("%s%s%s", namespace, endpointsKeySeparator, name)
 }
 func getPartsFromEndpointsKey(key string) (string, string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tokens := strings.SplitN(key, endpointsKeySeparator, 2)
@@ -184,9 +206,13 @@ func getPartsFromEndpointsKey(key string) (string, string) {
 func peerEndpointsKey(namespacedName ktypes.NamespacedName) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return endpointsKeyFromParts(namespacedName.Namespace, namespacedName.Name)
 }
 func createRouterEndpoints(endpoints *kapi.Endpoints, excludeUDP bool, lookupSvc ServiceLookup) []Endpoint {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	wasIdled := false
@@ -237,6 +263,8 @@ func createRouterEndpoints(endpoints *kapi.Endpoints, excludeUDP bool, lookupSvc
 	return out
 }
 func isServiceIPSet(service *kapi.Service) bool {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return service.Spec.ClusterIP != kapi.ClusterIPNone && service.Spec.ClusterIP != ""

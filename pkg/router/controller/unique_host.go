@@ -20,6 +20,8 @@ type RouteHostFunc func(*routev1.Route) string
 func HostForRoute(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return route.Spec.Host
 }
 
@@ -33,6 +35,8 @@ type UniqueHost struct {
 func NewUniqueHost(plugin router.Plugin, disableOwnershipCheck bool, recorder RejectionRecorder) *UniqueHost {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routeActivationFn := hostindex.SameNamespace
 	if disableOwnershipCheck {
 		routeActivationFn = hostindex.OldestFirst
@@ -42,15 +46,21 @@ func NewUniqueHost(plugin router.Plugin, disableOwnershipCheck bool, recorder Re
 func (p *UniqueHost) RoutesForHost(host string) ([]*routev1.Route, bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	routes, ok := p.index.RoutesForHost(host)
 	return routes, ok
 }
 func (p *UniqueHost) HostLen() int {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.index.HostLen()
 }
 func (p *UniqueHost) HandleEndpoints(eventType watch.EventType, endpoints *kapi.Endpoints) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if p.allowedNamespaces != nil && !p.allowedNamespaces.Has(endpoints.Namespace) {
@@ -61,9 +71,13 @@ func (p *UniqueHost) HandleEndpoints(eventType watch.EventType, endpoints *kapi.
 func (p *UniqueHost) HandleNode(eventType watch.EventType, node *kapi.Node) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.plugin.HandleNode(eventType, node)
 }
 func (p *UniqueHost) HandleRoute(eventType watch.EventType, route *routev1.Route) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if p.allowedNamespaces != nil && !p.allowedNamespaces.Has(route.Namespace) {
@@ -162,6 +176,8 @@ func (p *UniqueHost) HandleRoute(eventType watch.EventType, route *routev1.Route
 func (p *UniqueHost) HandleNamespaces(namespaces sets.String) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	p.allowedNamespaces = namespaces
 	p.index.Filter(func(route *routev1.Route) bool {
 		return namespaces.Has(route.Namespace)
@@ -171,14 +187,20 @@ func (p *UniqueHost) HandleNamespaces(namespaces sets.String) error {
 func (p *UniqueHost) Commit() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return p.plugin.Commit()
 }
 func routeNameKey(route *routev1.Route) string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return fmt.Sprintf("%s/%s", route.Namespace, route.Name)
 }
 func ValidateHostName(route *routev1.Route) field.ErrorList {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	result := field.ErrorList{}
