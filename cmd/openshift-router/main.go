@@ -7,23 +7,21 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-
 	"github.com/spf13/cobra"
-
 	"k8s.io/apiserver/pkg/util/logs"
 	"k8s.io/client-go/pkg/version"
-
 	"github.com/openshift/library-go/pkg/serviceability"
 	"github.com/openshift/router/pkg/cmd/infra/router"
 )
 
 func main() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logs.InitLogs()
 	defer logs.FlushLogs()
 	defer serviceability.BehaviorOnPanic(os.Getenv("OPENSHIFT_ON_PANIC"), version.Get())()
 	defer serviceability.Profile(os.Getenv("OPENSHIFT_PROFILE")).Stop()
 	rand.Seed(time.Now().UTC().UnixNano())
-
 	cmd := CommandFor(filepath.Base(os.Args[0]))
 	cmd.SilenceUsage = true
 	cmd.SilenceErrors = true
@@ -32,12 +30,10 @@ func main() {
 		os.Exit(1)
 	}
 }
-
-// CommandFor returns the appropriate command for this base name,
-// or the OpenShift CLI command.
 func CommandFor(basename string) *cobra.Command {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var cmd *cobra.Command
-
 	switch basename {
 	case "openshift-router", "openshift-haproxy-router":
 		cmd = router.NewCommandTemplateRouter(basename)
@@ -45,8 +41,6 @@ func CommandFor(basename string) *cobra.Command {
 		fmt.Printf("unknown command name: %s\n", basename)
 		os.Exit(1)
 	}
-
 	GLog(cmd.PersistentFlags())
-
 	return cmd
 }

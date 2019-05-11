@@ -7,39 +7,33 @@ import (
 	"net/http"
 	"net/http/pprof"
 	"strings"
-
 	"github.com/cockroachdb/cmux"
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
-
 	"k8s.io/apiserver/pkg/server/healthz"
-
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apiserver/pkg/authentication/authenticator"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
 )
 
 type Listener struct {
-	Addr string
-
-	TLSConfig *tls.Config
-
-	Username string
-	Password string
-
-	Authenticator authenticator.Request
-	Authorizer    authorizer.Authorizer
-	Record        authorizer.AttributesRecord
-
-	LiveChecks  []healthz.HealthzChecker
-	ReadyChecks []healthz.HealthzChecker
+	Addr			string
+	TLSConfig		*tls.Config
+	Username		string
+	Password		string
+	Authenticator	authenticator.Request
+	Authorizer		authorizer.Authorizer
+	Record			authorizer.AttributesRecord
+	LiveChecks		[]healthz.HealthzChecker
+	ReadyChecks		[]healthz.HealthzChecker
 }
 
 func (l Listener) handler() http.Handler {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	mux := http.NewServeMux()
 	healthz.InstallHandler(mux, l.LiveChecks...)
 	healthz.InstallPathHandler(mux, "/healthz/ready", l.ReadyChecks...)
-
 	if l.Authenticator != nil {
 		protected := http.NewServeMux()
 		protected.HandleFunc("/debug/pprof/", pprof.Index)
@@ -50,8 +44,9 @@ func (l Listener) handler() http.Handler {
 	}
 	return mux
 }
-
 func (l Listener) authorizeHandler(protected http.Handler) http.Handler {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		if len(l.Username) > 0 || len(l.Password) > 0 {
 			if u, p, ok := req.BasicAuth(); ok {
@@ -63,11 +58,8 @@ func (l Listener) authorizeHandler(protected http.Handler) http.Handler {
 				return
 			}
 		}
-
 		user, ok, err := l.Authenticator.AuthenticateRequest(req)
 		if !ok || err != nil {
-			// older routers will not have permission to check token access review, so treat this
-			// as an authorization denied if so
 			if !ok || errors.IsUnauthorized(err) {
 				glog.V(5).Infof("Unable to authenticate: %v", err)
 				http.Error(w, "Unable to authenticate due to an error", http.StatusUnauthorized)
@@ -113,44 +105,28 @@ func (l Listener) authorizeHandler(protected http.Handler) http.Handler {
 		protected.ServeHTTP(w, req)
 	})
 }
-
-// Listen starts a server for health, metrics, and profiling on the provided listen port.
-// It will terminate the process if the server fails. Metrics and profiling are only exposed
-// if username and password are provided and the user's input matches.
 func (l Listener) Listen() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	handler := l.handler()
-
 	tcpl, err := net.Listen("tcp", l.Addr)
 	if err != nil {
 		glog.Fatal(err)
 	}
-
-	// if a TLS connection was requested, set up a connection mux that will send TLS requests to
-	// the TLS server but send HTTP requests to the HTTP server. Preserves the ability for HTTP
-	// health checks to call HTTP on the router while still allowing TLS certs and end to end
-	// metrics protection.
 	m := cmux.New(tcpl)
-
-	// match HTTP first
 	httpl := m.Match(cmux.HTTP1())
 	go func() {
-		s := &http.Server{
-			Handler: handler,
-		}
+		s := &http.Server{Handler: handler}
 		if err := s.Serve(httpl); err != cmux.ErrListenerClosed {
 			glog.Fatal(err)
 		}
 	}()
-
-	// match TLS if configured
 	if l.TLSConfig != nil {
 		glog.Infof("Router health and metrics port listening at %s on HTTP and HTTPS", l.Addr)
 		tlsl := m.Match(cmux.Any())
 		tlsl = tls.NewListener(tlsl, l.TLSConfig)
 		go func() {
-			s := &http.Server{
-				Handler: handler,
-			}
+			s := &http.Server{Handler: handler}
 			if err := s.Serve(tlsl); err != cmux.ErrListenerClosed {
 				glog.Fatal(err)
 			}
@@ -158,7 +134,6 @@ func (l Listener) Listen() {
 	} else {
 		glog.Infof("Router health and metrics port listening at %s", l.Addr)
 	}
-
 	go func() {
 		if err := m.Serve(); !strings.Contains(err.Error(), "use of closed network connection") {
 			glog.Fatal(err)

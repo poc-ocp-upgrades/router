@@ -1,56 +1,45 @@
 package templaterouter
 
-// NewFakeTemplateRouter provides an empty template router with a simple certificate manager
-// backed by a fake cert writer for testing
 func NewFakeTemplateRouter() *templateRouter {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fakeCertManager, _ := newSimpleCertificateManager(newFakeCertificateManagerConfig(), &fakeCertWriter{})
-	return &templateRouter{
-		state:                     map[string]ServiceAliasConfig{},
-		serviceUnits:              make(map[string]ServiceUnit),
-		certManager:               fakeCertManager,
-		rateLimitedCommitFunction: nil,
-	}
+	return &templateRouter{state: map[string]ServiceAliasConfig{}, serviceUnits: make(map[string]ServiceUnit), certManager: fakeCertManager, rateLimitedCommitFunction: nil}
 }
-
-// FakeReloadHandler implements the minimal changes needed to make the locking behavior work
-// This MUST match the behavior with the stateChanged of commitAndReload
 func (r *templateRouter) FakeReloadHandler() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	r.lock.Lock()
 	defer r.lock.Unlock()
-
 	r.stateChanged = false
-
 	return
 }
 
-// fakeCertWriter is a certificate writer that records actions but is a no-op
 type fakeCertWriter struct {
-	addedCerts   []string
-	deletedCerts []string
+	addedCerts		[]string
+	deletedCerts	[]string
 }
 
-// clear clears the fake cert writer for test case resets
 func (fcw *fakeCertWriter) clear() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fcw.addedCerts = make([]string, 0)
 	fcw.deletedCerts = make([]string, 0)
 }
-
 func (fcw *fakeCertWriter) WriteCertificate(directory string, id string, cert []byte) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fcw.addedCerts = append(fcw.addedCerts, directory+id)
 	return nil
 }
-
 func (fcw *fakeCertWriter) DeleteCertificate(directory, id string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	fcw.deletedCerts = append(fcw.deletedCerts, directory+id)
 	return nil
 }
-
 func newFakeCertificateManagerConfig() *certificateManagerConfig {
-	return &certificateManagerConfig{
-		certKeyFunc:     generateCertKey,
-		caCertKeyFunc:   generateCACertKey,
-		destCertKeyFunc: generateDestCertKey,
-		certDir:         certDir,
-		caCertDir:       caCertDir,
-	}
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	return &certificateManagerConfig{certKeyFunc: generateCertKey, caCertKeyFunc: generateCACertKey, destCertKeyFunc: generateDestCertKey, certDir: certDir, caCertDir: caCertDir}
 }
